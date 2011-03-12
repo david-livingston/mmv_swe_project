@@ -1,4 +1,5 @@
 import java.awt.*;
+import java.awt.image.BufferedImage;
 
 /**
  * Created by IntelliJ IDEA.
@@ -76,6 +77,14 @@ public class MandelCanvas {
     public boolean saveImage(String fileName){
         // todo
         return true;
+    }
+
+    public BufferedImage getAsBufferedImage(){
+        BufferedImage img = new BufferedImage(countOfXPixels, countOfYPixels, BufferedImage.TYPE_INT_RGB);
+        for(int x = 0; x < countOfXPixels; ++x)
+            for(int y = 0; y < countOfYPixels; ++y)
+                img.setRGB(x, y, getColorAtPoint(x, y).getRGB());
+        return img;
     }
 
 }

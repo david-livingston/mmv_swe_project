@@ -17,10 +17,15 @@ public class GUI extends JFrame {
     final static int xResolution = 850;
     final static int yResolution = 700;
 
+    final MandelJPanel mJPanel;
+
     JDesktopPane desktop;
 
     public GUI() {
-        setJMenuBar(new MenuBar());
+
+        mJPanel = new MandelJPanel(xResolution, yResolution);
+
+        setJMenuBar(new MenuBar(mJPanel));
         /*
         desktop = new JDesktopPane();
         JInternalFrame i = new JInternalFrame("", true, true, true, true);

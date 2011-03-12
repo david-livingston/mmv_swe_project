@@ -3,6 +3,7 @@ import java.awt.*;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
+import java.awt.image.BufferedImage;
 
 /**
  * Created by IntelliJ IDEA.
@@ -83,5 +84,9 @@ public class MandelJPanel extends JPanel implements MouseListener, MouseMotionLi
     public void mouseMoved(MouseEvent e) {
         mouseLocation = new Point(e.getX(), e.getY());
         repaint();
+    }
+
+    public BufferedImage getCurrentImage(){
+        return canvas.getAsBufferedImage();
     }
 }
