@@ -10,27 +10,44 @@ import java.awt.image.BufferedImage;
  */
 
 /*
- * Class is a 2d array of MandelPoints. This class represents the picture to be drawn on
- * the screen and can zoom in on a new area of the picture.
+ * Class describes a region of the Mandelbrot set (zoomed out view initially),
+ * the number of pixels used to represent that area and an equal number of
+ * MandelPoints, and the BufferedImage entailed by mapping those pixels to
+ * colors with Palette.java.
  *
  * Most of the associated GUI code for this picture is in MandelJPanel.java.
  */
-public class MandelCanvas {
+class MandelCanvas {
 
-    public double realMinimum = -2.5;
-    public double imaginaryMaximum = 1.25;
-    public double realMaximum = 1.0;
-    public double imaginaryMinimum;
-    public double delta;
+    // describes the region of the Mandelbrot set to be displayed
+    // todo: improve region program initially renders
+    private double realMinimum = -2.5;
+    private double imaginaryMaximum = 1.25;
+    private double realMaximum = 1.0;
+    private double imaginaryMinimum; //todo: set imaginaryMinimum
 
-    public final int countOfXPixels;
-    public final int countOfYPixels;
+    // distance between pixels
+    // if the aspect ratio of the logical picture does not match that of
+    // the rendered (on screen), then you need two separate deltas:
+    // realDelta and imaginaryDelta
+    private double delta;
+
+    private final int countOfXPixels;
+    private final int countOfYPixels;
 
     private final MandelPoint[][] mandelPoints;
 
+    // todo: increase iterationMax as picture is zoomed
+    // todo: give user control over iterationMax
     private int iterationMax = 100;
 
-    public MandelCanvas(int xRes, int yRes){
+    /**
+     * Constructs a MandelCanvas appropriate for the input resolution.
+     *
+     * @param xRes number of horizontal pixels (real axis)
+     * @param yRes number of vertical pixels (imaginary axis)
+     */
+    public MandelCanvas(final int xRes, final int yRes){
         delta = (realMaximum - realMinimum)/xRes;
         imaginaryMinimum = imaginaryMaximum - yRes * delta;
         countOfXPixels = xRes;
@@ -42,14 +59,38 @@ public class MandelCanvas {
                 mandelPoints[x][y] = new MandelPoint(realMinimum + x * delta, imaginaryMaximum - y * delta);
     }
 
-    // locate the point, make sure it has been calculated, look up color in palette
-    public Color getColorAtPoint(int x, int y){
-        MandelPoint m = mandelPoints[x][y];
+    /**
+     * Maps a pixel to a MandelPoint to a Color (per Palette.java); ensures
+     * the pixel has been iterated before returning result.
+     *
+     * @param x horizontal offset of pixel from top-left (0,0)
+     * @param y vertical offset of pixel from top-left (0,0)
+     * @return the color at input pixel
+     */
+    Color getColorAtPoint(final int x, final int y){
+        final MandelPoint m = mandelPoints[x][y];
         m.iterate(iterationMax, 2.0);
         return Palette.getColor(m);
     }
 
+    /**
+     * Alters this object to describe a different area of the Mandelbrot set
+     * per the region described by the input pixels (mouse clicks).
+     *
+     * todo: construct a new object instead of recalculating everything
+     * todo: navigation history
+     * todo: spawn new threads to do this (here might not be the best place)
+     * todo: fix recalculating region to maintain aspect ratio
+     * todo: refactor param names
+     * todo: remove println, use status bar, describe new region
+     *
+     * @param upperLeftCorner first click of user (may not actually be upperleftcorner)
+     * @param lowerRightCorner second click of user
+     */
     public void doZoom(Point upperLeftCorner, Point lowerRightCorner){
+
+        // todo: this method could use cleaning up & some unit tests
+
         // swap the click points if user clicked lower right corner before upper left corner
         if(upperLeftCorner.getX() > lowerRightCorner.getX() || upperLeftCorner.getY() > lowerRightCorner.getY()){
             Point tmp = lowerRightCorner;
@@ -72,16 +113,34 @@ public class MandelCanvas {
                mandelPoints[x][y] = new MandelPoint(realMinimum + x * delta, imaginaryMaximum - y * delta);
     }
 
+    /**
+     * get an image with pixel data based on the MandelPoint's contained in the
+     * described region
+     *
+     * it might be best to cache the buffered image but the JPanel that uses
+     * this to display to the screen already (i think) caches it so it really
+     * only affects saving the file
+     *
+     * @return the mandelbrot data, colored per Palette.java, as far as
+     *  currently calculated
+     */
     public BufferedImage getAsBufferedImage(){
-        BufferedImage img = new BufferedImage(countOfXPixels, countOfYPixels, BufferedImage.TYPE_INT_RGB);
+        final BufferedImage img = new BufferedImage(countOfXPixels, countOfYPixels, BufferedImage.TYPE_INT_RGB);
         for(int x = 0; x < countOfXPixels; ++x)
             for(int y = 0; y < countOfYPixels; ++y)
                 img.setRGB(x, y, getColorAtPoint(x, y).getRGB());
         return img;
     }
 
-    public int getIterationMax() { return iterationMax; }
-
-    public void increaseIterationMax(int increase){ iterationMax += increase; }
-
+    /**
+     * todo: recalculate the MandelPoint s to match new iteration limit
+     * todo: tie this to the gui somewhere
+     *
+     * @param increase the number to add to the current iterationLimit (the
+     *  bailout number of iterations for determining if a point is a member of
+     *  the prisoner set).
+     */
+    public void increaseIterationMax(int increase){
+        iterationMax += increase;
+    }
 }

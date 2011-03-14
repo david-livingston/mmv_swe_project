@@ -1,5 +1,4 @@
 import javax.swing.*;
-import java.awt.*;
 
 /**
  * Created by IntelliJ IDEA.
@@ -10,18 +9,30 @@ import java.awt.*;
  */
 
 /*
- * Run this: main program.
+ * This is both the class that launches the program and the container
+ * for all the other GUI elements; seems appropriate in an event driven
+ * program this small.
+ *
+ * TODO: use JDesktopPane
  */
 public class GUI extends JFrame {
 
-    final static int xResolution = 850;
-    final static int yResolution = 700;
+    /* Specifies the number of horizontal and vertical pixels used displaying the picture.
+     *
+     * TODO: decouple the size of BufferedImage from the canvas it is displayed on so the
+     * logical size of the image generated (and the size used when saving) does not need
+     * to be exactly the same size as displayed on screen. */
+    private final static int xResolution = 850;
+    private final static int yResolution = 700;
 
-    final MandelJPanel mJPanel;
+    private final MandelJPanel mJPanel;
 
-    JDesktopPane desktop;
+    // JDesktopPane desktop;
 
-    public GUI() {
+    /**
+     * Constructs the GUI which has the effect of launching the program.
+     */
+    private GUI() {
 
         mJPanel = new MandelJPanel(xResolution, yResolution);
 
@@ -44,6 +55,11 @@ public class GUI extends JFrame {
         getContentPane().add(statusBar, java.awt.BorderLayout.SOUTH);
     }
 
+    /**
+     * Only entry point of the program.
+     *
+     * @param args not parsed
+     */
     public static void main(String... args) {
         try { // Set System L&F
             UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());

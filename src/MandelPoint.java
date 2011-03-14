@@ -13,13 +13,13 @@
  */
 public class MandelPoint {
 
-    public final ComplexPoint startingLocation;
-    public ComplexPoint currentLocation;
+    public final ComplexNumber startingLocation;
+    public ComplexNumber currentLocation;
     public int iterationCount = 0;
     public boolean escaped = false;
 
     public MandelPoint(double real, double imaginary){
-        startingLocation = new ComplexPoint(real, imaginary);
+        startingLocation = new ComplexNumber(real, imaginary);
         currentLocation = startingLocation;
     }
 
@@ -33,7 +33,7 @@ public class MandelPoint {
         final double sqrEscape = escape * escape;
 
         while(iterationCount++ < iterationLimit){
-            currentLocation = ComplexPoint.add(startingLocation, ComplexPoint.square(currentLocation));
+            currentLocation = ComplexNumber.add(startingLocation, ComplexNumber.square(currentLocation));
             if(currentLocation.sqrMagnitude() > sqrEscape){
                 escaped = true;
                 break;
