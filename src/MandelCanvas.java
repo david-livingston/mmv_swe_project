@@ -26,9 +26,9 @@ public class MandelCanvas {
     public final int countOfXPixels;
     public final int countOfYPixels;
 
-    public final MandelPoint[][] mandelPoints;
+    private final MandelPoint[][] mandelPoints;
 
-    public int zoomCount = 0;
+    private int iterationMax = 100;
 
     public MandelCanvas(int xRes, int yRes){
         delta = (realMaximum - realMinimum)/xRes;
@@ -45,12 +45,11 @@ public class MandelCanvas {
     // locate the point, make sure it has been calculated, look up color in palette
     public Color getColorAtPoint(int x, int y){
         MandelPoint m = mandelPoints[x][y];
-        m.iterate(100 + 100 * zoomCount, 2.0);
+        m.iterate(iterationMax, 2.0);
         return Palette.getColor(m);
     }
 
     public void doZoom(Point upperLeftCorner, Point lowerRightCorner){
-        ++zoomCount;
         // swap the click points if user clicked lower right corner before upper left corner
         if(upperLeftCorner.getX() > lowerRightCorner.getX() || upperLeftCorner.getY() > lowerRightCorner.getY()){
             Point tmp = lowerRightCorner;
@@ -73,12 +72,6 @@ public class MandelCanvas {
                mandelPoints[x][y] = new MandelPoint(realMinimum + x * delta, imaginaryMaximum - y * delta);
     }
 
-    // http://download.oracle.com/javase/tutorial/2d/images/index.html
-    public boolean saveImage(String fileName){
-        // todo
-        return true;
-    }
-
     public BufferedImage getAsBufferedImage(){
         BufferedImage img = new BufferedImage(countOfXPixels, countOfYPixels, BufferedImage.TYPE_INT_RGB);
         for(int x = 0; x < countOfXPixels; ++x)
@@ -86,5 +79,9 @@ public class MandelCanvas {
                 img.setRGB(x, y, getColorAtPoint(x, y).getRGB());
         return img;
     }
+
+    public int getIterationMax() { return iterationMax; }
+
+    public void increaseIterationMax(int increase){ iterationMax += increase; }
 
 }

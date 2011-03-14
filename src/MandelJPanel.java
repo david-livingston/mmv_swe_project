@@ -18,6 +18,8 @@ import java.awt.image.BufferedImage;
  */
 public class MandelJPanel extends JPanel implements MouseListener, MouseMotionListener {
 
+    private BufferedImage image;
+
     private final int xRes;
     private final int yRes;
     private final MandelCanvas canvas;
@@ -29,6 +31,7 @@ public class MandelJPanel extends JPanel implements MouseListener, MouseMotionLi
         this.xRes = xRes;
         this.yRes = yRes;
         canvas = new MandelCanvas(xRes, yRes);
+        image = canvas.getAsBufferedImage();
         addMouseListener(this);
         addMouseMotionListener(this);
     }
@@ -37,12 +40,8 @@ public class MandelJPanel extends JPanel implements MouseListener, MouseMotionLi
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
 
-        // draw image stored in MandelCanvas
-        for(int x = 0; x < xRes; ++x)
-            for(int y = 0; y < yRes; ++y){
-                g.setColor(canvas.getColorAtPoint(x, y));
-                g.drawLine(x,y,x,y);
-            }
+        // image = canvas.getAsBufferedImage();
+        g.drawImage(image, 0, 0, null);
 
         // draw zoom box
         if(null != firstClick){ // if zooming
@@ -68,6 +67,7 @@ public class MandelJPanel extends JPanel implements MouseListener, MouseMotionLi
     public void doZoom(Point upperLeftClick, Point lowerRightClick){
         System.out.println("Beginning Zoom @ UpperLeft(" + upperLeftClick.getX() + "," + upperLeftClick.getY() + "); LowerRight(" + lowerRightClick.getX() + "," + lowerRightClick.getY() + ")");
         canvas.doZoom(upperLeftClick, lowerRightClick);
+        image = canvas.getAsBufferedImage();
         repaint();
         System.out.println("Finished Zoom");
     }
