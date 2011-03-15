@@ -47,7 +47,7 @@ public class GUI extends JFrame {
         setContentPane(desktop);
         */
 
-        getContentPane().add(new MandelJPanel(xResolution, yResolution));
+        getContentPane().add(mJPanel);
         setSize(xResolution, yResolution);
         setVisible(true);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);

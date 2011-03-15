@@ -20,7 +20,7 @@ import java.awt.image.BufferedImage;
 class MandelJPanel extends JPanel implements MouseListener, MouseMotionListener {
 
     private BufferedImage image;
-    private final MandelCanvas canvas;
+    private final NavigationHistory navigation;
 
     private Point firstClick = null;
     private Point mouseLocation = null;
@@ -30,8 +30,8 @@ class MandelJPanel extends JPanel implements MouseListener, MouseMotionListener 
      * @param yRes size in pixels of vertical axis
      */
     public MandelJPanel(final int xRes, final int yRes){
-        canvas = new MandelCanvas(xRes, yRes);
-        image = canvas.getAsBufferedImage();
+        navigation = new NavigationHistory(xRes, yRes);
+        image = navigation.getCurrent().getAsBufferedImage();
         addMouseListener(this);
         addMouseMotionListener(this);
     }
@@ -91,10 +91,15 @@ class MandelJPanel extends JPanel implements MouseListener, MouseMotionListener 
      */
     void doZoom(Point upperLeftClick, Point lowerRightClick){
         System.out.println("Beginning Zoom @ UpperLeft(" + upperLeftClick.getX() + "," + upperLeftClick.getY() + "); LowerRight(" + lowerRightClick.getX() + "," + lowerRightClick.getY() + ")");
-        canvas.doZoom(upperLeftClick, lowerRightClick);
-        image = canvas.getAsBufferedImage();
+        navigation.zoom(upperLeftClick, lowerRightClick);
+        image = navigation.getCurrent().getAsBufferedImage();
         repaint();
         System.out.println("Finished Zoom");
+    }
+
+    public void refreshBufferedImage(){
+        image = navigation.getCurrent().getAsBufferedImage();
+        repaint();
     }
 
     /**
@@ -110,7 +115,11 @@ class MandelJPanel extends JPanel implements MouseListener, MouseMotionListener 
     }
 
     public BufferedImage getCurrentImage(){
-        return canvas.getAsBufferedImage();
+        return navigation.getCurrent().getAsBufferedImage();
+    }
+
+    public NavigationHistory getNavigationHistory(){
+        return navigation;
     }
 
     //-------------------------------------------

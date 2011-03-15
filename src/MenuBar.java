@@ -198,9 +198,18 @@ class MenuBar extends JMenuBar implements ActionListener {
         return true;
     }
 
-    private void navHome() {}
+    private void navHome() {
+        mJPanel.getNavigationHistory().home();
+        mJPanel.refreshBufferedImage();
+    }
 
-    private boolean navBack() { return false; }
+    private void navBack() {
+        mJPanel.getNavigationHistory().back();
+        mJPanel.refreshBufferedImage();
+    }
 
-    private boolean navForward() { return false; }
+    private void navForward() {
+        mJPanel.getNavigationHistory().forward();
+        mJPanel.refreshBufferedImage();
+    }
 }

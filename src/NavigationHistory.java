@@ -1,3 +1,6 @@
+import java.awt.*;
+import java.util.concurrent.LinkedBlockingDeque;
+
 /**
  * Created by IntelliJ IDEA.
  * User: Owner
@@ -5,8 +8,49 @@
  * Time: 4:24 AM
  * To change this template use File | Settings | File Templates.
  */
+
+// todo: tie this class to menubar and deactivate irrelevant options
+// todo: clean this up, javadoc
 public class NavigationHistory {
 
+    private final MandelCanvas home;
+    private MandelCanvas current;
+    private final LinkedBlockingDeque<MandelCanvas> previous = new LinkedBlockingDeque<MandelCanvas>();
+    private final LinkedBlockingDeque<MandelCanvas> next = new LinkedBlockingDeque<MandelCanvas>();
 
+    public NavigationHistory(final int xRes, final int yRes){
+        current = home = new MandelCanvasFactory(xRes, yRes).getHome();
+    }
+
+    public MandelCanvas getCurrent(){
+        return current;
+    }
+
+    public void zoom(Point upperLeftClick, Point lowerRightClick){
+        previous.push(current);
+        current = current.doZoom(upperLeftClick, lowerRightClick);
+        next.clear();
+    }
+
+    public void back(){
+        if(previous.isEmpty())
+            return;
+        next.push(current);
+        current = previous.pop();
+    }
+
+    public void home(){
+        if(home != current)
+            previous.push(current);
+        current = home;
+        next.clear();
+    }
+
+    public void forward(){
+        if(next.isEmpty())
+            return;
+        previous.push(current);
+        current = next.pop();
+    }
 
 }
