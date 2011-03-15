@@ -28,6 +28,9 @@ class MenuBar extends JMenuBar implements ActionListener {
     // TODO: add these to a set and throw Exception if duplicate; event handling code assumes
     // these will be unique; has to be a less hackish way to do this...
     final private static String MENU_ITEM_KEY_SAVE_AS = "Save Image As...";
+    final private static String MENU_ITEM_KEY_HOME = "Home";
+    final private static String MENU_ITEM_KEY_BACK = "Back";
+    final private static String MENU_ITEM_KEY_NEXT = "Next";
     final private static String MENU_ITEM_HELP_TOPICS = "Help Topics";
     final private static String MENU_ITEM_PROJECT_PAGE = "Project Homepage @ GitHub";
     final private static String MENU_ITEM_ABOUT = "About";
@@ -43,35 +46,40 @@ class MenuBar extends JMenuBar implements ActionListener {
 
         mJPanel = panel;
 
-        // make top level menus to go on menubar
-        JMenu fileMenu = new JMenu("File");
-        JMenu helpMenu = new JMenu("Help");
+        add(makeMenu("File",
+            MENU_ITEM_KEY_SAVE_AS
+        ));
+        // todo: color scheme
+        // todo: resolution
+        // todo: advanced options
+        add(makeMenu("Navigation",
+            MENU_ITEM_KEY_HOME,
+            MENU_ITEM_KEY_BACK,
+            MENU_ITEM_KEY_NEXT
+        ));
+        add(makeMenu("Help",
+            MENU_ITEM_HELP_TOPICS,
+            MENU_ITEM_PROJECT_PAGE,
+            MENU_ITEM_ABOUT
+        ));
+    }
 
-        // make dropdown menu elements which will be associated with top level menus
-        JMenuItem saveImage = new JMenuItem(MENU_ITEM_KEY_SAVE_AS);
-        JMenuItem helpTopics = new JMenuItem(MENU_ITEM_HELP_TOPICS);
-        JMenuItem projectInfo = new JMenuItem(MENU_ITEM_PROJECT_PAGE);
-        JMenuItem about = new JMenuItem(MENU_ITEM_ABOUT);
-
-        // register event listeners for dropdown menu elements
-        saveImage.addActionListener(this);
-        helpTopics.addActionListener(this);
-        projectInfo.addActionListener(this);
-        about.addActionListener(this);
-
-        // add drop down menu elements to their top level menu
-        fileMenu.add(saveImage);
-        helpMenu.add(helpTopics);
-        helpMenu.add(projectInfo);
-        helpMenu.add(about);
-
-        // finally add top level menus to the menubar (this) // todo -- finish menus
-        add(fileMenu);
-        /* STUB */ add(new JMenu("Navigation"));
-        /* STUB */ add(new JMenu("Color Scheme"));
-        /* STUB */ add(new JMenu("Resolution"));
-        /* STUB */ add(new JMenu("Advanced Options"));
-        add(helpMenu);
+    /**
+     * Makes a menu with entries keyed on the var-arg string array, associates
+     * each menu item with this object as an action listener
+     *
+     * @param topLevelName the menu name displayed for the group on the menubar
+     * @param entries the individual menu elements
+     * @return a menu ready to be added to the menu bar
+     */
+    private JMenu makeMenu(final String topLevelName, final String... entries){
+        final JMenu menu = new JMenu(topLevelName);
+        for(String entry : entries){
+            JMenuItem item = new JMenuItem(entry);
+            item.addActionListener(this);
+            menu.add(item);
+        }
+        return menu;
     }
 
     /**
@@ -80,10 +88,25 @@ class MenuBar extends JMenuBar implements ActionListener {
      * @param e
      */
     public void actionPerformed(ActionEvent e){
+        // why doesn't java have case stmts on Strings yet?
         // File | Save Image As...
         if(matches(e, MENU_ITEM_KEY_SAVE_AS)){
             saveImage("mandel", "png");
         }
+
+        // Navigation | Home
+        else if (matches(e, MENU_ITEM_KEY_HOME)) {
+            navHome();
+        }
+        // Navigation | Back
+        else if (matches(e, MENU_ITEM_KEY_BACK)) {
+            navBack();
+        }
+        // Navigation | Next
+        else if (matches(e, MENU_ITEM_KEY_NEXT)) {
+            navForward();
+        }
+
         // Help | Help Topics
         else if (matches(e, MENU_ITEM_HELP_TOPICS)) {
             openWebPage(URL_HELP_TOPICS);
@@ -165,7 +188,7 @@ class MenuBar extends JMenuBar implements ActionListener {
      * @param url location of the webpage to open
      * @return whether the page was opened
      */
-    boolean openWebPage(final String url){
+    public boolean openWebPage(final String url){
         try {
             java.awt.Desktop.getDesktop().browse(java.net.URI.create(url));
         } catch (Exception e){
@@ -174,4 +197,10 @@ class MenuBar extends JMenuBar implements ActionListener {
         }
         return true;
     }
+
+    private void navHome() {}
+
+    private boolean navBack() { return false; }
+
+    private boolean navForward() { return false; }
 }
