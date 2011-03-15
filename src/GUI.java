@@ -27,32 +27,32 @@ public class GUI extends JFrame {
 
     private final MandelJPanel mJPanel;
 
-    // JDesktopPane desktop;
+    JDesktopPane desktop = new JDesktopPane();
 
     /**
      * Constructs the GUI which has the effect of launching the program.
      */
     private GUI() {
-
+        // todo: add memory stats to status bar, got a out of heap space exception once -- related to navigation history?
+        setTitle("MMV: Multithreaded Mandelbrot Viewer");
         mJPanel = new MandelJPanel(xResolution, yResolution);
-
         setJMenuBar(new MenuBar(mJPanel));
-        /*
-        desktop = new JDesktopPane();
+
         JInternalFrame i = new JInternalFrame("", true, true, true, true);
         i.setVisible(true);
-        i.setSize(300,300);
+        i.setSize(xResolution, yResolution);
         desktop.add(i);
         desktop.setVisible(true);
         setContentPane(desktop);
-        */
+        i.add(mJPanel);
+        i.setTitle("Render Window");
 
-        getContentPane().add(mJPanel);
-        setSize(xResolution, yResolution);
+        //getContentPane().add(mJPanel);
+        setSize(xResolution + 150, yResolution + 100);
         setVisible(true);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         StatusBar statusBar = new StatusBar();
-        getContentPane().add(statusBar, java.awt.BorderLayout.SOUTH);
+        i.add(statusBar, java.awt.BorderLayout.SOUTH);
     }
 
     /**
