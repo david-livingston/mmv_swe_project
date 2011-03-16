@@ -136,6 +136,19 @@ class MandelCanvas {
         return img;
     }
 
+    public Object[][] getAttributeValues(){
+        return new Object[][] {
+            { "real (x) min: ", realMinimum },
+            { "real (x) max: ", realMaximum },
+            { "imaginary (y) min: ", imaginaryMinimum },
+            { "imaginary (y) max: ", imaginaryMaximum },
+            { "delta: ", delta },
+            { "iteration limit: ", iterationMax },
+            { "logical x resolution: ", countOfXPixels },
+            { "logical y resolution: ", countOfYPixels }
+        };
+    }
+
     /**
      * todo: recalculate the MandelPoint s to match new iteration limit
      * todo: tie this to the gui somewhere

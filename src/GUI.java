@@ -1,4 +1,5 @@
 import javax.swing.*;
+import javax.swing.table.TableModel;
 
 /**
  * Created by IntelliJ IDEA.
@@ -38,21 +39,32 @@ public class GUI extends JFrame {
         mJPanel = new MandelJPanel(xResolution, yResolution);
         setJMenuBar(new MenuBar(mJPanel));
 
-        JInternalFrame i = new JInternalFrame("", true, true, true, true);
-        i.setVisible(true);
-        i.setSize(xResolution, yResolution);
-        desktop.add(i);
+        JInternalFrame renderInternalFrame = new JInternalFrame("Render Window", true, true, true, true);
+        renderInternalFrame.setVisible(true);
+        renderInternalFrame.setSize(xResolution, yResolution);
+        desktop.add(renderInternalFrame);
         desktop.setVisible(true);
         setContentPane(desktop);
-        i.add(mJPanel);
-        i.setTitle("Render Window");
+        renderInternalFrame.add(mJPanel);
 
-        //getContentPane().add(mJPanel);
-        setSize(xResolution + 150, yResolution + 100);
+        setSize(xResolution + 375, yResolution + 75);
         setVisible(true);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         StatusBar statusBar = new StatusBar();
-        i.add(statusBar, java.awt.BorderLayout.SOUTH);
+        renderInternalFrame.add(statusBar, java.awt.BorderLayout.SOUTH);
+
+        // todo: clean up all this layout code
+        // todo: make table not editable
+        // todo: more stats in table
+        // todo: make table update when the render region changes
+        JInternalFrame attributeTableInternalFrame = new JInternalFrame("Attribute Values", true, true, true, true);
+        attributeTableInternalFrame.setVisible(true);
+        attributeTableInternalFrame.setSize(350, yResolution);
+        String[] columnNames = { "Attribute", "Value" };
+        Object[][] data = mJPanel.getAttributeValues();
+        attributeTableInternalFrame.add(new JTable(data, columnNames));
+        attributeTableInternalFrame.setLocation(xResolution + 10, 5);
+        desktop.add(attributeTableInternalFrame);
     }
 
     /**

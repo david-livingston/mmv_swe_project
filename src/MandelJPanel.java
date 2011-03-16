@@ -122,6 +122,10 @@ class MandelJPanel extends JPanel implements MouseListener, MouseMotionListener 
         return navigation;
     }
 
+    public Object[][] getAttributeValues(){
+        return navigation.getCurrent().getAttributeValues();
+    }
+
     //-------------------------------------------
     public void mouseEntered(MouseEvent e) {}
     public void mouseExited(MouseEvent e) {}
