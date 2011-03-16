@@ -1,5 +1,3 @@
 Todo:
 * packages
-* javadoc
-* clean up the code in general
-* dataflows
+* clean up the code in general (again)
