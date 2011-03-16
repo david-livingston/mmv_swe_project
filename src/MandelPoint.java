@@ -16,6 +16,8 @@ public class MandelPoint {
     public final ComplexNumber startingLocation;
     public ComplexNumber currentLocation;
     public int iterationCount = 0;
+
+    // todo: escpaed is a predicate method, base on magnitude not iterations, iterations must be flexible if this is to be resumed when iterationMax increases
     public boolean escaped = false;
 
     public MandelPoint(double real, double imaginary){
