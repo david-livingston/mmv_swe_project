@@ -27,9 +27,15 @@ public class NavigationHistory {
     }
 
     public void zoom(Point upperLeftClick, Point lowerRightClick){
-        previous.push(current);
-        current = current.doZoom(upperLeftClick, lowerRightClick);
         next.clear();
+        previous.push(current);
+        try {
+            current = current.doZoom(upperLeftClick, lowerRightClick);
+        } catch (OutOfMemoryError ouch) {
+            previous.clear();
+            System.err.println("Navigation history abandoned b/c heap space exceeded.");
+            current = current.doZoom(upperLeftClick, lowerRightClick);
+        }
     }
 
     public void back(){
