@@ -6,4 +6,22 @@ New features since last meeting:
     Save Image
     Help
     Navigation
+    Use JDesktopPane for multi-windowed GUI
+    Location thumbnail window (work in progress)
+    Attribute Value spreadsheet window (work in progress)
     JavaDoc & code quality improvements
+
+Essential missing features:
+    multithreading
+    arbitrary precision
+    HD rendering
+    custom color palette
+    increase itermationMax with zoom (or make user controllable)
+
+Possible other features:
+    custom save file
+    installer or java webstart
+
+IDE Suggestion:
+    IDEA's IntelliJ now (v10+, free) has github integration making it easy to grab this project
+    The source code for this project makes extensive use of IntelliJ's 'TODO' note tagging: 40+ items of varying importance and difficulty 
