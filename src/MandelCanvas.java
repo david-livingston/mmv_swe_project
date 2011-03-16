@@ -17,7 +17,7 @@ import java.awt.image.BufferedImage;
  *
  * Most of the associated GUI code for this picture is in MandelJPanel.java.
  */
-class MandelCanvas {
+public class MandelCanvas {
 
     // describes the region of the Mandelbrot set to be displayed
     // todo: improve region program initially renders

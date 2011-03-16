@@ -18,7 +18,7 @@ import java.io.File;
 /**
  * The main menu bar which will be added to the main GUI.
  */
-class MenuBar extends JMenuBar implements ActionListener {
+public class MenuBar extends JMenuBar implements ActionListener {
 
     // TODO: installer, store these pages locally
     final private static String URL_HELP_TOPICS = "http://www.davidlivingston.info/mmv/help-topics.html";

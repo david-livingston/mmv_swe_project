@@ -17,7 +17,7 @@ import java.awt.image.BufferedImage;
  * GUI code necessary to connect the JFrame application (GUI.java) and its menubar
  * (MenuBar.java) to the picture (MandelCanvas.java).
  */
-class MandelJPanel extends JPanel implements MouseListener, MouseMotionListener {
+public class MandelJPanel extends JPanel implements MouseListener, MouseMotionListener {
 
     private BufferedImage image;
     private final NavigationHistory navigation;

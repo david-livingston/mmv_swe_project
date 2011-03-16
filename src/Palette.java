@@ -23,7 +23,7 @@ import java.awt.*;
  * RGB assumes each arg will be (0...255) inclusive, code doesn't check for this;
  * increasing the iteration max elsewhere in the code could break this.
  */
-class Palette {
+public class Palette {
 
     /**
      * Maps a Mandelbrot point to the color it should be displayed as on
