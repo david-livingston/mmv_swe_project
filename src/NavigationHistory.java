@@ -29,6 +29,7 @@ public class NavigationHistory {
     public void zoom(Point upperLeftClick, Point lowerRightClick){
         next.clear();
         previous.push(current);
+        // todo: doesn't always work, might have to avoid pushing the pixel data & only push the coordinates describing the zoom region
         try {
             current = current.doZoom(upperLeftClick, lowerRightClick);
         } catch (OutOfMemoryError ouch) {

@@ -59,12 +59,21 @@ public class GUI extends JFrame {
         // todo: make table update when the render region changes
         JInternalFrame attributeTableInternalFrame = new JInternalFrame("Attribute Values", true, true, true, true);
         attributeTableInternalFrame.setVisible(true);
-        attributeTableInternalFrame.setSize(350, yResolution);
+        attributeTableInternalFrame.setSize(350, yResolution/2 + 50);
         String[] columnNames = { "Attribute", "Value" };
         Object[][] data = mJPanel.getAttributeValues();
         attributeTableInternalFrame.add(new JTable(data, columnNames));
         attributeTableInternalFrame.setLocation(xResolution + 10, 5);
         desktop.add(attributeTableInternalFrame);
+
+        // todo: initial crosshairs aren't perfectly positioned
+        // todo: make the crosshairs move as different zoom regions are selected
+        JInternalFrame locationThumbnailInternalFrame = new JInternalFrame("Zoom Location", false, true, false, true);
+        locationThumbnailInternalFrame.setVisible(true);
+        locationThumbnailInternalFrame.setSize(225, 200);
+        locationThumbnailInternalFrame.add(new LocationThumbnail(212, 175));
+        locationThumbnailInternalFrame.setLocation(xResolution + 15, yResolution/2 + 75);
+        desktop.add(locationThumbnailInternalFrame);
     }
 
     /**
