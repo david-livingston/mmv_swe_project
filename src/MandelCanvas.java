@@ -38,7 +38,6 @@ public class MandelCanvas {
     private final MandelPoint[][] mandelPoints;
 
     // todo: increase iterationMax as picture is zoomed
-    // todo: give user control over iterationMax
     private int iterationMax = 100;
 
     public MandelCanvas(final double realMinimum, final double imaginaryMaximum, final double realMaximum,
@@ -83,7 +82,6 @@ public class MandelCanvas {
      * todo: spawn new threads to do this (here might not be the best place)
      * todo: fix recalculating region to maintain aspect ratio
      * todo: refactor param names
-     * todo: remove println, use status bar, describe new region
      *
      * @param upperLeftCorner first click of user (may not actually be upperleftcorner)
      * @param lowerRightCorner second click of user

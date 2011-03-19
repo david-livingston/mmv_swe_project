@@ -13,8 +13,6 @@ import javax.swing.table.TableModel;
  * This is both the class that launches the program and the container
  * for all the other GUI elements; seems appropriate in an event driven
  * program this small.
- *
- * TODO: use JDesktopPane
  */
 public class GUI extends JFrame {
 
