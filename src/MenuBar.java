@@ -1,5 +1,8 @@
+import com.sun.xml.internal.bind.v2.runtime.unmarshaller.Intercepter;
+
 import javax.imageio.ImageIO;
 import javax.swing.*;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
@@ -31,6 +34,7 @@ public class MenuBar extends JMenuBar implements ActionListener {
     final private static String MENU_ITEM_KEY_HOME = "Home";
     final private static String MENU_ITEM_KEY_BACK = "Back";
     final private static String MENU_ITEM_KEY_NEXT = "Next";
+    final private static String MENU_ITEM_CHANGE_MAX_ITERATIONS = "Change Max Iterations";
     final private static String MENU_ITEM_HELP_TOPICS = "Help Topics";
     final private static String MENU_ITEM_PROJECT_PAGE = "Project Homepage @ GitHub";
     final private static String MENU_ITEM_ABOUT = "About";
@@ -51,11 +55,13 @@ public class MenuBar extends JMenuBar implements ActionListener {
         ));
         // todo: color scheme
         // todo: resolution
-        // todo: advanced options
         add(makeMenu("Navigation",
             MENU_ITEM_KEY_HOME,
             MENU_ITEM_KEY_BACK,
             MENU_ITEM_KEY_NEXT
+        ));
+        add(makeMenu("Advanced Options",
+            MENU_ITEM_CHANGE_MAX_ITERATIONS
         ));
         add(makeMenu("Help",
             MENU_ITEM_HELP_TOPICS,
@@ -105,6 +111,11 @@ public class MenuBar extends JMenuBar implements ActionListener {
         // Navigation | Next
         else if (matches(e, MENU_ITEM_KEY_NEXT)) {
             navForward();
+        }
+
+        // Advanced Options | Change Max Iterations
+        else if (matches(e, MENU_ITEM_CHANGE_MAX_ITERATIONS)) {
+            changeMaxIterations();
         }
 
         // Help | Help Topics
@@ -212,4 +223,30 @@ public class MenuBar extends JMenuBar implements ActionListener {
         mJPanel.getNavigationHistory().forward();
         mJPanel.refreshBufferedImage();
     }
+
+    // todo: decreasing maxIterations has no effect; not sure whether to warn user it was ignored or actually decrease resolution?
+    private boolean changeMaxIterations(){
+        final int iterMax = mJPanel.getNavigationHistory().getCurrent().getIterationMax();
+        final String input = JOptionPane.showInputDialog(mJPanel,
+            "Enter new iteration max (currently = " + iterMax + "): "
+        );
+        if(null == input) // user cancelled
+            return true;
+        int newIterMax;
+        try {
+            newIterMax = Integer.parseInt(input);
+            if(newIterMax < 0){
+                System.err.println("iterMax can't be negative, input was: " + input);
+                return false;
+            }
+        } catch (Exception e) {
+            System.err.println("could not parse input as integer: " + input);
+            return false;
+        }
+        mJPanel.getNavigationHistory().getCurrent().setIterationMax(newIterMax);
+        mJPanel.refreshBufferedImage();
+        mJPanel.updateRenderStats();
+        return true;
+    }
+
 }

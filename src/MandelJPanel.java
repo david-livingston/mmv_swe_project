@@ -1,4 +1,6 @@
 import javax.swing.*;
+import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableModel;
 import java.awt.*;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
@@ -24,6 +26,10 @@ public class MandelJPanel extends JPanel implements MouseListener, MouseMotionLi
 
     private Point firstClick = null;
     private Point mouseLocation = null;
+
+    private JInternalFrame thumbNail = null;
+    private JTable renderStats = null;
+    private StatusBar statusBar = null;
 
     /**
      * @param xRes size in pixels of horizontal axis
@@ -94,7 +100,13 @@ public class MandelJPanel extends JPanel implements MouseListener, MouseMotionLi
         navigation.zoom(upperLeftClick, lowerRightClick);
         image = navigation.getCurrent().getAsBufferedImage();
         repaint();
+        thumbNail.setVisible(true);
+        updateRenderStats();
         System.out.println("Finished Zoom");
+    }
+
+    public void updateRenderStats(){
+        renderStats.setModel(new DefaultTableModel(navigation.getCurrent().getAttributeValues(), new Object[]{ "Attribute", "Value" } ));
     }
 
     public void refreshBufferedImage(){
@@ -131,4 +143,16 @@ public class MandelJPanel extends JPanel implements MouseListener, MouseMotionLi
     public void mouseExited(MouseEvent e) {}
     public void mouseReleased(MouseEvent e) {}
     public void mouseClicked(MouseEvent e) {}
+
+    public void associateThumbnail(JInternalFrame locationThumbnailInternalFrame) {
+        thumbNail = locationThumbnailInternalFrame;
+    }
+
+    public void associateRenderStats(JTable renderStats) {
+        this.renderStats = renderStats;
+    }
+
+    public void associateStatusBar(StatusBar statusBar) {
+        this.statusBar = statusBar;
+    }
 }

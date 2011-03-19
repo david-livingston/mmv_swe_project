@@ -38,15 +38,15 @@ public class Palette {
      */
     public static Color getColor(MandelPoint m){
 
-        if(!m.escaped)
+        if(!m.didEscape())
             return Color.BLACK;
         else{
-            int i = m.iterationCount;
+            int i = m.getIterationCount();
             
             return new Color(
-                (i * i) % 255,
-                (i * i + i) % 255,
-                (i + i) % 255
+                sanitize((i * i) % 255),
+                sanitize((i * i + i) % 255),
+                sanitize((i + i) % 255)
             );
             // another simple coloring scheme:
             // doesn't check to make sure each r,g,b is b/w 0 & 255
@@ -57,5 +57,13 @@ public class Palette {
                 255 - i * 2
             );*/
         }
+    }
+
+    public static int sanitize(int original){
+        if(original < 0)
+            original *= -1;
+        if(original > 255)
+            original = 255;
+        return original;
     }
 }

@@ -13,14 +13,14 @@
  */
 public class MandelPoint {
 
-    public final ComplexNumber startingLocation;
-    public ComplexNumber currentLocation;
-    public int iterationCount = 0;
+    private final ComplexNumber startingLocation;
+    private ComplexNumber currentLocation;
+    private int iterationCount = 0;
+    private int lastIterationLimit = 0;
+    private final double squaredMaxDistance = 4.0;
+    private boolean escaped = false;
 
-    // todo: escpaed is a predicate method, base on magnitude not iterations, iterations must be flexible if this is to be resumed when iterationMax increases
-    public boolean escaped = false;
-
-    public MandelPoint(double real, double imaginary){
+    public MandelPoint(final double real, final double imaginary){
         startingLocation = new ComplexNumber(real, imaginary);
         currentLocation = startingLocation;
     }
@@ -29,17 +29,20 @@ public class MandelPoint {
     // it labels a complex point as either a prisoner or escapee of the mandelbrot set
     // if escapee it also indicates how long it took for the point to escape
     // see wikipedia article for details: http://en.wikipedia.org/wiki/Mandelbrot_set#Escape_time_algorithm
-    public void iterate(int iterationLimit, double escape){
-        if(escaped) return;
-
-        final double sqrEscape = escape * escape;
+    public void iterate(final int iterationLimit){
+        if(escaped)
+            return;
 
         while(iterationCount++ < iterationLimit){
             currentLocation = ComplexNumber.add(startingLocation, ComplexNumber.square(currentLocation));
-            if(currentLocation.sqrMagnitude() > sqrEscape){
+            if(currentLocation.sqrMagnitude() > squaredMaxDistance){
                 escaped = true;
                 break;
             }
         }
     }
+
+    public boolean didEscape() { return escaped; }
+
+    public int getIterationCount() { return iterationCount; }
 }

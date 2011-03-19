@@ -71,7 +71,7 @@ public class MandelCanvas {
      */
     Color getColorAtPoint(final int x, final int y){
         final MandelPoint m = mandelPoints[x][y];
-        m.iterate(iterationMax, 2.0);
+        m.iterate(iterationMax);
         return Palette.getColor(m);
     }
 
@@ -149,15 +149,12 @@ public class MandelCanvas {
         };
     }
 
-    /**
-     * todo: recalculate the MandelPoint s to match new iteration limit
-     * todo: tie this to the gui somewhere
-     *
-     * @param increase the number to add to the current iterationLimit (the
-     *  bailout number of iterations for determining if a point is a member of
-     *  the prisoner set).
-     */
-    public void increaseIterationMax(int increase){
-        iterationMax += increase;
+    public int getIterationMax() {
+        return iterationMax;
     }
+
+    public void setIterationMax(int iterationMax) {
+        this.iterationMax = iterationMax;
+    }
+
 }

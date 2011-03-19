@@ -28,7 +28,9 @@ public class GUI extends JFrame {
 
     private final MandelJPanel mJPanel;
 
-    JDesktopPane desktop = new JDesktopPane();
+    private final JDesktopPane desktop = new JDesktopPane();
+
+    private final JTable renderStats;
 
     /**
      * Constructs the GUI which has the effect of launching the program.
@@ -52,28 +54,31 @@ public class GUI extends JFrame {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         StatusBar statusBar = new StatusBar();
         renderInternalFrame.add(statusBar, java.awt.BorderLayout.SOUTH);
+        mJPanel.associateStatusBar(statusBar);
 
         // todo: clean up all this layout code
+        // todo: make table not display delta w/ scientific notation
         // todo: make table not editable
         // todo: more stats in table
-        // todo: make table update when the render region changes
         JInternalFrame attributeTableInternalFrame = new JInternalFrame("Attribute Values", true, true, true, true);
         attributeTableInternalFrame.setVisible(true);
         attributeTableInternalFrame.setSize(350, yResolution/2 + 50);
         String[] columnNames = { "Attribute", "Value" };
         Object[][] data = mJPanel.getAttributeValues();
-        attributeTableInternalFrame.add(new JTable(data, columnNames));
+        renderStats = new JTable(data, columnNames);
+        attributeTableInternalFrame.add(renderStats);
         attributeTableInternalFrame.setLocation(xResolution + 10, 5);
         desktop.add(attributeTableInternalFrame);
+        mJPanel.associateRenderStats(renderStats);
 
-        // todo: initial crosshairs aren't perfectly positioned
         // todo: make the crosshairs move as different zoom regions are selected
         JInternalFrame locationThumbnailInternalFrame = new JInternalFrame("Zoom Location", false, true, false, true);
-        locationThumbnailInternalFrame.setVisible(true);
+        locationThumbnailInternalFrame.setVisible(false);
         locationThumbnailInternalFrame.setSize(225, 200);
         locationThumbnailInternalFrame.add(new LocationThumbnail(212, 175));
         locationThumbnailInternalFrame.setLocation(xResolution + 15, yResolution/2 + 75);
         desktop.add(locationThumbnailInternalFrame);
+        mJPanel.associateThumbnail(locationThumbnailInternalFrame);
     }
 
     /**
