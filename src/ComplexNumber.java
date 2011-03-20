@@ -6,6 +6,8 @@
  * To change this template use File | Settings | File Templates.
  */
 
+import java.io.Serializable;
+
 /**
  * This class represents an immutable complex point (the sum of a real number
  * and the product of another real number and the square root of -1, i.e.
@@ -17,7 +19,7 @@
  * the overhead; performance should probably be tested to see how much of this
  * the compiler optimizes away.
  */
-public class ComplexNumber {
+public class ComplexNumber implements Serializable {
 
     private final double real;
     private final double imaginaryCoefficient;

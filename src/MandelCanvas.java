@@ -1,5 +1,6 @@
 import java.awt.*;
 import java.awt.image.BufferedImage;
+import java.io.Serializable;
 
 /**
  * Created by IntelliJ IDEA.
@@ -17,7 +18,7 @@ import java.awt.image.BufferedImage;
  *
  * Most of the associated GUI code for this picture is in MandelJPanel.java.
  */
-public class MandelCanvas {
+public class MandelCanvas  implements Serializable {
 
     // describes the region of the Mandelbrot set to be displayed
     // todo: improve region program initially renders

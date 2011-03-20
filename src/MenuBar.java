@@ -7,6 +7,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.io.FileOutputStream;
+import java.io.ObjectOutputStream;
 
 /**
  * Created by IntelliJ IDEA.
@@ -31,6 +33,7 @@ public class MenuBar extends JMenuBar implements ActionListener {
     // TODO: add these to a set and throw Exception if duplicate; event handling code assumes
     // these will be unique; has to be a less hackish way to do this...
     final private static String MENU_ITEM_KEY_SAVE_AS = "Save Image As...";
+    final private static String MENU_ITEM_KEY_SAVE_STATE_AS = "Save State As...";
     final private static String MENU_ITEM_KEY_HOME = "Home";
     final private static String MENU_ITEM_KEY_BACK = "Back";
     final private static String MENU_ITEM_KEY_NEXT = "Next";
@@ -51,7 +54,8 @@ public class MenuBar extends JMenuBar implements ActionListener {
         mJPanel = panel;
 
         add(makeMenu("File",
-            MENU_ITEM_KEY_SAVE_AS
+            MENU_ITEM_KEY_SAVE_AS,
+            MENU_ITEM_KEY_SAVE_STATE_AS
         ));
         // todo: color scheme
         // todo: resolution
@@ -99,6 +103,10 @@ public class MenuBar extends JMenuBar implements ActionListener {
         if(matches(e, MENU_ITEM_KEY_SAVE_AS)){
             saveImage("mandel", "png");
         }
+        // File | Save State As
+        if(matches(e, MENU_ITEM_KEY_SAVE_STATE_AS)){
+            saveState("mandel", "mmv");
+        }
 
         // Navigation | Home
         else if (matches(e, MENU_ITEM_KEY_HOME)) {
@@ -134,6 +142,33 @@ public class MenuBar extends JMenuBar implements ActionListener {
         else {
             System.err.println("Feature not implemented: " + e.getActionCommand());
         }
+    }
+
+    private boolean saveState(String defaultName, String defaultExtension) {
+        try {
+            // figure out where to save the image
+            // TODO: set file filters
+            // TODO: make dialog open in My Pictures
+            final JFileChooser jfc = new JFileChooser();
+            jfc.setSelectedFile(new File(defaultName + "." + defaultExtension));
+            final int retVal = jfc.showSaveDialog(mJPanel);
+
+            if(JFileChooser.APPROVE_OPTION != retVal){
+                return false; // user cancelled
+            }
+
+            final File saveFile = jfc.getSelectedFile();
+
+            // http://java.sun.com/developer/technicalArticles/Programming/serialization/
+            FileOutputStream fos = new FileOutputStream(saveFile);
+            ObjectOutputStream out = new ObjectOutputStream(fos);
+            out.writeObject(mJPanel.getNavigationHistory().getCurrent());
+            out.close();
+        } catch (Exception ioe) {
+            ioe.printStackTrace();
+            return false;
+        }
+        return true;
     }
 
     /**

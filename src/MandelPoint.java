@@ -6,12 +6,14 @@
  * To change this template use File | Settings | File Templates.
  */
 
+import java.io.Serializable;
+
 /**
  * This class represents a complex point that is being iterated through the Mandelbrot
  * process. Initially the constant (starting) location and current location are the same.
  * The current location changes once per each iteration.
  */
-public class MandelPoint {
+public class MandelPoint implements Serializable {
 
     private final ComplexNumber startingLocation;
     private ComplexNumber currentLocation;
