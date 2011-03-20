@@ -60,4 +60,9 @@ public class NavigationHistory {
         current = next.pop();
     }
 
+    public void setCurrent(MandelCanvas canvas) {
+        previous.push(current);
+        current = canvas;
+        next.clear();
+    }
 }
