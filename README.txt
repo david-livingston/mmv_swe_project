@@ -8,7 +8,9 @@ New features since last meeting:
     Navigation
     Use JDesktopPane for multi-windowed GUI
     Location thumbnail window (work in progress)
-    Attribute Value spreadsheet window (work in progress)
+    Attribute Value spreadsheet window
+    Custom Save File (saving done; need to implement opening)
+    Allow user to increase maximum number of iterations
     JavaDoc & code quality improvements
 
 Essential missing features:
@@ -16,11 +18,10 @@ Essential missing features:
     arbitrary precision
     HD rendering
     custom color palette
-    increase itermationMax with zoom (or make user controllable)
 
 Possible other features:
-    custom save file
     installer or java webstart
+    intelligently increase max iterations when zooming
 
 IDE Suggestion:
     IDEA's IntelliJ now (v10+, free) has github integration making it easy to grab this project
