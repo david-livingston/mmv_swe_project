@@ -104,7 +104,7 @@ public class MenuBar extends JMenuBar implements ActionListener {
             saveImage("mandel", "png");
         }
         // File | Save State As
-        if(matches(e, MENU_ITEM_KEY_SAVE_STATE_AS)){
+        else if(matches(e, MENU_ITEM_KEY_SAVE_STATE_AS)){
             saveState("mandel", "mmv");
         }
 

@@ -12,21 +12,26 @@ import java.awt.image.BufferedImage;
 public class LocationThumbnail extends JPanel {
 
     private final BufferedImage image;
-    private Point focus;
+    private Point focus = null;
 
 
     public LocationThumbnail(int xResolution, int yResolution){
         image = new MandelCanvasFactory(xResolution, yResolution).getHome().getAsBufferedImage();
-        focus = new Point(xResolution/2, yResolution/2);
     }
 
-    public void setFocus(Point newFocus){ focus = newFocus; }
+    public void setFocus(double real, double imag){
+        // todo: figure out where this point maps on the zoomed out view
+        focus = new Point(50, 50);
+    }
 
     @Override
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
         // todo: increase opacity
         g.drawImage(image, 0, 0, null);
+
+        if(null == focus)
+            return;
 
         // todo: draw box around zoom region if it would be visible
         g.setColor(Color.WHITE);
