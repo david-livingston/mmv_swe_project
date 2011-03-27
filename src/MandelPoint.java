@@ -47,4 +47,8 @@ public class MandelPoint implements Serializable {
     public boolean didEscape() { return escaped; }
 
     public int getIterationCount() { return iterationCount; }
+
+    public ComplexNumber getCurrentLocation(){
+        return currentLocation;
+    }
 }

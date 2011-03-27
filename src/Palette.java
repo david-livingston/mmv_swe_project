@@ -42,11 +42,14 @@ public class Palette {
             return Color.BLACK;
         else{
             int i = m.getIterationCount();
-            
+
+            //http://linas.org/art-gallery/escape/smooth.html
+            double renormalized_i = i + 1 - Math.log(Math.log(m.getCurrentLocation().magnitude()))/Math.log(2.0);
+
             return new Color(
-                sanitize((i * i) % 255),
-                sanitize((i * i + i) % 255),
-                sanitize((i + i) % 255)
+                (float) sanitize((renormalized_i * renormalized_i) % 255.0),
+                (float) sanitize((renormalized_i * renormalized_i + renormalized_i) % 255.0),
+                (float) sanitize((renormalized_i + renormalized_i) % 255.0)
             );
             // another simple coloring scheme:
             // doesn't check to make sure each r,g,b is b/w 0 & 255
@@ -65,5 +68,13 @@ public class Palette {
         if(original > 255)
             original = 255;
         return original;
+    }
+
+    public static double sanitize(double original){
+        if(original < 0.0)
+            original *= -1;
+        if(original > 255.0)
+            original = 255.0;
+        return original / 255.0;
     }
 }
