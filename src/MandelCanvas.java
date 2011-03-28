@@ -96,14 +96,16 @@ public class MandelCanvas  implements Serializable {
             upperLeftCorner = tmp;
         }
         // translate first click into a complex number
-        final double next_realMinimum = realMinimum + upperLeftCorner.getX() * delta;
-        final double next_imaginaryMaximum = imaginaryMaximum - upperLeftCorner.getY() * delta;
+        final double[] translated_upperLeftCorner = pointToCoordinates(upperLeftCorner);
+        final double next_realMinimum = translated_upperLeftCorner[0];
+        final double next_imaginaryMaximum = translated_upperLeftCorner[1];
         // translate second click into a complex number
-        final double next_realMaximum = realMinimum + lowerRightCorner.getX() * delta;
-        final double next_imaginaryMinimum = imaginaryMaximum - lowerRightCorner.getY() * delta;
+        final double[] translated_lowerRightCorner = pointToCoordinates(lowerRightCorner);
+        final double next_realMaximum = translated_lowerRightCorner[0];
+        final double next_imaginaryMinimum = translated_lowerRightCorner[1];
         // delta - the complex distance between pixels - must be recalculated because we're zooming in
         // having real & imaginary axis share a delta keeps the aspect ratio correct
-        final double next_delta = ((realMaximum - realMinimum)/countOfXPixels + (imaginaryMaximum - imaginaryMinimum)/countOfYPixels)/2.0;
+        final double next_delta = ((next_realMaximum - next_realMinimum)/countOfXPixels + (next_imaginaryMaximum - next_imaginaryMinimum)/countOfYPixels)/2.0;
 
         return new MandelCanvas(
             next_realMinimum,
@@ -114,6 +116,13 @@ public class MandelCanvas  implements Serializable {
             countOfXPixels,
             countOfYPixels
         );
+    }
+
+    public double[] pointToCoordinates(Point p){
+        return new double[] {
+            realMinimum + p.getX() * delta,
+            imaginaryMaximum - p.getY() * delta
+        };
     }
 
     /**
