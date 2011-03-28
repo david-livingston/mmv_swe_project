@@ -12,16 +12,24 @@ import java.awt.image.BufferedImage;
 public class LocationThumbnail extends JPanel {
 
     private final BufferedImage image;
-    private Point focus = null;
+    private IntegerRectangle focus = null;
+    private MandelCanvas canvas;
+    private JInternalFrame thumbNailFrame;
 
 
-    public LocationThumbnail(int xResolution, int yResolution){
-        image = new MandelCanvasFactory(xResolution, yResolution).getHome().getAsBufferedImage();
+    public LocationThumbnail(int xResolution, int yResolution, JInternalFrame thumbNailFrame){
+        this.thumbNailFrame = thumbNailFrame;
+        canvas = new MandelCanvasFactory(xResolution, yResolution).getHome();
+        image = canvas.getAsBufferedImage();
     }
 
-    public void setFocus(double real, double imag){
-        // todo: figure out where this point maps on the zoomed out view
-        focus = new Point(50, 50);
+    // todo: setFocus as box around zoom region + crosshairs (only crosshairs at the moment)
+    public void setFocus(ComplexRectangle rect){
+        focus = new IntegerRectangle(
+            canvas.coordinatesToPoint(rect.getUpperLeft()),
+            canvas.coordinatesToPoint(rect.getLowerRight())
+        );
+        thumbNailFrame.repaint();
     }
 
     @Override
@@ -35,9 +43,12 @@ public class LocationThumbnail extends JPanel {
 
         // todo: draw box around zoom region if it would be visible
         g.setColor(Color.WHITE);
-        final int x = (int) focus.getX();
-        final int y = (int) focus.getY();
-        g.drawLine(x, 0, x, this.getHeight());
-        g.drawLine(0, y, this.getWidth(), y);
+        g.drawRect(focus.getXMin(), focus.getYMin(), focus.getXMax() - focus.getXMin(), focus.getYMax() - focus.getYMin());
+        final int middleX = focus.getXMin() + (focus.getXMax() - focus.getXMin())/2;
+        final int middleY = focus.getYMin() + (focus.getYMax() - focus.getYMin())/2;
+        g.drawLine(middleX, 0, middleX, focus.getYMin());
+        g.drawLine(middleX, focus.getYMax(), middleX, this.getHeight());
+        g.drawLine(0, middleY, focus.getXMin(), middleY);
+        g.drawLine(focus.getXMax(), middleY, this.getWidth(), middleY);
     }
 }

@@ -96,13 +96,13 @@ public class MandelCanvas  implements Serializable {
             upperLeftCorner = tmp;
         }
         // translate first click into a complex number
-        final double[] translated_upperLeftCorner = pointToCoordinates(upperLeftCorner);
-        final double next_realMinimum = translated_upperLeftCorner[0];
-        final double next_imaginaryMaximum = translated_upperLeftCorner[1];
+        final ComplexNumber translated_upperLeftCorner = pointToCoordinates(upperLeftCorner);
+        final double next_realMinimum = translated_upperLeftCorner.getReal();
+        final double next_imaginaryMaximum = translated_upperLeftCorner.getImag();
         // translate second click into a complex number
-        final double[] translated_lowerRightCorner = pointToCoordinates(lowerRightCorner);
-        final double next_realMaximum = translated_lowerRightCorner[0];
-        final double next_imaginaryMinimum = translated_lowerRightCorner[1];
+        final ComplexNumber translated_lowerRightCorner = pointToCoordinates(lowerRightCorner);
+        final double next_realMaximum = translated_lowerRightCorner.getReal();
+        final double next_imaginaryMinimum = translated_lowerRightCorner.getImag();
         // delta - the complex distance between pixels - must be recalculated because we're zooming in
         // having real & imaginary axis share a delta keeps the aspect ratio correct
         final double next_delta = ((next_realMaximum - next_realMinimum)/countOfXPixels + (next_imaginaryMaximum - next_imaginaryMinimum)/countOfYPixels)/2.0;
@@ -118,11 +118,18 @@ public class MandelCanvas  implements Serializable {
         );
     }
 
-    public double[] pointToCoordinates(Point p){
-        return new double[] {
+    public ComplexNumber pointToCoordinates(Point p){
+        return new ComplexNumber(
             realMinimum + p.getX() * delta,
             imaginaryMaximum - p.getY() * delta
-        };
+        );
+    }
+
+    public Point coordinatesToPoint(ComplexNumber coordinates){
+        return new Point(
+            (int) ((coordinates.getReal() - realMinimum)/delta),
+            (int) ((imaginaryMaximum - coordinates.getImag())/delta)
+        );
     }
 
     /**
@@ -163,6 +170,13 @@ public class MandelCanvas  implements Serializable {
 
     public void setIterationMax(int iterationMax) {
         this.iterationMax = iterationMax;
+    }
+
+    public ComplexRectangle getAsComplexRectangle(){
+        return new ComplexRectangle(
+            new ComplexNumber(realMinimum, imaginaryMaximum),
+            new ComplexNumber(realMaximum, imaginaryMinimum)
+        );
     }
 
 }

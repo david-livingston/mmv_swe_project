@@ -1,6 +1,5 @@
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
-import javax.swing.table.TableModel;
 import java.awt.*;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
@@ -27,9 +26,10 @@ public class MandelJPanel extends JPanel implements MouseListener, MouseMotionLi
     private Point firstClick = null;
     private Point mouseLocation = null;
 
-    private JInternalFrame thumbNail = null;
+    private JInternalFrame thumbNailFrame = null;
     private JTable renderStats = null;
     private StatusBar statusBar = null;
+    private LocationThumbnail thumbnail = null;
 
     /**
      * @param xRes size in pixels of horizontal axis
@@ -97,10 +97,17 @@ public class MandelJPanel extends JPanel implements MouseListener, MouseMotionLi
      */
     void doZoom(Point upperLeftClick, Point lowerRightClick){
         System.out.println("Beginning Zoom @ UpperLeft(" + upperLeftClick.getX() + "," + upperLeftClick.getY() + "); LowerRight(" + lowerRightClick.getX() + "," + lowerRightClick.getY() + ")");
+        thumbnail.setFocus(
+            new ComplexRectangle(
+                navigation.getCurrent().pointToCoordinates(upperLeftClick),
+                navigation.getCurrent().pointToCoordinates(lowerRightClick)
+            )
+        );
+        thumbNailFrame.repaint();
         navigation.zoom(upperLeftClick, lowerRightClick);
         image = navigation.getCurrent().getAsBufferedImage();
         repaint();
-        thumbNail.setVisible(true);
+        thumbNailFrame.setVisible(true);
         updateRenderStats();
         System.out.println("Finished Zoom");
     }
@@ -145,7 +152,7 @@ public class MandelJPanel extends JPanel implements MouseListener, MouseMotionLi
     public void mouseClicked(MouseEvent e) {}
 
     public void associateThumbnail(JInternalFrame locationThumbnailInternalFrame) {
-        thumbNail = locationThumbnailInternalFrame;
+        thumbNailFrame = locationThumbnailInternalFrame;
     }
 
     public void associateRenderStats(JTable renderStats) {
@@ -154,5 +161,15 @@ public class MandelJPanel extends JPanel implements MouseListener, MouseMotionLi
 
     public void associateStatusBar(StatusBar statusBar) {
         this.statusBar = statusBar;
+    }
+
+    public void associateThumbnail(LocationThumbnail thumbnail){
+        this.thumbnail = thumbnail;
+        navigation.associateThumbnail(thumbnail);
+    }
+
+    public void resetThumbnail() {
+        thumbnail.setFocus(new ComplexRectangle(new ComplexNumber(0.0, 0.0), new ComplexNumber(0.0, 0.0)));
+        thumbNailFrame.repaint();
     }
 }

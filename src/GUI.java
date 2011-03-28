@@ -71,12 +71,14 @@ public class GUI extends JFrame {
 
         // todo: make the crosshairs move as different zoom regions are selected
         JInternalFrame locationThumbnailInternalFrame = new JInternalFrame("Zoom Location", false, true, false, true);
+        LocationThumbnail locationThumbnail = new LocationThumbnail(212, 175, locationThumbnailInternalFrame);
         locationThumbnailInternalFrame.setVisible(false);
         locationThumbnailInternalFrame.setSize(225, 200);
-        locationThumbnailInternalFrame.add(new LocationThumbnail(212, 175));
+        locationThumbnailInternalFrame.add(locationThumbnail);
         locationThumbnailInternalFrame.setLocation(xResolution + 15, yResolution/2 + 75);
         desktop.add(locationThumbnailInternalFrame);
         mJPanel.associateThumbnail(locationThumbnailInternalFrame);
+        mJPanel.associateThumbnail(locationThumbnail);
     }
 
     /**

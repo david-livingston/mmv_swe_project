@@ -66,6 +66,14 @@ public class ComplexNumber implements Serializable {
         return multiply(c, c);
     }
 
+    public double getReal() {
+        return real;
+    }
+
+    public double getImag() {
+        return imaginaryCoefficient;
+    }
+
     /**
      * @return the linear distance from this point to the origin (0 + 0i)
      */

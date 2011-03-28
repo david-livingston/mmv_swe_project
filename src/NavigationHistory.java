@@ -17,9 +17,14 @@ public class NavigationHistory {
     private MandelCanvas current;
     private final LinkedBlockingDeque<MandelCanvas> previous = new LinkedBlockingDeque<MandelCanvas>();
     private final LinkedBlockingDeque<MandelCanvas> next = new LinkedBlockingDeque<MandelCanvas>();
+    private LocationThumbnail thumbnail;
 
     public NavigationHistory(final int xRes, final int yRes){
         current = home = new MandelCanvasFactory(xRes, yRes).getHome();
+    }
+
+    public void associateThumbnail(LocationThumbnail thumbnail){
+        this.thumbnail = thumbnail;
     }
 
     public MandelCanvas getCurrent(){
@@ -44,25 +49,28 @@ public class NavigationHistory {
             return;
         next.push(current);
         current = previous.pop();
+        updateThumbnail();
     }
 
     public void home(){
         if(home != current)
-            previous.push(current);
-        current = home;
+            setCurrent(home);
         next.clear();
     }
 
     public void forward(){
         if(next.isEmpty())
             return;
-        previous.push(current);
-        current = next.pop();
+        setCurrent(next.pop());
     }
 
     public void setCurrent(MandelCanvas canvas) {
         previous.push(current);
         current = canvas;
-        next.clear();
+        updateThumbnail();
+    }
+
+    private void updateThumbnail(){
+        thumbnail.setFocus(current.getAsComplexRectangle());
     }
 }
