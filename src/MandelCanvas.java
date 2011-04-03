@@ -102,11 +102,11 @@ public class MandelCanvas  implements Serializable {
     }
 
     public ComplexNumber pointToCoordinates(Pixel pixel){
-        return renderRegion.getComplexPointFromPixel(pixel, logicalImageSize, true);
+        return renderRegion.getComplexPointFromPixel(pixel, displayImageSize, true);
     }
 
     public Pixel coordinatesToPoint(ComplexNumber coordinates){
-        return renderRegion.getPixelFromComplexPoint(coordinates, logicalImageSize);
+        return renderRegion.getPixelFromComplexPoint(coordinates, displayImageSize);
     }
 
     public BufferedImage getDisplayedBufferedImage(ImageSize requestedDisplayImageSize){
