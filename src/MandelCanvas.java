@@ -1,4 +1,5 @@
 import java.awt.*;
+import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
 import java.io.Serializable;
 
@@ -20,26 +21,31 @@ import java.io.Serializable;
  */
 public class MandelCanvas  implements Serializable {
 
-    // describes the region of the Mandelbrot set to be displayed
     private final ComplexRegion renderRegion;
-
-    private final ImageSize imageSize;
-
-    private final MandelPoint[][] mandelPoints;
 
     // todo: increase iterationMax as picture is zoomed
     private int iterationMax = 100;
 
-    public MandelCanvas(final ComplexRegion renderRegion, final ImageSize imageSize)
+    private transient MandelPoint[][] mandelPoints;
+    private transient BufferedImage logicalBufferedImage;
+    private transient BufferedImage displayedBufferedImage;
+    private ImageSize logicalImageSize;
+    private ImageSize displayImageSize;
+
+    public MandelCanvas(final ComplexRegion renderRegion, final ImageSize requestedLogicalImageSize, final ImageSize requestedDisplayImageSize)
     {
         this.renderRegion = renderRegion;
-        this.imageSize = imageSize;
+        logicalImageSize = requestedLogicalImageSize;
+        displayImageSize = requestedDisplayImageSize;
 
-        mandelPoints = new MandelPoint[imageSize.getWidth()][imageSize.getHeight()];
+        mandelPoints = new MandelPoint[logicalImageSize.getWidth()][logicalImageSize.getHeight()];
 
-        for(int x = 0; x < imageSize.getWidth(); ++x)
-            for(int y = 0; y < imageSize.getHeight(); ++y)
-                mandelPoints[x][y] = new MandelPoint(renderRegion.getComplexPointFromPixel(new Pixel(x, y), imageSize, true));
+        for(int x = 0; x < logicalImageSize.getWidth(); ++x)
+            for(int y = 0; y < logicalImageSize.getHeight(); ++y)
+                mandelPoints[x][y] = new MandelPoint(renderRegion.getComplexPointFromPixel(new Pixel(x, y), logicalImageSize, true));
+
+        initLogicalBufferedImage();
+        initDisplayBufferedImage();
     }
 
     /**
@@ -90,35 +96,49 @@ public class MandelCanvas  implements Serializable {
                 new ComplexNumber(next_realMinimum, next_imaginaryMaximum),
                 new ComplexNumber(next_realMaximum, next_imaginaryMinimum)
             ),
-            imageSize
+            logicalImageSize,
+            displayImageSize
         );
     }
 
     public ComplexNumber pointToCoordinates(Pixel pixel){
-        return renderRegion.getComplexPointFromPixel(pixel, imageSize, true);
+        return renderRegion.getComplexPointFromPixel(pixel, logicalImageSize, true);
     }
 
     public Pixel coordinatesToPoint(ComplexNumber coordinates){
-        return renderRegion.getPixelFromComplexPoint(coordinates, imageSize);
+        return renderRegion.getPixelFromComplexPoint(coordinates, logicalImageSize);
     }
 
-    /**
-     * get an image with pixel data based on the MandelPoint's contained in the
-     * described region
-     *
-     * it might be best to cache the buffered image but the JPanel that uses
-     * this to display to the screen already (i think) caches it so it really
-     * only affects saving the file
-     *
-     * @return the mandelbrot data, colored per Palette.java, as far as
-     *  currently calculated
-     */
-    public BufferedImage getAsBufferedImage(){
-        final BufferedImage img = new BufferedImage(imageSize.getWidth(), imageSize.getHeight(), BufferedImage.TYPE_INT_RGB);
-        for(int x = 0; x < imageSize.getWidth(); ++x)
-            for(int y = 0; y < imageSize.getHeight(); ++y)
-                img.setRGB(x, y, getColorAtPoint(x, y).getRGB());
-        return img;
+    public BufferedImage getDisplayedBufferedImage(ImageSize requestedDisplayImageSize){
+        if(displayImageSize.equals(requestedDisplayImageSize))
+            return displayedBufferedImage;
+
+        displayImageSize = requestedDisplayImageSize;
+        initDisplayBufferedImage();
+        return displayedBufferedImage;
+    }
+
+    public BufferedImage getLogicalBufferedImage(){
+        return logicalBufferedImage;
+    }
+
+    private void initLogicalBufferedImage(){
+        logicalBufferedImage = new BufferedImage(logicalImageSize.getWidth(), logicalImageSize.getHeight(), BufferedImage.TYPE_INT_ARGB);
+        for(int x = 0; x < logicalImageSize.getWidth(); ++x)
+            for(int y = 0; y < logicalImageSize.getHeight(); ++y)
+                logicalBufferedImage.setRGB(x, y, getColorAtPoint(x, y).getRGB());
+    }
+
+    private void initDisplayBufferedImage(){
+        // http://helpdesk.objects.com.au/java/how-do-i-scale-a-bufferedimage
+        final double scaleX = displayImageSize.getWidth()/((double)logicalImageSize.getWidth());
+        final double scaleY = displayImageSize.getHeight()/((double)logicalImageSize.getHeight());
+        displayedBufferedImage = new BufferedImage(displayImageSize.getWidth(), displayImageSize.getHeight(), BufferedImage.TYPE_INT_ARGB);
+        Graphics2D graphics2D = displayedBufferedImage.createGraphics();
+        AffineTransform xform = AffineTransform.getScaleInstance(scaleX, scaleY);
+        graphics2D.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BICUBIC);
+        graphics2D.drawImage(logicalBufferedImage, xform, null);
+        graphics2D.dispose();
     }
 
     public Object[][] getAttributeValues(){
@@ -127,10 +147,18 @@ public class MandelCanvas  implements Serializable {
             { "real (x) max: ", renderRegion.getRealMax() },
             { "imaginary (y) min: ", renderRegion.getImagMin() },
             { "imaginary (y) max: ", renderRegion.getImagMax() },
-            { "delta: ", renderRegion.getAverageDelta(imageSize) },
+            { "delta: ", renderRegion.getAverageDelta(logicalImageSize) },
             { "iteration limit: ", iterationMax },
-            { "logical x resolution: ", imageSize.getWidth() },
-            { "logical y resolution: ", imageSize.getHeight() }
+            { "logical x resolution: ", logicalImageSize.getWidth() },
+            { "logical y resolution: ", logicalImageSize.getHeight() },
+            { "logical x/y ratio: ", logicalImageSize.getWidth()/((double)logicalImageSize.getHeight()) },
+            { "displayed x resolution: ", displayImageSize.getWidth() },
+            { "displayed y resolution: ", displayImageSize.getHeight() },
+            { "displayed x/y ratio: ", displayImageSize.getWidth()/((double)displayImageSize.getHeight()) },
+            { "processor count: ", Runtime.getRuntime().availableProcessors() },
+            { "total memory: ", Runtime.getRuntime().totalMemory() },
+            { "max memory: ", Runtime.getRuntime().maxMemory() },
+            { "free memory: ", Runtime.getRuntime().freeMemory() }
         };
     }
 
@@ -145,5 +173,4 @@ public class MandelCanvas  implements Serializable {
     public ComplexRegion getAsComplexRectangle(){
         return renderRegion;
     }
-
 }

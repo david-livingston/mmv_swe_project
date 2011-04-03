@@ -15,15 +15,16 @@ public class MandelCanvasFactory {
 
     private final MandelCanvas home;
 
-    public MandelCanvasFactory(final ImageSize imageSize){
-        defaultDelta = (defaultRealMaximum - defaultRealMinimum)/imageSize.getWidth();
-        defaultImaginaryMinimum = defaultImaginaryMaximum - imageSize.getHeight() * defaultDelta;
+    public MandelCanvasFactory(final ImageSize logicalImageSize, final ImageSize displayImageSize){
+        defaultDelta = (defaultRealMaximum - defaultRealMinimum)/logicalImageSize.getWidth();
+        defaultImaginaryMinimum = defaultImaginaryMaximum - logicalImageSize.getHeight() * defaultDelta;
         home = new MandelCanvas(
             new ComplexRegion(
                 new ComplexNumber(defaultRealMinimum, defaultImaginaryMaximum),
                 new ComplexNumber(defaultRealMaximum, defaultImaginaryMinimum)
             ),
-            imageSize
+            logicalImageSize,
+            displayImageSize
         );
     }
 

@@ -1,5 +1,4 @@
 import javax.swing.*;
-import javax.swing.table.TableModel;
 
 /**
  * Created by IntelliJ IDEA.
@@ -21,7 +20,8 @@ public class GUI extends JFrame {
      * TODO: decouple the size of BufferedImage from the canvas it is displayed on so the
      * logical size of the image generated (and the size used when saving) does not need
      * to be exactly the same size as displayed on screen. */
-    private final static ImageSize logicalImageSize = new ImageSize(700, 850);
+    private final static ImageSize logicalImageSize = new ImageSize(1400, 1700);
+    private final static ImageSize displayedImageSize = new ImageSize(700, 850);
 
     private final MandelJPanel mJPanel;
 
@@ -35,18 +35,18 @@ public class GUI extends JFrame {
     private GUI() {
         // todo: add memory stats to status bar, got a out of heap space exception once -- related to navigation history?
         setTitle("MMV: Multithreaded Mandelbrot Viewer");
-        mJPanel = new MandelJPanel(logicalImageSize);
+        mJPanel = new MandelJPanel(logicalImageSize, displayedImageSize);
         setJMenuBar(new MenuBar(mJPanel));
 
         JInternalFrame renderInternalFrame = new JInternalFrame("Render Window", true, true, true, true);
         renderInternalFrame.setVisible(true);
-        renderInternalFrame.setSize(logicalImageSize.getWidth(), logicalImageSize.getHeight());
+        renderInternalFrame.setSize(displayedImageSize.getWidth(), displayedImageSize.getHeight());
         desktop.add(renderInternalFrame);
         desktop.setVisible(true);
         setContentPane(desktop);
         renderInternalFrame.add(mJPanel);
 
-        setSize(logicalImageSize.getWidth() + 375, logicalImageSize.getHeight() + 75);
+        setSize(displayedImageSize.getWidth() + 375, displayedImageSize.getHeight() + 75);
         setVisible(true);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         StatusBar statusBar = new StatusBar();
@@ -59,12 +59,12 @@ public class GUI extends JFrame {
         // todo: more stats in table
         JInternalFrame attributeTableInternalFrame = new JInternalFrame("Attribute Values", true, true, true, true);
         attributeTableInternalFrame.setVisible(true);
-        attributeTableInternalFrame.setSize(350, logicalImageSize.getHeight()/2 + 50);
+        attributeTableInternalFrame.setSize(350, displayedImageSize.getHeight()/2 + 50);
         String[] columnNames = { "Attribute", "Value" };
         Object[][] data = mJPanel.getAttributeValues();
         renderStats = new JTable(data, columnNames);
         attributeTableInternalFrame.add(renderStats);
-        attributeTableInternalFrame.setLocation(logicalImageSize.getWidth() + 10, 5);
+        attributeTableInternalFrame.setLocation(displayedImageSize.getWidth() + 10, 5);
         desktop.add(attributeTableInternalFrame);
         mJPanel.associateRenderStats(renderStats);
 
@@ -74,7 +74,7 @@ public class GUI extends JFrame {
         locationThumbnailInternalFrame.setVisible(false);
         locationThumbnailInternalFrame.setSize(225, 200);
         locationThumbnailInternalFrame.add(locationThumbnail);
-        locationThumbnailInternalFrame.setLocation(logicalImageSize.getWidth() + 15, logicalImageSize.getHeight()/2 + 75);
+        locationThumbnailInternalFrame.setLocation(displayedImageSize.getWidth() + 15, displayedImageSize.getHeight()/2 + 75);
         desktop.add(locationThumbnailInternalFrame);
         mJPanel.associateThumbnail(locationThumbnailInternalFrame);
         mJPanel.associateThumbnail(locationThumbnail);

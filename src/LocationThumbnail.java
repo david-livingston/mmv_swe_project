@@ -19,8 +19,8 @@ public class LocationThumbnail extends JPanel {
 
     public LocationThumbnail(final ImageSize imageSize, final JInternalFrame thumbNailFrame){
         this.thumbNailFrame = thumbNailFrame;
-        canvas = new MandelCanvasFactory(imageSize).getHome();
-        image = canvas.getAsBufferedImage();
+        canvas = new MandelCanvasFactory(imageSize, imageSize).getHome();
+        image = canvas.getDisplayedBufferedImage(imageSize);
     }
 
     // todo: setFocus as box around zoom region + crosshairs (only crosshairs at the moment)

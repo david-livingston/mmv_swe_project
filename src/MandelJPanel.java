@@ -24,20 +24,25 @@ public class MandelJPanel extends JPanel implements MouseListener, MouseMotionLi
     private final NavigationHistory navigation;
 
     private Pixel firstClick = null;
-    private Point mouseLocation = null;
+    private Pixel mouseLocation = null;
 
     private JInternalFrame thumbNailFrame = null;
     private JTable renderStats = null;
     private StatusBar statusBar = null;
     private LocationThumbnail thumbnail = null;
 
+    private ImageSize displayedImageSize;
+
     /**
      *
-     * @param imageSize
+     * @param logicalImageSize
+     * @param displayedImageSize
      */
-    public MandelJPanel(final ImageSize imageSize){
-        navigation = new NavigationHistory(imageSize);
-        image = navigation.getCurrent().getAsBufferedImage();
+    public MandelJPanel(final ImageSize logicalImageSize, final ImageSize displayedImageSize){
+        super();
+        this.displayedImageSize = displayedImageSize;
+        navigation = new NavigationHistory(logicalImageSize, displayedImageSize);
+        refreshBufferedImage();
         addMouseListener(this);
         addMouseMotionListener(this);
     }
@@ -105,8 +110,7 @@ public class MandelJPanel extends JPanel implements MouseListener, MouseMotionLi
         );
         thumbNailFrame.repaint();
         navigation.zoom(upperLeftClick, lowerRightClick);
-        image = navigation.getCurrent().getAsBufferedImage();
-        repaint();
+        refreshBufferedImage();
         thumbNailFrame.setVisible(true);
         updateRenderStats();
         System.out.println("Finished Zoom");
@@ -117,7 +121,7 @@ public class MandelJPanel extends JPanel implements MouseListener, MouseMotionLi
     }
 
     public void refreshBufferedImage(){
-        image = navigation.getCurrent().getAsBufferedImage();
+        image = navigation.getCurrent().getDisplayedBufferedImage(displayedImageSize);
         repaint();
     }
 
@@ -129,12 +133,16 @@ public class MandelJPanel extends JPanel implements MouseListener, MouseMotionLi
      * @param e
      */
     public void mouseMoved(MouseEvent e) {
-        mouseLocation = new Point(e.getX(), e.getY());
+        mouseLocation = new Pixel(e.getX(), e.getY());
         repaint();
     }
 
-    public BufferedImage getCurrentImage(){
-        return navigation.getCurrent().getAsBufferedImage();
+    public BufferedImage getCurrentDisplayedImage(){
+        return navigation.getCurrent().getDisplayedBufferedImage(displayedImageSize);
+    }
+
+    public BufferedImage getCurrentLogicalImage(){
+        return navigation.getCurrent().getLogicalBufferedImage();
     }
 
     public NavigationHistory getNavigationHistory(){
@@ -168,8 +176,7 @@ public class MandelJPanel extends JPanel implements MouseListener, MouseMotionLi
         navigation.associateThumbnail(thumbnail);
     }
 
-    public void resetThumbnail() {
-        thumbnail.setFocus(new ComplexRegion(new ComplexNumber(0.0, 0.0), new ComplexNumber(0.0, 0.0)));
-        thumbNailFrame.repaint();
+    public void setDisplayedImageSize(final ImageSize newSize){
+        displayedImageSize = newSize;
     }
 }

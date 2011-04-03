@@ -1,3 +1,5 @@
+import java.io.Serializable;
+
 /**
  * Created by IntelliJ IDEA.
  * User: Owner
@@ -5,7 +7,7 @@
  * Time: 12:14 PM
  * To change this template use File | Settings | File Templates.
  */
-public class Pixel {
+public class Pixel implements Serializable {
 
     final int x;
     final int y;
@@ -22,5 +24,25 @@ public class Pixel {
 
     public int getY() {
         return y;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Pixel pixel = (Pixel) o;
+
+        if (x != pixel.x) return false;
+        if (y != pixel.y) return false;
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = x;
+        result = 31 * result + y;
+        return result;
     }
 }

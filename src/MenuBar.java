@@ -244,7 +244,7 @@ public class MenuBar extends JMenuBar implements ActionListener {
             // save image as PNG, doc re. saving BufferedImage:
             // http://download.oracle.com/javase/tutorial/2d/images/saveimage.html
             // TODO: other formats, esp. lossless format (bmp ?)
-            BufferedImage bi = mJPanel.getCurrentImage();
+            BufferedImage bi = mJPanel.getCurrentLogicalImage();
             ImageIO.write(bi, defaultExtension, savefile);
         } catch (Exception ioe) {
             System.err.println(ioe);

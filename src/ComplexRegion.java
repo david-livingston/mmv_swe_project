@@ -1,4 +1,5 @@
 import java.awt.*;
+import java.io.Serializable;
 
 /**
  * Created by IntelliJ IDEA.
@@ -7,7 +8,7 @@ import java.awt.*;
  * Time: 2:02 PM
  * To change this template use File | Settings | File Templates.
  */
-public class ComplexRegion {
+public class ComplexRegion implements Serializable {
 
     private final ComplexNumber upperLeft;
     private final ComplexNumber lowerRight;

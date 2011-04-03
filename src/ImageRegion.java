@@ -1,4 +1,5 @@
 import java.awt.*;
+import java.io.Serializable;
 
 /**
  * Created by IntelliJ IDEA.
@@ -7,7 +8,7 @@ import java.awt.*;
  * Time: 2:09 PM
  * To change this template use File | Settings | File Templates.
  */
-public class ImageRegion {
+public class ImageRegion implements Serializable {
 
     private final Pixel upperLeft;
     private final Pixel lowerRight;
@@ -47,5 +48,25 @@ public class ImageRegion {
                 "upperLeft=" + upperLeft +
                 ", lowerRight=" + lowerRight +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        ImageRegion that = (ImageRegion) o;
+
+        if (lowerRight != null ? !lowerRight.equals(that.lowerRight) : that.lowerRight != null) return false;
+        if (upperLeft != null ? !upperLeft.equals(that.upperLeft) : that.upperLeft != null) return false;
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = upperLeft != null ? upperLeft.hashCode() : 0;
+        result = 31 * result + (lowerRight != null ? lowerRight.hashCode() : 0);
+        return result;
     }
 }
