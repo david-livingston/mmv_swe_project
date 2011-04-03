@@ -7,12 +7,12 @@ import java.awt.*;
  * Time: 2:09 PM
  * To change this template use File | Settings | File Templates.
  */
-public class IntegerRectangle {
+public class ImageRegion {
 
-    private final Point upperLeft;
-    private final Point lowerRight;
+    private final Pixel upperLeft;
+    private final Pixel lowerRight;
 
-    public IntegerRectangle(Point upperLeft, Point lowerRight) {
+    public ImageRegion(Pixel upperLeft, Pixel lowerRight) {
         this.upperLeft = upperLeft;
         this.lowerRight = lowerRight;
     }
@@ -33,9 +33,17 @@ public class IntegerRectangle {
         return (int) lowerRight.getY();
     }
 
+    public int getWidth(){
+        return getXMax() - getXMin();
+    }
+
+    public int getHeight(){
+        return getYMax() - getYMin();
+    }
+
     @Override
     public String toString() {
-        return "IntegerRectangle{" +
+        return "ImageRegion{" +
                 "upperLeft=" + upperLeft +
                 ", lowerRight=" + lowerRight +
                 '}';

@@ -13,25 +13,21 @@ public class MandelCanvasFactory {
     private final double defaultImaginaryMinimum;
     private final double defaultDelta;
 
-    private final int countOfXPixels;
-    private final int countOfYPixels;
+    private final MandelCanvas home;
 
-    public MandelCanvasFactory(final int countOfXPixels, final int countOfYPixels){
-        this.countOfXPixels = countOfXPixels;
-        this.countOfYPixels = countOfYPixels;
-        defaultDelta = (defaultRealMaximum - defaultRealMinimum)/countOfXPixels;
-        defaultImaginaryMinimum = defaultImaginaryMaximum - countOfYPixels * defaultDelta;
+    public MandelCanvasFactory(final ImageSize imageSize){
+        defaultDelta = (defaultRealMaximum - defaultRealMinimum)/imageSize.getWidth();
+        defaultImaginaryMinimum = defaultImaginaryMaximum - imageSize.getHeight() * defaultDelta;
+        home = new MandelCanvas(
+            new ComplexRegion(
+                new ComplexNumber(defaultRealMinimum, defaultImaginaryMaximum),
+                new ComplexNumber(defaultRealMaximum, defaultImaginaryMinimum)
+            ),
+            imageSize
+        );
     }
 
     public MandelCanvas getHome(){
-        return new MandelCanvas(
-            defaultRealMinimum,
-            defaultImaginaryMaximum,
-            defaultRealMaximum,
-            defaultImaginaryMinimum,
-            defaultDelta,
-            countOfXPixels,
-            countOfYPixels
-        );
+        return home;
     }
 }

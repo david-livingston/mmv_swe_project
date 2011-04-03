@@ -19,8 +19,8 @@ public class NavigationHistory {
     private final LinkedBlockingDeque<MandelCanvas> next = new LinkedBlockingDeque<MandelCanvas>();
     private LocationThumbnail thumbnail;
 
-    public NavigationHistory(final int xRes, final int yRes){
-        current = home = new MandelCanvasFactory(xRes, yRes).getHome();
+    public NavigationHistory(final ImageSize imageSize){
+        current = home = new MandelCanvasFactory(imageSize).getHome();
     }
 
     public void associateThumbnail(LocationThumbnail thumbnail){
@@ -31,7 +31,7 @@ public class NavigationHistory {
         return current;
     }
 
-    public void zoom(Point upperLeftClick, Point lowerRightClick){
+    public void zoom(Pixel upperLeftClick, Pixel lowerRightClick){
         next.clear();
         previous.push(current);
         // todo: doesn't always work, might have to avoid pushing the pixel data & only push the coordinates describing the zoom region

@@ -21,8 +21,7 @@ public class GUI extends JFrame {
      * TODO: decouple the size of BufferedImage from the canvas it is displayed on so the
      * logical size of the image generated (and the size used when saving) does not need
      * to be exactly the same size as displayed on screen. */
-    private final static int xResolution = 850;
-    private final static int yResolution = 700;
+    private final static ImageSize logicalImageSize = new ImageSize(700, 850);
 
     private final MandelJPanel mJPanel;
 
@@ -36,18 +35,18 @@ public class GUI extends JFrame {
     private GUI() {
         // todo: add memory stats to status bar, got a out of heap space exception once -- related to navigation history?
         setTitle("MMV: Multithreaded Mandelbrot Viewer");
-        mJPanel = new MandelJPanel(xResolution, yResolution);
+        mJPanel = new MandelJPanel(logicalImageSize);
         setJMenuBar(new MenuBar(mJPanel));
 
         JInternalFrame renderInternalFrame = new JInternalFrame("Render Window", true, true, true, true);
         renderInternalFrame.setVisible(true);
-        renderInternalFrame.setSize(xResolution, yResolution);
+        renderInternalFrame.setSize(logicalImageSize.getWidth(), logicalImageSize.getHeight());
         desktop.add(renderInternalFrame);
         desktop.setVisible(true);
         setContentPane(desktop);
         renderInternalFrame.add(mJPanel);
 
-        setSize(xResolution + 375, yResolution + 75);
+        setSize(logicalImageSize.getWidth() + 375, logicalImageSize.getHeight() + 75);
         setVisible(true);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         StatusBar statusBar = new StatusBar();
@@ -60,22 +59,22 @@ public class GUI extends JFrame {
         // todo: more stats in table
         JInternalFrame attributeTableInternalFrame = new JInternalFrame("Attribute Values", true, true, true, true);
         attributeTableInternalFrame.setVisible(true);
-        attributeTableInternalFrame.setSize(350, yResolution/2 + 50);
+        attributeTableInternalFrame.setSize(350, logicalImageSize.getHeight()/2 + 50);
         String[] columnNames = { "Attribute", "Value" };
         Object[][] data = mJPanel.getAttributeValues();
         renderStats = new JTable(data, columnNames);
         attributeTableInternalFrame.add(renderStats);
-        attributeTableInternalFrame.setLocation(xResolution + 10, 5);
+        attributeTableInternalFrame.setLocation(logicalImageSize.getWidth() + 10, 5);
         desktop.add(attributeTableInternalFrame);
         mJPanel.associateRenderStats(renderStats);
 
         // todo: make the crosshairs move as different zoom regions are selected
         JInternalFrame locationThumbnailInternalFrame = new JInternalFrame("Zoom Location", false, true, false, true);
-        LocationThumbnail locationThumbnail = new LocationThumbnail(212, 175, locationThumbnailInternalFrame);
+        LocationThumbnail locationThumbnail = new LocationThumbnail(new ImageSize(175, 212), locationThumbnailInternalFrame);
         locationThumbnailInternalFrame.setVisible(false);
         locationThumbnailInternalFrame.setSize(225, 200);
         locationThumbnailInternalFrame.add(locationThumbnail);
-        locationThumbnailInternalFrame.setLocation(xResolution + 15, yResolution/2 + 75);
+        locationThumbnailInternalFrame.setLocation(logicalImageSize.getWidth() + 15, logicalImageSize.getHeight()/2 + 75);
         desktop.add(locationThumbnailInternalFrame);
         mJPanel.associateThumbnail(locationThumbnailInternalFrame);
         mJPanel.associateThumbnail(locationThumbnail);

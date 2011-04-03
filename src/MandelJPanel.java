@@ -23,7 +23,7 @@ public class MandelJPanel extends JPanel implements MouseListener, MouseMotionLi
     private BufferedImage image;
     private final NavigationHistory navigation;
 
-    private Point firstClick = null;
+    private Pixel firstClick = null;
     private Point mouseLocation = null;
 
     private JInternalFrame thumbNailFrame = null;
@@ -32,11 +32,11 @@ public class MandelJPanel extends JPanel implements MouseListener, MouseMotionLi
     private LocationThumbnail thumbnail = null;
 
     /**
-     * @param xRes size in pixels of horizontal axis
-     * @param yRes size in pixels of vertical axis
+     *
+     * @param imageSize
      */
-    public MandelJPanel(final int xRes, final int yRes){
-        navigation = new NavigationHistory(xRes, yRes);
+    public MandelJPanel(final ImageSize imageSize){
+        navigation = new NavigationHistory(imageSize);
         image = navigation.getCurrent().getAsBufferedImage();
         addMouseListener(this);
         addMouseMotionListener(this);
@@ -77,10 +77,10 @@ public class MandelJPanel extends JPanel implements MouseListener, MouseMotionLi
      */
     public void mousePressed(MouseEvent e) {
         if(null != firstClick){
-            doZoom(firstClick, new Point(e.getX(), e.getY()));
+            doZoom(firstClick, new Pixel(e.getX(), e.getY()));
             firstClick = null;
         }else
-            firstClick = new Point(e.getX(), e.getY());
+            firstClick = new Pixel(e.getX(), e.getY());
     }
 
     public void mouseDragged(MouseEvent e) {}
@@ -95,10 +95,10 @@ public class MandelJPanel extends JPanel implements MouseListener, MouseMotionLi
      * @param upperLeftClick the first point clicked by user to indicate start of a zoom region
      * @param lowerRightClick the second point clicked by user to indicate end of zoom region
      */
-    void doZoom(Point upperLeftClick, Point lowerRightClick){
+    void doZoom(Pixel upperLeftClick, Pixel lowerRightClick){
         System.out.println("Beginning Zoom @ UpperLeft(" + upperLeftClick.getX() + "," + upperLeftClick.getY() + "); LowerRight(" + lowerRightClick.getX() + "," + lowerRightClick.getY() + ")");
         thumbnail.setFocus(
-            new ComplexRectangle(
+            new ComplexRegion(
                 navigation.getCurrent().pointToCoordinates(upperLeftClick),
                 navigation.getCurrent().pointToCoordinates(lowerRightClick)
             )
@@ -169,7 +169,7 @@ public class MandelJPanel extends JPanel implements MouseListener, MouseMotionLi
     }
 
     public void resetThumbnail() {
-        thumbnail.setFocus(new ComplexRectangle(new ComplexNumber(0.0, 0.0), new ComplexNumber(0.0, 0.0)));
+        thumbnail.setFocus(new ComplexRegion(new ComplexNumber(0.0, 0.0), new ComplexNumber(0.0, 0.0)));
         thumbNailFrame.repaint();
     }
 }

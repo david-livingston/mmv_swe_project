@@ -21,44 +21,25 @@ import java.io.Serializable;
 public class MandelCanvas  implements Serializable {
 
     // describes the region of the Mandelbrot set to be displayed
-    // todo: improve region program initially renders
-    private final double realMinimum;
-    private final double imaginaryMaximum;
-    private final double realMaximum;
-    private final double imaginaryMinimum;
+    private final ComplexRegion renderRegion;
 
-    // distance between pixels
-    // if the aspect ratio of the logical picture does not match that of
-    // the rendered (on screen), then you need two separate deltas:
-    // realDelta and imaginaryDelta
-    private final double delta;
-
-    private final int countOfXPixels;
-    private final int countOfYPixels;
+    private final ImageSize imageSize;
 
     private final MandelPoint[][] mandelPoints;
 
     // todo: increase iterationMax as picture is zoomed
     private int iterationMax = 100;
 
-    public MandelCanvas(final double realMinimum, final double imaginaryMaximum, final double realMaximum,
-            final double imaginaryMinimum, final double delta,
-            final int xResolution, final int yResolution)
+    public MandelCanvas(final ComplexRegion renderRegion, final ImageSize imageSize)
     {
-        this.delta = delta;
-        this.imaginaryMinimum = imaginaryMinimum;
-        this.realMaximum = realMaximum;
-        this.realMinimum = realMinimum;
-        this.imaginaryMaximum = imaginaryMaximum;
+        this.renderRegion = renderRegion;
+        this.imageSize = imageSize;
 
-        countOfXPixels = xResolution;
-        countOfYPixels = yResolution;
-        mandelPoints = new MandelPoint[xResolution][yResolution];
+        mandelPoints = new MandelPoint[imageSize.getWidth()][imageSize.getHeight()];
 
-        for(int x = 0; x < xResolution; ++x)
-            for(int y = 0; y < yResolution; ++y)
-                mandelPoints[x][y] = new MandelPoint(realMinimum + x * delta, imaginaryMaximum - y * delta);
-
+        for(int x = 0; x < imageSize.getWidth(); ++x)
+            for(int y = 0; y < imageSize.getHeight(); ++y)
+                mandelPoints[x][y] = new MandelPoint(renderRegion.getComplexPointFromPixel(new Pixel(x, y), imageSize, true));
     }
 
     /**
@@ -88,10 +69,10 @@ public class MandelCanvas  implements Serializable {
      * @param lowerRightCorner second click of user
      * @return
      */
-    public MandelCanvas doZoom(Point upperLeftCorner, Point lowerRightCorner){
+    public MandelCanvas doZoom(Pixel upperLeftCorner, Pixel lowerRightCorner){
         // swap the click points if user clicked lower right corner before upper left corner
         if(upperLeftCorner.getX() > lowerRightCorner.getX() || upperLeftCorner.getY() > lowerRightCorner.getY()){
-            Point tmp = lowerRightCorner;
+            Pixel tmp = lowerRightCorner;
             lowerRightCorner = upperLeftCorner;
             upperLeftCorner = tmp;
         }
@@ -103,33 +84,22 @@ public class MandelCanvas  implements Serializable {
         final ComplexNumber translated_lowerRightCorner = pointToCoordinates(lowerRightCorner);
         final double next_realMaximum = translated_lowerRightCorner.getReal();
         final double next_imaginaryMinimum = translated_lowerRightCorner.getImag();
-        // delta - the complex distance between pixels - must be recalculated because we're zooming in
-        // having real & imaginary axis share a delta keeps the aspect ratio correct
-        final double next_delta = ((next_realMaximum - next_realMinimum)/countOfXPixels + (next_imaginaryMaximum - next_imaginaryMinimum)/countOfYPixels)/2.0;
 
         return new MandelCanvas(
-            next_realMinimum,
-            next_imaginaryMaximum,
-            next_realMaximum,
-            next_imaginaryMinimum,
-            next_delta,
-            countOfXPixels,
-            countOfYPixels
+            new ComplexRegion(
+                new ComplexNumber(next_realMinimum, next_imaginaryMaximum),
+                new ComplexNumber(next_realMaximum, next_imaginaryMinimum)
+            ),
+            imageSize
         );
     }
 
-    public ComplexNumber pointToCoordinates(Point p){
-        return new ComplexNumber(
-            realMinimum + p.getX() * delta,
-            imaginaryMaximum - p.getY() * delta
-        );
+    public ComplexNumber pointToCoordinates(Pixel pixel){
+        return renderRegion.getComplexPointFromPixel(pixel, imageSize, true);
     }
 
-    public Point coordinatesToPoint(ComplexNumber coordinates){
-        return new Point(
-            (int) ((coordinates.getReal() - realMinimum)/delta),
-            (int) ((imaginaryMaximum - coordinates.getImag())/delta)
-        );
+    public Pixel coordinatesToPoint(ComplexNumber coordinates){
+        return renderRegion.getPixelFromComplexPoint(coordinates, imageSize);
     }
 
     /**
@@ -144,23 +114,23 @@ public class MandelCanvas  implements Serializable {
      *  currently calculated
      */
     public BufferedImage getAsBufferedImage(){
-        final BufferedImage img = new BufferedImage(countOfXPixels, countOfYPixels, BufferedImage.TYPE_INT_RGB);
-        for(int x = 0; x < countOfXPixels; ++x)
-            for(int y = 0; y < countOfYPixels; ++y)
+        final BufferedImage img = new BufferedImage(imageSize.getWidth(), imageSize.getHeight(), BufferedImage.TYPE_INT_RGB);
+        for(int x = 0; x < imageSize.getWidth(); ++x)
+            for(int y = 0; y < imageSize.getHeight(); ++y)
                 img.setRGB(x, y, getColorAtPoint(x, y).getRGB());
         return img;
     }
 
     public Object[][] getAttributeValues(){
         return new Object[][] {
-            { "real (x) min: ", realMinimum },
-            { "real (x) max: ", realMaximum },
-            { "imaginary (y) min: ", imaginaryMinimum },
-            { "imaginary (y) max: ", imaginaryMaximum },
-            { "delta: ", delta },
+            { "real (x) min: ", renderRegion.getRealMin() },
+            { "real (x) max: ", renderRegion.getRealMax() },
+            { "imaginary (y) min: ", renderRegion.getImagMin() },
+            { "imaginary (y) max: ", renderRegion.getImagMax() },
+            { "delta: ", renderRegion.getAverageDelta(imageSize) },
             { "iteration limit: ", iterationMax },
-            { "logical x resolution: ", countOfXPixels },
-            { "logical y resolution: ", countOfYPixels }
+            { "logical x resolution: ", imageSize.getWidth() },
+            { "logical y resolution: ", imageSize.getHeight() }
         };
     }
 
@@ -172,11 +142,8 @@ public class MandelCanvas  implements Serializable {
         this.iterationMax = iterationMax;
     }
 
-    public ComplexRectangle getAsComplexRectangle(){
-        return new ComplexRectangle(
-            new ComplexNumber(realMinimum, imaginaryMaximum),
-            new ComplexNumber(realMaximum, imaginaryMinimum)
-        );
+    public ComplexRegion getAsComplexRectangle(){
+        return renderRegion;
     }
 
 }

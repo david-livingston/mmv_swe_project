@@ -12,20 +12,20 @@ import java.awt.image.BufferedImage;
 public class LocationThumbnail extends JPanel {
 
     private final BufferedImage image;
-    private IntegerRectangle focus = null;
+    private ImageRegion focus = null;
     private MandelCanvas canvas;
     private JInternalFrame thumbNailFrame;
 
 
-    public LocationThumbnail(int xResolution, int yResolution, JInternalFrame thumbNailFrame){
+    public LocationThumbnail(final ImageSize imageSize, final JInternalFrame thumbNailFrame){
         this.thumbNailFrame = thumbNailFrame;
-        canvas = new MandelCanvasFactory(xResolution, yResolution).getHome();
+        canvas = new MandelCanvasFactory(imageSize).getHome();
         image = canvas.getAsBufferedImage();
     }
 
     // todo: setFocus as box around zoom region + crosshairs (only crosshairs at the moment)
-    public void setFocus(ComplexRectangle rect){
-        focus = new IntegerRectangle(
+    public void setFocus(ComplexRegion rect){
+        focus = new ImageRegion(
             canvas.coordinatesToPoint(rect.getUpperLeft()),
             canvas.coordinatesToPoint(rect.getLowerRight())
         );

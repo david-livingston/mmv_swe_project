@@ -18,13 +18,11 @@ public class MandelPoint implements Serializable {
     private final ComplexNumber startingLocation;
     private ComplexNumber currentLocation;
     private int iterationCount = 0;
-    private int lastIterationLimit = 0;
     private final double squaredMaxDistance = 4.0;
     private boolean escaped = false;
 
-    public MandelPoint(final double real, final double imaginary){
-        startingLocation = new ComplexNumber(real, imaginary);
-        currentLocation = startingLocation;
+    public MandelPoint(final ComplexNumber startingLocation){
+        this.startingLocation = currentLocation = startingLocation;
     }
 
     // this is the key method in the program
