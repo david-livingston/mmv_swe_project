@@ -2,6 +2,8 @@ import com.sun.xml.internal.bind.v2.runtime.unmarshaller.Intercepter;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
+import javax.swing.filechooser.*;
+import javax.swing.filechooser.FileFilter;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -178,7 +180,9 @@ public class MenuBar extends JMenuBar implements ActionListener {
             // TODO: set file filters
             // TODO: make dialog open in My Pictures
             final JFileChooser jfc = new JFileChooser();
-            jfc.setSelectedFile(new File(defaultName + "." + defaultExtension));
+            MMVSimpleFileFilter ff = new MMVSimpleFileFilter();
+            jfc.setFileFilter(ff);
+            jfc.setSelectedFile(new File(defaultName + "." + ff.getExtension()));
             final int retVal = jfc.showSaveDialog(mJPanel);
 
             if(JFileChooser.APPROVE_OPTION != retVal){
@@ -229,10 +233,11 @@ public class MenuBar extends JMenuBar implements ActionListener {
     boolean saveImage(final String defaultName, final String defaultExtension){
         try {
             // figure out where to save the image
-            // TODO: set file filters
             // TODO: make dialog open in My Pictures
             final JFileChooser jfc = new JFileChooser();
-            jfc.setSelectedFile(new File(defaultName + "." + defaultExtension));
+            PNGSimpleFileFilter ff = new PNGSimpleFileFilter();
+            jfc.setFileFilter(ff);
+            jfc.setSelectedFile(new File(defaultName + "." + ff.getExtension()));
             final int retVal = jfc.showSaveDialog(mJPanel);
 
             if(JFileChooser.APPROVE_OPTION != retVal){
@@ -245,7 +250,7 @@ public class MenuBar extends JMenuBar implements ActionListener {
             // http://download.oracle.com/javase/tutorial/2d/images/saveimage.html
             // TODO: other formats, esp. lossless format (bmp ?)
             BufferedImage bi = mJPanel.getCurrentLogicalImage();
-            ImageIO.write(bi, defaultExtension, savefile);
+            ImageIO.write(bi, ff.getExtension(), savefile);
         } catch (Exception ioe) {
             System.err.println(ioe);
             return false;

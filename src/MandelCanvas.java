@@ -2,6 +2,7 @@ import java.awt.*;
 import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
 import java.io.Serializable;
+import java.math.BigDecimal;
 
 /**
  * Created by IntelliJ IDEA.
@@ -66,16 +67,15 @@ public class MandelCanvas  implements Serializable {
      * Alters this object to describe a different area of the Mandelbrot set
      * per the region described by the input pixels (mouse clicks).
      *
-     * TODO: !!! fix zooming to unexpected places, maybe lock the zoombox in JPanel again
      * todo: spawn new threads to do this (here might not be the best place)
-     * todo: fix recalculating region to maintain aspect ratio
-     * todo: refactor param names
      *
-     * @param upperLeftCorner first click of user (may not actually be upperleftcorner)
-     * @param lowerRightCorner second click of user
+     * @param firstClick first click of user (may not actually be upperleftcorner)
+     * @param secondClick second click of user
      * @return
      */
-    public MandelCanvas doZoom(Pixel upperLeftCorner, Pixel lowerRightCorner){
+    public MandelCanvas doZoom(final Pixel firstClick, final Pixel secondClick){
+        Pixel upperLeftCorner = firstClick;
+        Pixel lowerRightCorner = secondClick;
         // swap the click points if user clicked lower right corner before upper left corner
         if(upperLeftCorner.getX() > lowerRightCorner.getX() || upperLeftCorner.getY() > lowerRightCorner.getY()){
             Pixel tmp = lowerRightCorner;
@@ -147,7 +147,7 @@ public class MandelCanvas  implements Serializable {
             { "real (x) max: ", renderRegion.getRealMax() },
             { "imaginary (y) min: ", renderRegion.getImagMin() },
             { "imaginary (y) max: ", renderRegion.getImagMax() },
-            { "delta: ", renderRegion.getAverageDelta(logicalImageSize) },
+            { "delta: ", new BigDecimal(renderRegion.getAverageDelta(logicalImageSize)).toPlainString() },
             { "iteration limit: ", iterationMax },
             { "logical x resolution: ", logicalImageSize.getWidth() },
             { "logical y resolution: ", logicalImageSize.getHeight() },

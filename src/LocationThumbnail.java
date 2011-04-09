@@ -23,7 +23,6 @@ public class LocationThumbnail extends JPanel {
         image = canvas.getDisplayedBufferedImage(imageSize);
     }
 
-    // todo: setFocus as box around zoom region + crosshairs (only crosshairs at the moment)
     public void setFocus(ComplexRegion rect){
         focus = new ImageRegion(
             canvas.coordinatesToPoint(rect.getUpperLeft()),
@@ -41,7 +40,6 @@ public class LocationThumbnail extends JPanel {
         if(null == focus)
             return;
 
-        // todo: draw box around zoom region if it would be visible
         g.setColor(Color.WHITE);
         g.drawRect(focus.getXMin(), focus.getYMin(), focus.getXMax() - focus.getXMin(), focus.getYMax() - focus.getYMin());
         final int middleX = focus.getXMin() + (focus.getXMax() - focus.getXMin())/2;

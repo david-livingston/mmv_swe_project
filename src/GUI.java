@@ -1,4 +1,5 @@
 import javax.swing.*;
+import javax.swing.table.JTableHeader;
 
 /**
  * Created by IntelliJ IDEA.
@@ -15,11 +16,7 @@ import javax.swing.*;
  */
 public class GUI extends JFrame {
 
-    /* Specifies the number of horizontal and vertical pixels used displaying the picture.
-     *
-     * TODO: decouple the size of BufferedImage from the canvas it is displayed on so the
-     * logical size of the image generated (and the size used when saving) does not need
-     * to be exactly the same size as displayed on screen. */
+    // Specifies the number of horizontal and vertical pixels used displaying the picture.
     private final static ImageSize logicalImageSize = new ImageSize(1400, 1700);
     private final static ImageSize displayedImageSize = new ImageSize(700, 850);
 
@@ -33,7 +30,6 @@ public class GUI extends JFrame {
      * Constructs the GUI which has the effect of launching the program.
      */
     private GUI() {
-        // todo: add memory stats to status bar, got a out of heap space exception once -- related to navigation history?
         setTitle("MMV: Multithreaded Mandelbrot Viewer");
         mJPanel = new MandelJPanel(logicalImageSize, displayedImageSize);
         setJMenuBar(new MenuBar(mJPanel));
@@ -54,9 +50,7 @@ public class GUI extends JFrame {
         mJPanel.associateStatusBar(statusBar);
 
         // todo: clean up all this layout code
-        // todo: make table not display delta w/ scientific notation
         // todo: make table not editable
-        // todo: more stats in table
         JInternalFrame attributeTableInternalFrame = new JInternalFrame("Attribute Values", true, true, true, true);
         attributeTableInternalFrame.setVisible(true);
         attributeTableInternalFrame.setSize(350, displayedImageSize.getHeight()/2 + 50);
@@ -67,8 +61,6 @@ public class GUI extends JFrame {
         attributeTableInternalFrame.setLocation(displayedImageSize.getWidth() + 10, 5);
         desktop.add(attributeTableInternalFrame);
         mJPanel.associateRenderStats(renderStats);
-
-        // todo: make the crosshairs move as different zoom regions are selected
         JInternalFrame locationThumbnailInternalFrame = new JInternalFrame("Zoom Location", false, true, false, true);
         LocationThumbnail locationThumbnail = new LocationThumbnail(new ImageSize(175, 212), locationThumbnailInternalFrame);
         locationThumbnailInternalFrame.setVisible(false);

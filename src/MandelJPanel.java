@@ -94,22 +94,21 @@ public class MandelJPanel extends JPanel implements MouseListener, MouseMotionLi
      * Called by a mouse event listener to indicate user has selected two
      * points describing a region to zoom in on.
      *
-     * todo: refactor param names
      * todo: remove printlns, maybe use status bar
      *
-     * @param upperLeftClick the first point clicked by user to indicate start of a zoom region
-     * @param lowerRightClick the second point clicked by user to indicate end of zoom region
+     * @param firstClick the first point clicked by user to indicate start of a zoom region
+     * @param secondClick the second point clicked by user to indicate end of zoom region
      */
-    void doZoom(Pixel upperLeftClick, Pixel lowerRightClick){
-        System.out.println("Beginning Zoom @ UpperLeft(" + upperLeftClick.getX() + "," + upperLeftClick.getY() + "); LowerRight(" + lowerRightClick.getX() + "," + lowerRightClick.getY() + ")");
+    void doZoom(Pixel firstClick, Pixel secondClick){
+        System.out.println("Beginning Zoom @ UpperLeft(" + firstClick.getX() + "," + firstClick.getY() + "); LowerRight(" + secondClick.getX() + "," + secondClick.getY() + ")");
         thumbnail.setFocus(
             new ComplexRegion(
-                navigation.getCurrent().pointToCoordinates(upperLeftClick),
-                navigation.getCurrent().pointToCoordinates(lowerRightClick)
+                navigation.getCurrent().pointToCoordinates(firstClick),
+                navigation.getCurrent().pointToCoordinates(secondClick)
             )
         );
         thumbNailFrame.repaint();
-        navigation.zoom(upperLeftClick, lowerRightClick);
+        navigation.zoom(firstClick, secondClick);
         refreshBufferedImage();
         thumbNailFrame.setVisible(true);
         updateRenderStats();
