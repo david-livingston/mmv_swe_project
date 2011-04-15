@@ -1,0 +1,1 @@
+jar cfe mmv.jar GUI *.class
