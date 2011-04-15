@@ -100,7 +100,6 @@ public class MandelJPanel extends JPanel implements MouseListener, MouseMotionLi
      * @param secondClick the second point clicked by user to indicate end of zoom region
      */
     void doZoom(Pixel firstClick, Pixel secondClick){
-        System.out.println("Beginning Zoom @ UpperLeft(" + firstClick.getX() + "," + firstClick.getY() + "); LowerRight(" + secondClick.getX() + "," + secondClick.getY() + ")");
         thumbnail.setFocus(
             new ComplexRegion(
                 navigation.getCurrent().pointToCoordinates(firstClick),
@@ -112,7 +111,6 @@ public class MandelJPanel extends JPanel implements MouseListener, MouseMotionLi
         refreshBufferedImage();
         thumbNailFrame.setVisible(true);
         updateRenderStats();
-        System.out.println("Finished Zoom");
     }
 
     public void updateRenderStats(){

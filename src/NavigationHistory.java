@@ -32,10 +32,9 @@ public class NavigationHistory {
     }
 
     public void zoom(Pixel upperLeftClick, Pixel lowerRightClick){
+        current.setLightWeight(true);
         next.clear();
-        // current.setLightWeight();
         previous.push(current);
-        // todo: doesn't always work, might have to avoid pushing the pixel data & only push the coordinates describing the zoom region
         try {
             current = current.doZoom(upperLeftClick, lowerRightClick);
         } catch (OutOfMemoryError ouch) {
@@ -46,6 +45,7 @@ public class NavigationHistory {
     }
 
     public void back(){
+        current.setLightWeight(true);
         if(previous.isEmpty())
             return;
         next.push(current);
@@ -66,6 +66,7 @@ public class NavigationHistory {
     }
 
     public void setCurrent(MandelCanvas canvas) {
+        current.setLightWeight(true);
         previous.push(current);
         current = canvas;
         updateThumbnail();
