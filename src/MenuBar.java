@@ -1,5 +1,3 @@
-import com.sun.xml.internal.bind.v2.runtime.unmarshaller.Intercepter;
-
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import javax.swing.filechooser.*;
