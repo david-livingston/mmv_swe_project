@@ -218,6 +218,7 @@ public class MandelCanvas  implements Serializable {
     public void setIterationMax(int iterationMax) {
         this.iterationMax = iterationMax;
         initLogicalBufferedImage();
+        initDisplayBufferedImage();
     }
 
     public ComplexRegion getAsComplexRectangle(){
