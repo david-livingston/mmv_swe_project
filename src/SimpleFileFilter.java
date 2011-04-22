@@ -13,7 +13,7 @@ public abstract class SimpleFileFilter extends FileFilter {
     public abstract String getExtension();
 
     public boolean accept(File file) {
-        return file.getName().toLowerCase().endsWith("." + getExtension());
+        return file.isDirectory() || file.getName().toLowerCase().endsWith("." + getExtension());
     }
 
     public String getDescription() {
