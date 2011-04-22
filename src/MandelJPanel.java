@@ -5,6 +5,7 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import java.awt.image.BufferedImage;
+import java.io.File;
 
 /**
  * Created by IntelliJ IDEA.
@@ -38,10 +39,10 @@ public class MandelJPanel extends JPanel implements MouseListener, MouseMotionLi
      * @param logicalImageSize
      * @param displayedImageSize
      */
-    public MandelJPanel(final ImageSize logicalImageSize, final ImageSize displayedImageSize){
+    public MandelJPanel(final ImageSize logicalImageSize, final ImageSize displayedImageSize, final File fileToOpen){
         super();
         this.displayedImageSize = displayedImageSize;
-        navigation = new NavigationHistory(logicalImageSize, displayedImageSize);
+        navigation = new NavigationHistory(logicalImageSize, displayedImageSize, fileToOpen);
         refreshBufferedImage();
         addMouseListener(this);
         addMouseMotionListener(this);

@@ -84,14 +84,14 @@ public class ComplexRegion implements Serializable {
     }
 
     private double getDelta(final int resolution, final boolean real){
-        Global.checkArgument(resolution > 0);
+        assert resolution > 0;
 
         final double distance =
             real ? getRealMax() - getRealMin()
                  : getImagMax() - getImagMin()
         ;
 
-        Global.assertState(distance >= 0.0);
+        assert distance >= 0.0;
 
         return distance / ((double) resolution);
     }

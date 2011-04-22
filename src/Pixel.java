@@ -13,7 +13,7 @@ public class Pixel implements Serializable {
     final int y;
 
     public Pixel(int x, int y) {
-        Global.checkArgument(x >= 0 && y >= 0);
+        assert x >= 0 && y >= 0;
         this.x = x;
         this.y = y;
     }

@@ -1,3 +1,5 @@
+import org.omg.CORBA.PUBLIC_MEMBER;
+
 /**
  * Created by IntelliJ IDEA.
  * User: Owner
@@ -9,17 +11,29 @@ public class Global {
 
     private static final boolean debug = true;
 
-    public static void assertState(boolean validState){
-        if(!debug) return;
+    private static final int serialID = 1;
 
-        if(!validState)
-            throw new IllegalStateException();
+    private static final int majorVersion = 1;
+    private static final char minorVersion = 'A';
+    private static final int buildVersion = 0;
+
+    public static String getVersion(){
+        return serialID +
+            "[" + majorVersion + "." +
+            minorVersion + "." +
+            buildVersion + "]" +
+            (isDebugEnabled() ? "D" : "")
+        ;
     }
 
-    public static void checkArgument(boolean validState){
-        if(!debug) return;
+    public static String getTitle(){
+        return "MMV: Multithreaded Mandelbrot Viewer \t \t v" +
+            getVersion() + " \t \t " +
+            (isDebugEnabled() ? "--DEBUG MODE--" : "")
+        ;
+    }
 
-        if(!validState)
-            throw new IllegalArgumentException();
+    public static boolean isDebugEnabled(){
+        return debug;
     }
 }

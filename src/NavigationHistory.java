@@ -1,4 +1,7 @@
 import java.awt.*;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.concurrent.LinkedBlockingDeque;
 
 /**
@@ -19,8 +22,25 @@ public class NavigationHistory {
     private final LinkedBlockingDeque<MandelCanvas> next = new LinkedBlockingDeque<MandelCanvas>();
     private LocationThumbnail thumbnail;
 
-    public NavigationHistory(final ImageSize logicalImageSize, final ImageSize displayedImageSize){
-        current = home = new MandelCanvasFactory(logicalImageSize, displayedImageSize).getHome();
+    public NavigationHistory(final ImageSize logicalImageSize, final ImageSize displayedImageSize, final File fileToOpen){
+        home = new MandelCanvasFactory(logicalImageSize, displayedImageSize).getHome();
+        Exception e = null;
+        if(null == fileToOpen)
+            current = home;
+        else try {
+            current = MandelCanvas.unmarshall(fileToOpen);
+        } catch (ClassNotFoundException cnfe) {
+            System.err.println("Serialization issue opening file: " + fileToOpen);
+            e = cnfe;
+        } catch (FileNotFoundException fnfe) {
+            System.err.println("Could not find file: " + fileToOpen);
+            e = fnfe;
+        } catch (IOException ioe) {
+            System.err.println("IOException in InputStream while unmarshalling file: " + fileToOpen);
+            e = ioe;
+        }
+        if(e != null && Global.isDebugEnabled())
+            e.printStackTrace();
     }
 
     public void associateThumbnail(LocationThumbnail thumbnail){

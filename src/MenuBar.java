@@ -150,23 +150,23 @@ public class MenuBar extends JMenuBar implements ActionListener {
 
     private boolean openState() {
         MandelCanvas canvas = null;
+
+        final JFileChooser jfc = new JFileChooser();
+        jfc.setFileFilter(new MMVSimpleFileFilter());
+        final int retVal = jfc.showSaveDialog(mJPanel);
+
+        if(JFileChooser.APPROVE_OPTION != retVal){
+            return false; // user cancelled
+        }
+
         try {
-            final JFileChooser jfc = new JFileChooser();
-            final int retVal = jfc.showSaveDialog(mJPanel);
-
-            if(JFileChooser.APPROVE_OPTION != retVal){
-                return false; // user cancelled
-            }
-
-            final File saveFile = jfc.getSelectedFile();
-
-            FileInputStream fis = new FileInputStream(saveFile);
-            ObjectInputStream in = new ObjectInputStream(fis);
-            canvas = (MandelCanvas) in.readObject();
-        } catch (Exception ioe) {
-            ioe.printStackTrace();
+            canvas = MandelCanvas.unmarshall(jfc.getSelectedFile());
+        } catch (Exception e) {
+            if(Global.isDebugEnabled())
+                e.printStackTrace();
             return false;
         }
+
         mJPanel.getNavigationHistory().setCurrent(canvas);
         mJPanel.refreshBufferedImage();
         return true;

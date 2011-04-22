@@ -1,7 +1,7 @@
 import java.awt.*;
 import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
-import java.io.Serializable;
+import java.io.*;
 import java.math.BigDecimal;
 
 /**
@@ -223,5 +223,23 @@ public class MandelCanvas  implements Serializable {
 
     public ComplexRegion getAsComplexRectangle(){
         return renderRegion;
+    }
+
+    public static MandelCanvas unmarshall(File serialized) throws IOException, ClassNotFoundException {
+        assert null != serialized;
+        FileInputStream fis = new FileInputStream(serialized);
+        ObjectInputStream in = new ObjectInputStream(fis);
+        MandelCanvas out = (MandelCanvas) in.readObject();
+        /* This is rather hackish. What should work here is:
+         * out.setLightWeight(false);
+         * but the object was probably not serialized in a lightweight state
+         * and out.setLightWeight(false); does nothing if the object isn't
+         * in a light weight state. So the state has to be toggled, wish I
+         * had time to do this better.
+         */
+        out.setLightWeight(true);
+        out.setLightWeight(false);
+        /* end hack */
+        return out;
     }
 }

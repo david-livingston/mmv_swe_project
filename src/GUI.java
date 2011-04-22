@@ -1,5 +1,6 @@
 import javax.swing.*;
 import javax.swing.table.JTableHeader;
+import java.io.File;
 
 /**
  * Created by IntelliJ IDEA.
@@ -29,9 +30,9 @@ public class GUI extends JFrame {
     /**
      * Constructs the GUI which has the effect of launching the program.
      */
-    private GUI() {
-        setTitle("MMV: Multithreaded Mandelbrot Viewer");
-        mJPanel = new MandelJPanel(logicalImageSize, displayedImageSize);
+    private GUI(File fileToOpen) {
+        setTitle(Global.getTitle());
+        mJPanel = new MandelJPanel(logicalImageSize, displayedImageSize, fileToOpen);
         setJMenuBar(new MenuBar(mJPanel));
 
         JInternalFrame renderInternalFrame = new JInternalFrame("Render Window", true, true, true, true);
@@ -83,6 +84,17 @@ public class GUI extends JFrame {
         } catch (Exception e) {
             System.err.println("Exception setting native look & feel: " + e);
         }
-        new GUI();
+
+        File fileToOpen = null;
+        boolean sawOpenArg = false;
+
+        for(String arg : args)
+            if(sawOpenArg){
+                fileToOpen = new File(arg);
+                break;
+            } else
+                sawOpenArg = arg.equalsIgnoreCase("-open");
+
+        new GUI(fileToOpen);
     }
 }
