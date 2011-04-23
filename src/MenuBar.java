@@ -175,19 +175,18 @@ public class MenuBar extends JMenuBar implements ActionListener {
     private boolean saveState(String defaultName, String defaultExtension) {
         try {
             // figure out where to save the image
-            // TODO: set file filters
-            // TODO: make dialog open in My Pictures
+            // TODO: make dialog open in My Documents || Desktop
             final JFileChooser jfc = new JFileChooser();
             MMVSimpleFileFilter ff = new MMVSimpleFileFilter();
             jfc.setFileFilter(ff);
-            jfc.setSelectedFile(new File(defaultName + "." + ff.getExtension()));
+            jfc.setSelectedFile(makeFileWithTimeTokenSuffix(defaultName, ff.getExtension()));
             final int retVal = jfc.showSaveDialog(mJPanel);
 
             if(JFileChooser.APPROVE_OPTION != retVal){
                 return false; // user cancelled
             }
 
-            final File saveFile = jfc.getSelectedFile();
+            final File saveFile = ensureExtension(jfc.getSelectedFile(), ff.getExtension());
 
             // http://java.sun.com/developer/technicalArticles/Programming/serialization/
             FileOutputStream fos = new FileOutputStream(saveFile);
@@ -214,7 +213,7 @@ public class MenuBar extends JMenuBar implements ActionListener {
      * @return whether the ActionEvent e was fired by a menu element
      *  associated with String key
      */
-    boolean matches(ActionEvent e, String key){
+    private boolean matches(ActionEvent e, String key){
         return e.getActionCommand().equals(key);
     }
 
@@ -228,21 +227,21 @@ public class MenuBar extends JMenuBar implements ActionListener {
      * @param defaultExtension the file extension prefilled int he save dialog
      * @return whether the file was successfully saved
      */
-    boolean saveImage(final String defaultName, final String defaultExtension){
+    private boolean saveImage(final String defaultName, final String defaultExtension){
         try {
             // figure out where to save the image
-            // TODO: make dialog open in My Pictures
+            // TODO: make dialog open in My Pictures || Desktop
             final JFileChooser jfc = new JFileChooser();
             PNGSimpleFileFilter ff = new PNGSimpleFileFilter();
             jfc.setFileFilter(ff);
-            jfc.setSelectedFile(new File(defaultName + "." + ff.getExtension()));
+            jfc.setSelectedFile(makeFileWithTimeTokenSuffix(defaultName, ff.getExtension()));
             final int retVal = jfc.showSaveDialog(mJPanel);
 
             if(JFileChooser.APPROVE_OPTION != retVal){
                 return false; // user cancelled
             }
 
-            final File savefile = jfc.getSelectedFile();
+            final File savefile = ensureExtension(jfc.getSelectedFile(), ff.getExtension());
 
             // save image as PNG, doc re. saving BufferedImage:
             // http://download.oracle.com/javase/tutorial/2d/images/saveimage.html
@@ -254,6 +253,17 @@ public class MenuBar extends JMenuBar implements ActionListener {
             return false;
         }
         return true;
+    }
+
+    private File ensureExtension(final File file, final String ext){
+        if(file.getName().endsWith("." + ext))
+            return file;
+        else
+            return new File(file.getParent(), file.getName() + "." + ext);
+    }
+
+    private File makeFileWithTimeTokenSuffix(final String name, final String ext){
+        return new File(name + "_" + (System.currentTimeMillis() % 10000) + "." + ext);
     }
 
     /**
