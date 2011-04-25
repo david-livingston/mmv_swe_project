@@ -63,13 +63,14 @@ public class MandelJPanel extends JPanel implements MouseListener, MouseMotionLi
         // draw zoom box, 3 pixels wide: white, black, white
         // todo: use BufferedImage features to indicate zoom region by opacity
         if(null != firstClick){ // if zooming
-            final ImageRegion selection = new ImageRegion(firstClick, mouseLocation);
+            final ImageRegion true_selection = new ImageRegion(firstClick, mouseLocation);
+            final ImageRegion adjusted_selection = navigation.getCurrent().getLogicalImageSize().adjustImageRegionAspectRatio(true_selection);
             
             g.setColor(Color.WHITE);
-            g.drawRect(selection.getXMin(), selection.getYMin(), selection.getWidth(), selection.getHeight());
-            g.drawRect(selection.getXMin() - 2, selection.getYMin() -2, selection.getWidth() + 4, selection.getHeight() + 4);
+            g.drawRect(adjusted_selection.getXMin(), adjusted_selection.getYMin(), adjusted_selection.getWidth(), adjusted_selection.getHeight());
+            g.drawRect(adjusted_selection.getXMin() - 2, adjusted_selection.getYMin() -2, adjusted_selection.getWidth() + 4, adjusted_selection.getHeight() + 4);
             g.setColor(Color.BLACK);
-            g.drawRect(selection.getXMin() - 1, selection.getYMin() - 1, selection.getWidth() + 2, selection.getHeight() + 2);
+            g.drawRect(adjusted_selection.getXMin() - 1, adjusted_selection.getYMin() - 1, adjusted_selection.getWidth() + 2, adjusted_selection.getHeight() + 2);
         }
     }
 
@@ -85,7 +86,9 @@ public class MandelJPanel extends JPanel implements MouseListener, MouseMotionLi
             return;
 
         if(null != firstClick){
-            doZoom(new ImageRegion(firstClick, new Pixel(e.getPoint())));
+            doZoom(
+                navigation.getCurrent().getLogicalImageSize().adjustImageRegionAspectRatio(new ImageRegion(firstClick, new Pixel(e.getPoint())))
+            );
             firstClick = null;
         }else
             firstClick = new Pixel(e.getPoint());

@@ -208,4 +208,8 @@ public class MandelCanvas  implements Serializable {
         out.calcLightWeightAttributes();
         return out;
     }
+
+    public ImageSize getLogicalImageSize() {
+        return logicalImageSize;
+    }
 }

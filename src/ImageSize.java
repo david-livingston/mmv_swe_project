@@ -19,6 +19,25 @@ public class ImageSize extends ImageRegion implements Serializable {
         );
     }
 
+
+    public ImageRegion adjustImageRegionAspectRatio(final ImageRegion input){
+        final double correct_width_to_height = ((double)getWidth()/getHeight());
+        final double correct_height_to_width = ((double)getHeight()/getWidth());
+
+        // I'm sure there's a much smarter way to do this.
+        int newWidth = (int)(correct_width_to_height * input.getHeight());
+        int newHeight = (int) (correct_height_to_width * newWidth);
+        newWidth = (int)(correct_width_to_height * newHeight);
+
+        return new ImageRegion(
+            input.getUpperLeftCorner(),
+            new Pixel(
+                input.getXMin() + newWidth,
+                input.getYMin() + newHeight
+            )
+        );
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
