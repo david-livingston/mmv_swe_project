@@ -14,7 +14,7 @@ public class Global {
     private static final int serialID = 2;
 
     private static final int majorVersion = 1;
-    private static final char minorVersion = 'C';
+    private static final char minorVersion = 'D';
     private static final int buildVersion = 0;
 
     public static String getVersion(){

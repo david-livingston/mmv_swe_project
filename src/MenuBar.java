@@ -151,9 +151,9 @@ public class MenuBar extends JMenuBar implements ActionListener {
     private boolean openState() {
         MandelCanvas canvas = null;
 
-        final JFileChooser jfc = new JFileChooser();
+        final JFileChooser jfc = new JFileChooser(findDesktop());
         jfc.setFileFilter(new MMVSimpleFileFilter());
-        final int retVal = jfc.showSaveDialog(mJPanel);
+        final int retVal = jfc.showOpenDialog(mJPanel);
 
         if(JFileChooser.APPROVE_OPTION != retVal){
             return false; // user cancelled
@@ -172,14 +172,13 @@ public class MenuBar extends JMenuBar implements ActionListener {
         return true;
     }
 
-    private boolean saveState(String defaultName, String defaultExtension) {
+    private boolean saveState(final String defaultName, final String defaultExtension) {
         try {
             // figure out where to save the image
-            // TODO: make dialog open in My Documents || Desktop
             final JFileChooser jfc = new JFileChooser();
             MMVSimpleFileFilter ff = new MMVSimpleFileFilter();
             jfc.setFileFilter(ff);
-            jfc.setSelectedFile(makeFileWithTimeTokenSuffix(defaultName, ff.getExtension()));
+            jfc.setSelectedFile(makeFileWithTimeTokenSuffix(defaultName, ff.getExtension(), true));
             final int retVal = jfc.showSaveDialog(mJPanel);
 
             if(JFileChooser.APPROVE_OPTION != retVal){
@@ -187,6 +186,19 @@ public class MenuBar extends JMenuBar implements ActionListener {
             }
 
             final File saveFile = ensureExtension(jfc.getSelectedFile(), ff.getExtension());
+
+            if(saveFile.exists()) {
+                switch(JOptionPane.showConfirmDialog(mJPanel, "File: " + saveFile.getName() + " already exists.\nOverwrite?")){
+                    case JOptionPane.OK_OPTION :
+                        break;
+                    case JOptionPane.NO_OPTION :
+                        return saveState(defaultName, defaultExtension);
+                    case JOptionPane.CANCEL_OPTION :
+                        return false;
+                    default:
+                        Global.logError("MenuBar.saveState()", "unexpected value returned by JOptionPane.showConfirmDialog()");
+                }
+            }
 
             // http://java.sun.com/developer/technicalArticles/Programming/serialization/
             FileOutputStream fos = new FileOutputStream(saveFile);
@@ -221,8 +233,6 @@ public class MenuBar extends JMenuBar implements ActionListener {
      * Saves the image currently being displayed to the user at a file location of the
      * user's choosing. Uses a filechooser dialog.
      *
-     * Note: multiple TODO tasks in this method
-     *
      * @param defaultName the file name prefilled in the save dialog
      * @param defaultExtension the file extension prefilled int he save dialog
      * @return whether the file was successfully saved
@@ -230,29 +240,55 @@ public class MenuBar extends JMenuBar implements ActionListener {
     private boolean saveImage(final String defaultName, final String defaultExtension){
         try {
             // figure out where to save the image
-            // TODO: make dialog open in My Pictures || Desktop
             final JFileChooser jfc = new JFileChooser();
             PNGSimpleFileFilter ff = new PNGSimpleFileFilter();
             jfc.setFileFilter(ff);
-            jfc.setSelectedFile(makeFileWithTimeTokenSuffix(defaultName, ff.getExtension()));
+            jfc.setSelectedFile(makeFileWithTimeTokenSuffix(defaultName, ff.getExtension(), false));
             final int retVal = jfc.showSaveDialog(mJPanel);
 
             if(JFileChooser.APPROVE_OPTION != retVal){
                 return false; // user cancelled
             }
 
-            final File savefile = ensureExtension(jfc.getSelectedFile(), ff.getExtension());
+            final File saveFile = ensureExtension(jfc.getSelectedFile(), ff.getExtension());
+
+            if(saveFile.exists()) {
+                switch(JOptionPane.showConfirmDialog(mJPanel, "File: " + saveFile.getName() + " already exists.\nOverwrite?")){
+                    case JOptionPane.OK_OPTION :
+                        break;
+                    case JOptionPane.NO_OPTION :
+                        return saveImage(defaultName, defaultExtension);
+                    case JOptionPane.CANCEL_OPTION :
+                        return false;
+                    default:
+                        Global.logError("MenuBar.saveImage()", "unexpected value returned by JOptionPane.showConfirmDialog()");
+                }
+            }
 
             // save image as PNG, doc re. saving BufferedImage:
             // http://download.oracle.com/javase/tutorial/2d/images/saveimage.html
             // TODO: other formats, esp. lossless format (bmp ?)
             BufferedImage bi = mJPanel.getCurrentLogicalImage();
-            ImageIO.write(bi, ff.getExtension(), savefile);
+            ImageIO.write(bi, ff.getExtension(), saveFile);
         } catch (Exception ioe) {
             System.err.println(ioe);
             return false;
         }
         return true;
+    }
+
+    private File findDesktop(){
+        // adapted from: http://stackoverflow.com/questions/1080634/how-to-get-the-desktop-path-in-java
+        FileSystemView fileSys = FileSystemView.getFileSystemView();
+        // why is this undocumented method named getHomeDirectory() rather than getDesktopDirectory()
+        // does it ever fail?
+        // might be a Windows only solution :| also look at FileSystemView.getRoots(): File[]
+        File desktop = fileSys.getHomeDirectory();
+        if(!desktop.exists() || !desktop.canRead()) {
+            Global.logError("MenuBar.findDesktop()", "location: " + desktop.getAbsolutePath() + ", exists: " + desktop.exists() + ", can read: " + desktop.canRead());
+            return null;
+        }
+        return desktop;
     }
 
     private File ensureExtension(final File file, final String ext){
@@ -262,8 +298,25 @@ public class MenuBar extends JMenuBar implements ActionListener {
             return new File(file.getParent(), file.getName() + "." + ext);
     }
 
-    private File makeFileWithTimeTokenSuffix(final String name, final String ext){
-        return new File(name + "_" + (System.currentTimeMillis() % 10000) + "." + ext);
+    private File makeFileWithTimeTokenSuffix(final String name, final String ext, boolean includeBuildString){
+        final String longerRawName = name + (includeBuildString? "_v" + Global.getVersion() : "");
+        final String longerName = longerRawName + "." + ext;
+
+        final File desktop = findDesktop();
+        File out = desktop != null ? new File(desktop, longerName) : new File(longerName);
+
+        if(out.exists()){
+            File parent = out.getParentFile();
+            for(int i = 1; i < 1000; ++i){
+                File tmp = new File(parent, longerRawName + " (" + i + ")." + ext);
+                if(!tmp.exists()){
+                    out = tmp;
+                    break;
+                }
+            }
+        }
+
+        return out;
     }
 
     /**
