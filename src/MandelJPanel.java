@@ -64,7 +64,7 @@ public class MandelJPanel extends JPanel implements MouseListener, MouseMotionLi
         // todo: use BufferedImage features to indicate zoom region by opacity
         if(null != firstClick){ // if zooming
             final ImageRegion true_selection = new ImageRegion(firstClick, mouseLocation);
-            final ImageRegion adjusted_selection = navigation.getCurrent().getLogicalImageSize().adjustImageRegionAspectRatio(true_selection);
+            final ImageRegion adjusted_selection = navigation.getCurrent().getLogicalImageSize().adjustImageRegionAspectRatio(firstClick, true_selection);
             
             g.setColor(Color.WHITE);
             g.drawRect(adjusted_selection.getXMin(), adjusted_selection.getYMin(), adjusted_selection.getWidth(), adjusted_selection.getHeight());
@@ -87,7 +87,7 @@ public class MandelJPanel extends JPanel implements MouseListener, MouseMotionLi
 
         if(null != firstClick){
             doZoom(
-                navigation.getCurrent().getLogicalImageSize().adjustImageRegionAspectRatio(new ImageRegion(firstClick, new Pixel(e.getPoint())))
+                navigation.getCurrent().getLogicalImageSize().adjustImageRegionAspectRatio(firstClick, new ImageRegion(firstClick, new Pixel(e.getPoint())))
             );
             firstClick = null;
         }else

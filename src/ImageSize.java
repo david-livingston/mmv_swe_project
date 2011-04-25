@@ -20,7 +20,7 @@ public class ImageSize extends ImageRegion implements Serializable {
     }
 
 
-    public ImageRegion adjustImageRegionAspectRatio(final ImageRegion input){
+    public ImageRegion adjustImageRegionAspectRatio(final Pixel anchor, final ImageRegion input){
         final double correct_width_to_height = ((double)getWidth()/getHeight());
         final double correct_height_to_width = ((double)getHeight()/getWidth());
 
@@ -28,6 +28,16 @@ public class ImageSize extends ImageRegion implements Serializable {
         int newWidth = (int)(correct_width_to_height * input.getHeight());
         int newHeight = (int) (correct_height_to_width * newWidth);
         newWidth = (int)(correct_width_to_height * newHeight);
+
+        if(anchor.getX() > input.getXMin() || anchor.getY() > input.getYMin()){
+            return new ImageRegion(
+                new Pixel(
+                    input.getXMax() - newWidth,
+                    input.getYMax() - newHeight
+                ),
+                input.getLowerRightCorner()
+            );
+        }
 
         return new ImageRegion(
             input.getUpperLeftCorner(),
