@@ -1,4 +1,3 @@
-import java.awt.*;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -24,23 +23,17 @@ public class NavigationHistory {
 
     public NavigationHistory(final ImageSize logicalImageSize, final ImageSize displayedImageSize, final File fileToOpen){
         home = new MandelCanvasFactory(logicalImageSize, displayedImageSize).getHome();
-        Exception e = null;
         if(null == fileToOpen)
             current = home;
         else try {
             current = MandelCanvas.unmarshall(fileToOpen);
         } catch (ClassNotFoundException cnfe) {
-            System.err.println("Serialization issue opening file: " + fileToOpen);
-            e = cnfe;
+            Global.logNonFatalException("Serialization issue opening file: " + fileToOpen, cnfe);
         } catch (FileNotFoundException fnfe) {
-            System.err.println("Could not find file: " + fileToOpen);
-            e = fnfe;
+            Global.logNonFatalException("Could not find file: " + fileToOpen, fnfe);
         } catch (IOException ioe) {
-            System.err.println("IOException in InputStream while unmarshalling file: " + fileToOpen);
-            e = ioe;
+            Global.logNonFatalException("IOException in InputStream while unmarshalling file: " + fileToOpen, ioe);
         }
-        if(e != null && Global.isDebugEnabled())
-            e.printStackTrace();
     }
 
     public void associateThumbnail(LocationThumbnail thumbnail){
@@ -51,16 +44,16 @@ public class NavigationHistory {
         return current;
     }
 
-    public void zoom(Pixel upperLeftClick, Pixel lowerRightClick){
+    public void zoom(final ImageRegion screenSelection){
         current.setLightWeight(true);
         next.clear();
         previous.push(current);
         try {
-            current = current.doZoom(upperLeftClick, lowerRightClick);
+            current = current.toZoomedCanvas(screenSelection);
         } catch (OutOfMemoryError ouch) {
             previous.clear();
-            System.err.println("Navigation history abandoned b/c heap space exceeded.");
-            current = current.doZoom(upperLeftClick, lowerRightClick);
+            Global.logError("NavigationHistory.zoom()", "Navigation history abandoned b/c heap space exceeded.");
+            current = current.toZoomedCanvas(screenSelection);
         }
     }
 

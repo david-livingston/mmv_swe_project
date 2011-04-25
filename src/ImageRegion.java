@@ -13,9 +13,27 @@ public class ImageRegion implements Serializable {
     private final Pixel upperLeft;
     private final Pixel lowerRight;
 
-    public ImageRegion(Pixel upperLeft, Pixel lowerRight) {
-        this.upperLeft = upperLeft;
-        this.lowerRight = lowerRight;
+    public ImageRegion(final Pixel point1, final Pixel point2) {
+        final int xmin, xmax, ymin, ymax;
+
+        if(point1.getX() < point2.getX()) {
+            xmin = point1.getX();
+            xmax = point2.getX();
+        } else {
+            xmin = point2.getX();
+            xmax = point1.getX();
+        }
+
+        if(point1.getY() < point2.getY()) {
+            ymin = point1.getY();
+            ymax = point2.getY();
+        } else {
+            ymin = point2.getY();
+            ymax = point1.getY();
+        }
+
+        upperLeft = new Pixel(xmin, ymin);
+        lowerRight = new Pixel(xmax, ymax);
     }
 
     public int getXMin(){
@@ -40,6 +58,14 @@ public class ImageRegion implements Serializable {
 
     public int getHeight(){
         return getYMax() - getYMin();
+    }
+
+    public Pixel getUpperLeftCorner() {
+        return upperLeft;
+    }
+
+    public Pixel getLowerRightCorner() {
+        return lowerRight;
     }
 
     @Override

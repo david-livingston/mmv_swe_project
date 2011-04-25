@@ -1,3 +1,4 @@
+import java.awt.*;
 import java.io.Serializable;
 
 /**
@@ -16,6 +17,12 @@ public class Pixel implements Serializable {
         assert x >= 0 && y >= 0;
         this.x = x;
         this.y = y;
+    }
+
+    public Pixel(Point p){
+        assert p.getX() >= 0.0 && p.getY() >= 0.0;
+        this.x = (int) p.getX();
+        this.y = (int) p.getY();
     }
 
     public int getX() {

@@ -36,4 +36,16 @@ public class Global {
     public static boolean isDebugEnabled(){
         return debug;
     }
+
+    public static void logError(String errorLocation, String error){
+        if(isDebugEnabled())
+            System.err.println("Error in: " + errorLocation + "; " + error);
+    }
+
+    public static void logNonFatalException(String error, Exception e){
+        if(isDebugEnabled()){
+            System.err.println(e.getClass() + ": " + error);
+            e.printStackTrace();
+        }
+    }
 }

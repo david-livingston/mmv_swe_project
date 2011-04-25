@@ -69,15 +69,18 @@ public class MandelCanvas  implements Serializable {
             mandelPoints = null;
             displayedBufferedImage = null;
             logicalBufferedImage = null;
-        } else {
-            mandelPoints = new MandelPoint[logicalImageSize.getWidth()][logicalImageSize.getHeight()];
-            for(int x = 0; x < logicalImageSize.getWidth(); ++x)
-                for(int y = 0; y < logicalImageSize.getHeight(); ++y)
-                    mandelPoints[x][y] = new MandelPoint(renderRegion.getComplexPointFromPixel(new Pixel(x, y), logicalImageSize, true));
+        } else
+            calcLightWeightAttributes();
+    }
 
-            initLogicalBufferedImage();
-            initDisplayBufferedImage();
-        }
+    private void calcLightWeightAttributes(){
+        mandelPoints = new MandelPoint[logicalImageSize.getWidth()][logicalImageSize.getHeight()];
+        for(int x = 0; x < logicalImageSize.getWidth(); ++x)
+            for(int y = 0; y < logicalImageSize.getHeight(); ++y)
+                mandelPoints[x][y] = new MandelPoint(renderRegion.getComplexPointFromPixel(new Pixel(x, y), logicalImageSize, true));
+
+        initLogicalBufferedImage();
+        initDisplayBufferedImage();
     }
 
     /**
@@ -97,39 +100,11 @@ public class MandelCanvas  implements Serializable {
         return Palette.getColor(m);
     }
 
-    /**
-     * Alters this object to describe a different area of the Mandelbrot set
-     * per the region described by the input pixels (mouse clicks).
-     *
-     * todo: spawn new threads to do this (here might not be the best place)
-     * todo: move some of the code into ImageRegion.java
-     *
-     * @param firstClick first click of user (may not actually be upperleftcorner)
-     * @param secondClick second click of user
-     * @return
-     */
-    public MandelCanvas doZoom(final Pixel firstClick, final Pixel secondClick){
-        Pixel upperLeftCorner = firstClick;
-        Pixel lowerRightCorner = secondClick;
-        // swap the click points if user clicked lower right corner before upper left corner
-        if(upperLeftCorner.getX() > lowerRightCorner.getX() || upperLeftCorner.getY() > lowerRightCorner.getY()){
-            Pixel tmp = lowerRightCorner;
-            lowerRightCorner = upperLeftCorner;
-            upperLeftCorner = tmp;
-        }
-        // translate first click into a complex number
-        final ComplexNumber translated_upperLeftCorner = pointToCoordinates(upperLeftCorner);
-        final double next_realMinimum = translated_upperLeftCorner.getReal();
-        final double next_imaginaryMaximum = translated_upperLeftCorner.getImag();
-        // translate second click into a complex number
-        final ComplexNumber translated_lowerRightCorner = pointToCoordinates(lowerRightCorner);
-        final double next_realMaximum = translated_lowerRightCorner.getReal();
-        final double next_imaginaryMinimum = translated_lowerRightCorner.getImag();
-
+    public MandelCanvas toZoomedCanvas(final ImageRegion screenSelection){
         return new MandelCanvas(
             new ComplexRegion(
-                new ComplexNumber(next_realMinimum, next_imaginaryMaximum),
-                new ComplexNumber(next_realMaximum, next_imaginaryMinimum)
+                pointToCoordinates(screenSelection.getUpperLeftCorner()),
+                pointToCoordinates(screenSelection.getLowerRightCorner())
             ),
             logicalImageSize,
             displayImageSize
@@ -230,16 +205,7 @@ public class MandelCanvas  implements Serializable {
         FileInputStream fis = new FileInputStream(serialized);
         ObjectInputStream in = new ObjectInputStream(fis);
         MandelCanvas out = (MandelCanvas) in.readObject();
-        /* This is rather hackish. What should work here is:
-         * out.setLightWeight(false);
-         * but the object was probably not serialized in a lightweight state
-         * and out.setLightWeight(false); does nothing if the object isn't
-         * in a light weight state. So the state has to be toggled, wish I
-         * had time to do this better.
-         */
-        out.setLightWeight(true);
-        out.setLightWeight(false);
-        /* end hack */
+        out.calcLightWeightAttributes();
         return out;
     }
 }

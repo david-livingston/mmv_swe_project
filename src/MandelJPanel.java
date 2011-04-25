@@ -63,52 +63,47 @@ public class MandelJPanel extends JPanel implements MouseListener, MouseMotionLi
         // draw zoom box, 3 pixels wide: white, black, white
         // todo: use BufferedImage features to indicate zoom region by opacity
         if(null != firstClick){ // if zooming
-            int width = (int)mouseLocation.getX() - (int)firstClick.getX();
-            int height = (int)mouseLocation.getY() - (int)firstClick.getY();
+            final ImageRegion selection = new ImageRegion(firstClick, mouseLocation);
             
             g.setColor(Color.WHITE);
-            g.drawRect((int)firstClick.getX(), (int)firstClick.getY(), width, height);
-            g.drawRect((int)firstClick.getX() - 2, (int)firstClick.getY() - 2, width + 4, height + 4);
+            g.drawRect(selection.getXMin(), selection.getYMin(), selection.getWidth(), selection.getHeight());
+            g.drawRect(selection.getXMin() - 2, selection.getYMin() -2, selection.getWidth() + 4, selection.getHeight() + 4);
             g.setColor(Color.BLACK);
-            g.drawRect((int)firstClick.getX() - 1, (int)firstClick.getY() - 1, width + 2, height + 2);
+            g.drawRect(selection.getXMin() - 1, selection.getYMin() - 1, selection.getWidth() + 2, selection.getHeight() + 2);
         }
     }
 
     /**
      * Mouse event handler; currently only used for zooming.
      *
-     * todo: use mouse dragging (maybe as option), actually check which mouse button is being pressed
+     * todo: use mouse dragging (maybe as option)
      *
      * @param e
      */
     public void mousePressed(MouseEvent e) {
+        if(e.getButton() != MouseEvent.BUTTON1)
+            return;
+
         if(null != firstClick){
-            doZoom(firstClick, new Pixel(e.getX(), e.getY()));
+            doZoom(new ImageRegion(firstClick, new Pixel(e.getPoint())));
             firstClick = null;
         }else
-            firstClick = new Pixel(e.getX(), e.getY());
+            firstClick = new Pixel(e.getPoint());
     }
 
-    public void mouseDragged(MouseEvent e) {}
+    public void mouseDragged(MouseEvent e) {
 
-    /**
-     * Called by a mouse event listener to indicate user has selected two
-     * points describing a region to zoom in on.
-     *
-     * todo: remove printlns, maybe use status bar
-     *
-     * @param firstClick the first point clicked by user to indicate start of a zoom region
-     * @param secondClick the second point clicked by user to indicate end of zoom region
-     */
-    void doZoom(Pixel firstClick, Pixel secondClick){
+    }
+
+    void doZoom(final ImageRegion selection){
         thumbnail.setFocus(
             new ComplexRegion(
-                navigation.getCurrent().pointToCoordinates(firstClick),
-                navigation.getCurrent().pointToCoordinates(secondClick)
+                navigation.getCurrent().pointToCoordinates(selection.getUpperLeftCorner()),
+                navigation.getCurrent().pointToCoordinates(selection.getLowerRightCorner())
             )
         );
         thumbNailFrame.repaint();
-        navigation.zoom(firstClick, secondClick);
+        navigation.zoom(selection);
         refreshBufferedImage();
         thumbNailFrame.setVisible(true);
         updateRenderStats();
@@ -131,8 +126,19 @@ public class MandelJPanel extends JPanel implements MouseListener, MouseMotionLi
      * @param e
      */
     public void mouseMoved(MouseEvent e) {
-        mouseLocation = new Pixel(e.getX(), e.getY());
+        if(mouseLeavingArea(e))
+            firstClick = null;
+        mouseLocation = new Pixel(e.getPoint());
         repaint();
+    }
+
+    private boolean mouseLeavingArea(MouseEvent e){
+        final Pixel location = new Pixel(e.getPoint());
+        if(location.getX() < 2 || location.getY() < 2)
+            return true;
+        if(location.getX() > getWidth() - 2 || location.getY() > getHeight() - 2)
+            return true;
+        return false;
     }
 
     public BufferedImage getCurrentDisplayedImage(){
