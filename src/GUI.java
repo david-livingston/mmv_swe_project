@@ -82,7 +82,7 @@ public class GUI extends JFrame {
         try { // Set System L&F
             UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
         } catch (Exception e) {
-            System.err.println("Exception setting native look & feel: " + e);
+            Global.logError("GUI.main()", "Exception setting native look & feel: " + e);
         }
 
         File fileToOpen = null;

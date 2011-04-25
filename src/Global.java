@@ -14,7 +14,7 @@ public class Global {
     private static final int serialID = 2;
 
     private static final int majorVersion = 1;
-    private static final char minorVersion = 'D';
+    private static final char minorVersion = 'E';
     private static final int buildVersion = 0;
 
     public static String getVersion(){
@@ -47,5 +47,9 @@ public class Global {
             System.err.println(e.getClass() + ": " + error);
             e.printStackTrace();
         }
+    }
+
+    public static void logUserError(String location, String error){
+        System.out.println("User error at: " + location + ": " + error);
     }
 }

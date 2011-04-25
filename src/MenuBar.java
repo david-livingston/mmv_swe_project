@@ -144,7 +144,7 @@ public class MenuBar extends JMenuBar implements ActionListener {
         }
         // stuff that's stubbed out but not implemented
         else {
-            System.err.println("Feature not implemented: " + e.getActionCommand());
+            Global.logError("MenuBar.actionPerformed()", "Feature not implemented: " + e.getActionCommand());
         }
     }
 
@@ -162,8 +162,7 @@ public class MenuBar extends JMenuBar implements ActionListener {
         try {
             canvas = MandelCanvas.unmarshall(jfc.getSelectedFile());
         } catch (Exception e) {
-            if(Global.isDebugEnabled())
-                e.printStackTrace();
+            Global.logNonFatalException("unmarshalling file", e);
             return false;
         }
 
@@ -206,7 +205,7 @@ public class MenuBar extends JMenuBar implements ActionListener {
             out.writeObject(mJPanel.getNavigationHistory().getCurrent());
             out.close();
         } catch (Exception ioe) {
-            ioe.printStackTrace();
+            Global.logNonFatalException("saving state file", ioe);
             return false;
         }
         return true;
@@ -271,14 +270,14 @@ public class MenuBar extends JMenuBar implements ActionListener {
             BufferedImage bi = mJPanel.getCurrentLogicalImage();
             ImageIO.write(bi, ff.getExtension(), saveFile);
         } catch (Exception ioe) {
-            System.err.println(ioe);
+            Global.logNonFatalException("", ioe);
             return false;
         }
         return true;
     }
 
     private File findDesktop(){
-        // adapted from: http://stackoverflow.com/questions/1080634/how-to-get-the-desktop-path-in-java
+        // adapted from: http://stackoverflow.com/questions/570401/in-java-under-windows-how-do-i-find-a-redirected-desktop-folder
         FileSystemView fileSys = FileSystemView.getFileSystemView();
         // why is this undocumented method named getHomeDirectory() rather than getDesktopDirectory()
         // does it ever fail?
@@ -332,7 +331,7 @@ public class MenuBar extends JMenuBar implements ActionListener {
         try {
             java.awt.Desktop.getDesktop().browse(java.net.URI.create(url));
         } catch (Exception e){
-            System.err.println("Error opening webpage: " + url + "\n\tError: " + e);
+            Global.logNonFatalException("Error opening webpage: " + url, e);
             return false;
         }
         return true;
@@ -365,11 +364,11 @@ public class MenuBar extends JMenuBar implements ActionListener {
         try {
             newIterMax = Integer.parseInt(input);
             if(newIterMax < 0){
-                System.err.println("iterMax can't be negative, input was: " + input);
+                Global.logUserError("MenuBar.changeMaxIterations()", "iterMax can't be negative, input was: " + input);
                 return false;
             }
         } catch (Exception e) {
-            System.err.println("could not parse input as integer: " + input);
+            Global.logError("MenuBar.changeMaxIterations()", "could not parse input as integer: " + input);
             return false;
         }
         mJPanel.getNavigationHistory().getCurrent().setIterationMax(newIterMax);
