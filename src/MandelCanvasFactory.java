@@ -12,6 +12,7 @@ public class MandelCanvasFactory {
     private final static double defaultRealMaximum = 1.0;
     private final double defaultImaginaryMinimum;
     private final double defaultDelta;
+    private final int defaultIterationMax = 100;
 
     private final MandelCanvas home;
 
@@ -24,7 +25,8 @@ public class MandelCanvasFactory {
                 new ComplexNumber(defaultRealMaximum, defaultImaginaryMinimum)
             ),
             logicalImageSize,
-            displayImageSize
+            displayImageSize,
+            defaultIterationMax
         );
     }
 

@@ -9,11 +9,15 @@ import org.omg.CORBA.PUBLIC_MEMBER;
  */
 public class Global {
 
+    // incremented each time a build is released to be tested
     private static final int serialID = 2;
 
-    private static final int majorVersion = 1;
-    private static final char minorVersion = 'E';
-    private static final int buildVersion = 1;
+    // incremented after adding a major feature
+    private static final int majorVersion = 2;
+    // significant changes or bug fix, new minor feature
+    private static final char minorVersion = 'A';
+    // a new commit (if i remember) but not significant enough to incr minorVersion
+    private static final int buildVersion = 0;
 
     public static String getVersion(){
         return serialID +

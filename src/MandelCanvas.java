@@ -25,7 +25,7 @@ public class MandelCanvas  implements Serializable {
     private final ComplexRegion renderRegion;
 
     // todo: increase iterationMax as picture is zoomed
-    private int iterationMax = 100;
+    private int iterationMax;
 
     private transient MandelPoint[][] mandelPoints;
     private transient BufferedImage logicalBufferedImage;
@@ -42,10 +42,11 @@ public class MandelCanvas  implements Serializable {
      * @param requestedLogicalImageSize
      * @param requestedDisplayImageSize
      */
-    public MandelCanvas(final ComplexRegion renderRegion, final ImageSize requestedLogicalImageSize, final ImageSize requestedDisplayImageSize) {
+    public MandelCanvas(final ComplexRegion renderRegion, final ImageSize requestedLogicalImageSize, final ImageSize requestedDisplayImageSize, final int initialCounterMax) {
         this.renderRegion = renderRegion;
         logicalImageSize = requestedLogicalImageSize;
         displayImageSize = requestedDisplayImageSize;
+        iterationMax = initialCounterMax;
     }
 
     /**
@@ -107,7 +108,8 @@ public class MandelCanvas  implements Serializable {
                 pointToCoordinates(screenSelection.getLowerRightCorner())
             ),
             logicalImageSize,
-            displayImageSize
+            displayImageSize,
+            iterationMax
         );
     }
 
@@ -148,9 +150,31 @@ public class MandelCanvas  implements Serializable {
      */
     private void initLogicalBufferedImage(){
         logicalBufferedImage = new BufferedImage(logicalImageSize.getWidth(), logicalImageSize.getHeight(), BufferedImage.TYPE_INT_ARGB);
-        for(int x = 0; x < logicalImageSize.getWidth(); ++x)
-            for(int y = 0; y < logicalImageSize.getHeight(); ++y)
-                logicalBufferedImage.setRGB(x, y, getColorAtPoint(x, y).getRGB());
+
+        // todo - there has to be a way to get notified with a callback upon thread termination
+        // rather than sleeping & polling to check if it's done
+        // that would also allow the rest of this code to continue & the GUI to become immediately
+        // responsive again
+        Thread old = Thread.currentThread();
+        Thread render = new Thread(new RenderThreadManager(this));
+        render.start();
+        try{
+            do {
+                old.sleep(400);
+            } while (render.isAlive());
+        }catch(Exception e){
+            System.err.println(e);
+        }
+
+    }
+
+    public void initLogicalBufferedImageColumn(final int column){
+        for(int y = 0; y < logicalImageSize.getHeight(); ++y)
+            logicalBufferedImage.setRGB(column, y, getColorAtPoint(column, y).getRGB());
+    }
+
+    public int getColumnCount(){
+        return logicalImageSize.getWidth();
     }
 
     private void initDisplayBufferedImage(){
