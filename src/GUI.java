@@ -47,7 +47,7 @@ public class GUI extends JFrame {
         setVisible(true);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         StatusBar statusBar = new StatusBar();
-        renderInternalFrame.add(statusBar, java.awt.BorderLayout.SOUTH);
+        // renderInternalFrame.add(statusBar, java.awt.BorderLayout.SOUTH);
         mJPanel.associateStatusBar(statusBar);
 
         // todo: clean up all this layout code

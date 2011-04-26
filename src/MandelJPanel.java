@@ -87,8 +87,12 @@ public class MandelJPanel extends JPanel implements MouseListener, MouseMotionLi
      * @param e
      */
     public void mousePressed(MouseEvent e) {
-        if(e.getButton() != MouseEvent.BUTTON1)
+        if(e.getButton() != MouseEvent.BUTTON1) {
+            // other mouse clicks aren't associated with any behavior now
+            // but the user might be trying to cancel a zoom
+            firstClick = null;
             return;
+        }
 
         if(null != firstClick){
             doZoom(
@@ -100,7 +104,8 @@ public class MandelJPanel extends JPanel implements MouseListener, MouseMotionLi
     }
 
     public void mouseDragged(MouseEvent e) {
-
+        // eventually it might be good to implement zoom
+        // selection with mouse dragging
     }
 
     void doZoom(final ImageRegion selection){
@@ -112,6 +117,7 @@ public class MandelJPanel extends JPanel implements MouseListener, MouseMotionLi
         );
         thumbNailFrame.repaint();
         navigation.zoom(selection);
+        navigation.getCurrent().setComponent(this);
         refreshBufferedImage();
         thumbNailFrame.setVisible(true);
         updateRenderStats();

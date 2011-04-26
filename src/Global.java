@@ -1,5 +1,3 @@
-import org.omg.CORBA.PUBLIC_MEMBER;
-
 /**
  * Created by IntelliJ IDEA.
  * User: Owner
@@ -19,7 +17,7 @@ public class Global {
     // incremented after adding a major feature
     private static final int majorVersion = 2;
     // significant changes or bug fix, new minor feature
-    private static final char minorVersion = 'B';
+    private static final char minorVersion = 'C';
     // a new commit (if i remember) but not significant enough to incr minorVersion
     private static final int buildVersion = 0;
 

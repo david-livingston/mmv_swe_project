@@ -35,6 +35,8 @@ public class MandelCanvas  implements Serializable {
 
     private transient boolean isLightWeight = true;
 
+    private Component component = null;
+
     /**
      * OBJECT IS CONSTRUCTED IN LIGHTWEIGHT STATE
      *
@@ -149,23 +151,29 @@ public class MandelCanvas  implements Serializable {
      * is a resized version of the logicalBufferedImage.
      */
     private void initLogicalBufferedImage(){
-        logicalBufferedImage = new BufferedImage(logicalImageSize.getWidth(), logicalImageSize.getHeight(), BufferedImage.TYPE_INT_ARGB);
-
-        // todo - there has to be a way to get notified with a callback upon thread termination
-        // rather than sleeping & polling to check if it's done
-        // that would also allow the rest of this code to continue & the GUI to become immediately
-        // responsive again
-        Thread old = Thread.currentThread();
-        Thread render = new Thread(new RenderThreadManager(this));
-        render.start();
         try{
+            if(null != component)
+                component.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+
+            logicalBufferedImage = new BufferedImage(logicalImageSize.getWidth(), logicalImageSize.getHeight(), BufferedImage.TYPE_INT_ARGB);
+
+            // todo - there has to be a way to get notified with a callback upon thread termination
+            // rather than sleeping & polling to check if it's done
+            // that would also allow the rest of this code to continue & the GUI to become immediately
+            // responsive again
+            Thread old = Thread.currentThread();
+            Thread render = new Thread(new RenderThreadManager(this));
+            render.start();
+
             do {
                 old.sleep(400);
             } while (render.isAlive());
-        }catch(Exception e){
-            System.err.println(e);
+        } catch (Exception e) {
+            Global.logNonFatalException("", e);
+        } finally {
+            if(null != component)
+                component.setCursor(Cursor.getDefaultCursor());
         }
-
     }
 
     public void initLogicalBufferedImageColumn(final int column){
@@ -239,5 +247,11 @@ public class MandelCanvas  implements Serializable {
 
     public void increaseIterationMax() {
         setIterationMax(iterationMax + (int)Math.pow((double)iterationMax, 1.2));
+        initLogicalBufferedImage();
+        initDisplayBufferedImage();
+    }
+
+    public void setComponent(Component component) {
+        this.component = component;
     }
 }
