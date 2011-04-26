@@ -1,9 +1,7 @@
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
-import java.awt.event.MouseMotionListener;
+import java.awt.event.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
 
@@ -46,6 +44,13 @@ public class MandelJPanel extends JPanel implements MouseListener, MouseMotionLi
         refreshBufferedImage();
         addMouseListener(this);
         addMouseMotionListener(this);
+
+        addComponentListener(new ComponentAdapter() {
+            @Override
+            public void componentResized(ComponentEvent e) {
+                // System.out.println(getHeight() + "x" + getWidth());
+            }
+        });
     }
 
     /**

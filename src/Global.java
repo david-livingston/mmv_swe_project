@@ -9,13 +9,11 @@ import org.omg.CORBA.PUBLIC_MEMBER;
  */
 public class Global {
 
-    private static final boolean debug = true;
-
     private static final int serialID = 2;
 
     private static final int majorVersion = 1;
     private static final char minorVersion = 'E';
-    private static final int buildVersion = 0;
+    private static final int buildVersion = 1;
 
     public static String getVersion(){
         return serialID +
@@ -34,7 +32,11 @@ public class Global {
     }
 
     public static boolean isDebugEnabled(){
-        return debug;
+        boolean assertsEnabled = false;
+        // intentional side effect to detect whether assertions are enabled, based on example at:
+        // http://download.oracle.com/javase/1.4.2/docs/guide/lang/assert.html
+        assert assertsEnabled = true;
+        return assertsEnabled;
     }
 
     public static void logError(String errorLocation, String error){
