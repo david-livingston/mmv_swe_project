@@ -33,13 +33,29 @@ public class MandelPoint implements Serializable {
         if(escaped)
             return;
 
+        final double c_r = startingLocation.getReal();
+        final double c_i = startingLocation.getImag();
+        double r = currentLocation.getReal();
+        double i = currentLocation.getImag();
+        double new_r;
+        double r_sq;
+        double i_sq;
+
         while(iterationCount++ < iterationLimit){
-            currentLocation = ComplexNumber.add(startingLocation, ComplexNumber.square(currentLocation));
-            if(currentLocation.sqrMagnitude() > squaredMaxDistance){
+            r_sq = r * r;
+            i_sq = i * i;
+
+            if(r_sq + i_sq > squaredMaxDistance){
                 escaped = true;
                 break;
             }
+
+            new_r = r_sq - i_sq + c_r;
+            i = 2 * r * i + c_i;
+            r = new_r;
         }
+
+        currentLocation = new ComplexNumber(r, i);
     }
 
     public boolean didEscape() { return escaped; }

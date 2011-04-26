@@ -9,13 +9,17 @@ import org.omg.CORBA.PUBLIC_MEMBER;
  */
 public class Global {
 
+    // set to true for developer builds
+    // in regular builds, user can enable assertions to activiate debug mode
+    private final static boolean forceDebugMode = true;
+
     // incremented each time a build is released to be tested
     private static final int serialID = 2;
 
     // incremented after adding a major feature
     private static final int majorVersion = 2;
     // significant changes or bug fix, new minor feature
-    private static final char minorVersion = 'A';
+    private static final char minorVersion = 'B';
     // a new commit (if i remember) but not significant enough to incr minorVersion
     private static final int buildVersion = 0;
 
@@ -36,6 +40,9 @@ public class Global {
     }
 
     public static boolean isDebugEnabled(){
+        if(forceDebugMode)
+            return true;
+
         boolean assertsEnabled = false;
         // intentional side effect to detect whether assertions are enabled, based on example at:
         // http://download.oracle.com/javase/1.4.2/docs/guide/lang/assert.html

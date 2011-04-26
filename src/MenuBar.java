@@ -1,8 +1,6 @@
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import javax.swing.filechooser.*;
-import javax.swing.filechooser.FileFilter;
-import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
@@ -36,7 +34,8 @@ public class MenuBar extends JMenuBar implements ActionListener {
     final private static String MENU_ITEM_KEY_HOME = "Home";
     final private static String MENU_ITEM_KEY_BACK = "Back";
     final private static String MENU_ITEM_KEY_NEXT = "Next";
-    final private static String MENU_ITEM_CHANGE_MAX_ITERATIONS = "Change Max Iterations";
+    final private static String MENU_ITEM_INCREASE_MAX_ITERATIONS = "Increase Max Iterations";
+    final private static String MENU_ITEM_INPUT_MAX_ITERATIONS = "Input Max Iterations";
     final private static String MENU_ITEM_HELP_TOPICS = "Help Topics";
     final private static String MENU_ITEM_PROJECT_PAGE = "Project Homepage @ GitHub";
     final private static String MENU_ITEM_ABOUT = "About";
@@ -65,7 +64,8 @@ public class MenuBar extends JMenuBar implements ActionListener {
             MENU_ITEM_KEY_NEXT
         ));
         add(makeMenu("Advanced Options",
-            MENU_ITEM_CHANGE_MAX_ITERATIONS
+            MENU_ITEM_INCREASE_MAX_ITERATIONS,
+            MENU_ITEM_INPUT_MAX_ITERATIONS
         ));
         add(makeMenu("Help",
             MENU_ITEM_HELP_TOPICS,
@@ -125,9 +125,13 @@ public class MenuBar extends JMenuBar implements ActionListener {
             navForward();
         }
 
-        // Advanced Options | Change Max Iterations
-        else if (matches(e, MENU_ITEM_CHANGE_MAX_ITERATIONS)) {
-            changeMaxIterations();
+        // Advanced Options | Increase Max Iterations
+        else if (matches(e, MENU_ITEM_INCREASE_MAX_ITERATIONS)) {
+            increaseMaxIterations();
+        }
+        // Advanced Options | Input Max Iterations
+        else if (matches(e, MENU_ITEM_INPUT_MAX_ITERATIONS)) {
+            inputMaxIterations();
         }
 
         // Help | Help Topics
@@ -353,7 +357,15 @@ public class MenuBar extends JMenuBar implements ActionListener {
     }
 
     // todo: decreasing maxIterations has no effect; not sure whether to warn user it was ignored or actually decrease resolution?
-    private boolean changeMaxIterations(){
+    private boolean increaseMaxIterations(){
+        mJPanel.getNavigationHistory().getCurrent().increaseIterationMax();
+        mJPanel.refreshBufferedImage();
+        mJPanel.updateRenderStats();
+        return true;
+    }
+
+    // todo: decreasing maxIterations has no effect; not sure whether to warn user it was ignored or actually decrease resolution?
+    private boolean inputMaxIterations(){
         final int iterMax = mJPanel.getNavigationHistory().getCurrent().getIterationMax();
         final String input = JOptionPane.showInputDialog(mJPanel,
             "Enter new iteration max (currently = " + iterMax + "): "

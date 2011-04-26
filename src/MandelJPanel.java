@@ -48,7 +48,7 @@ public class MandelJPanel extends JPanel implements MouseListener, MouseMotionLi
         addComponentListener(new ComponentAdapter() {
             @Override
             public void componentResized(ComponentEvent e) {
-                repaint();
+
             }
         });
     }

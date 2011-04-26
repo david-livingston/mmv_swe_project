@@ -236,4 +236,8 @@ public class MandelCanvas  implements Serializable {
     public ImageSize getLogicalImageSize() {
         return logicalImageSize;
     }
+
+    public void increaseIterationMax() {
+        setIterationMax(iterationMax + (int)Math.pow((double)iterationMax, 1.2));
+    }
 }
