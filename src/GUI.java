@@ -1,5 +1,6 @@
 import javax.swing.*;
 import javax.swing.table.JTableHeader;
+import java.awt.*;
 import java.io.File;
 
 /**
@@ -17,71 +18,95 @@ import java.io.File;
  */
 public class GUI extends JFrame {
 
-    // Specifies the number of horizontal and vertical pixels used displaying the picture.
-    private final static ImageSize logicalImageSize = new ImageSize(1080, 1920);
-    private final static ImageSize displayedImageSize = new ImageSize((1080*3)/4, (1920*3)/4);
-
-    private final MandelJPanel mJPanel;
-
-    private final JDesktopPane desktop = new JDesktopPane();
-
-    private final JTable renderStats;
+    // Specifies the number of horizontal and vertical pixels used for calculating the picture
+    // dimensions of picture rendered on screen will likely be different
+    private final static ImageSize logicalImageSize = ImageSize.REAL_HD;
 
     /**
      * Constructs the GUI which has the effect of launching the program.
      */
     private GUI(File fileToOpen) {
-        setTitle(Global.getTitle());
-        mJPanel = new MandelJPanel(logicalImageSize, displayedImageSize, fileToOpen);
-        setJMenuBar(new MenuBar(mJPanel));
 
-        JInternalFrame renderInternalFrame = new JInternalFrame("Render Window", true, true, true, true);
+        final int frameHeightAddition = 25;
+        final int frameWidthAddtion = 10;
+
+        // this is somewhat naive b/c it gets the resolution of the primary display & doesn't consider multiple monitors
+        final ImageSize monitorResolution = ImageSize.fromDimension(Toolkit.getDefaultToolkit().getScreenSize());
+        // give from for title bar, menu bar, and possible bottom task bar
+        final ImageSize mainWindow = new ImageSize(monitorResolution.getHeight() - 4 * frameHeightAddition, monitorResolution.getWidth());
+
+        final ImageSize thumbNailImageSize = new ImageSize(216, 384); // REAL_HD / 5
+        final ImageSize thumbNailFrameSize = new ImageSize(thumbNailImageSize.getHeight() + frameHeightAddition, thumbNailImageSize.getWidth() + frameWidthAddtion);
+        final ImageSize renderStatsTableSize = new ImageSize(350, 600);
+
+        final int widthAvailable = mainWindow.getWidth() - (10 + renderStatsTableSize.getWidth());
+        final int matchingHeight = (int)(widthAvailable * ((double)logicalImageSize.getHeight())/logicalImageSize.getWidth());
+        final ImageSize displayedImageSize = new ImageSize(matchingHeight, widthAvailable);
+        final ImageSize renderWindowSize = new ImageSize(displayedImageSize.getHeight() + frameHeightAddition, displayedImageSize.getWidth() + frameWidthAddtion);
+        assert 0.001 > Math.abs(logicalImageSize.heightToWidth() - displayedImageSize.heightToWidth());
+
+        final Pixel upperLeftCornerThumbNailWindow = new Pixel(mainWindow.getWidth() - thumbNailFrameSize.getWidth(), mainWindow.getHeight() - thumbNailFrameSize.getHeight());
+        final Pixel upperLeftCornerStatsTable = new Pixel(mainWindow.getWidth() - renderStatsTableSize.getWidth(), 0);
+        final Pixel upperLeftCornerRenderWindow = new Pixel(0, 0);
+
+        // SETUP DISPLAY OF MAIN RENDER WINDOW
+        // JInternalFrame (for JDesktopPane) + JPanel
+        // ----------------------------------------------------
+        final MandelJPanel mJPanel = new MandelJPanel(logicalImageSize, displayedImageSize, fileToOpen);
+        final JInternalFrame renderInternalFrame = new JInternalFrame("Render Window", true, true, true, true);
+        renderInternalFrame.add(mJPanel);
+        renderInternalFrame.setLocation(upperLeftCornerRenderWindow.asPoint());
+        renderInternalFrame.setSize(renderWindowSize.asDimension());
         renderInternalFrame.setVisible(true);
-        renderInternalFrame.setSize(displayedImageSize.getWidth(), displayedImageSize.getHeight());
+
+        // SETUP DISPLAY OF LOCATION THUMBNAIL
+        // -----------------------------------------------
+        final JInternalFrame locationThumbnailInternalFrame = new JInternalFrame("Zoom Location", false, true, false, true);
+        final LocationThumbnail locationThumbnail = new LocationThumbnail(thumbNailImageSize, locationThumbnailInternalFrame);
+        locationThumbnailInternalFrame.setVisible(false);
+        locationThumbnailInternalFrame.setSize(thumbNailFrameSize.asDimension());
+        locationThumbnailInternalFrame.add(locationThumbnail);
+        locationThumbnailInternalFrame.setLocation(upperLeftCornerThumbNailWindow.asPoint());
+        mJPanel.associateThumbnail(locationThumbnailInternalFrame);
+        mJPanel.associateThumbnail(locationThumbnail);
+
+        // SETUP DISPLAY OF RENDER STATISTICS TABLE
+        // todo: make table not editable
+        // -----------------------------------------------
+        JInternalFrame attributeTableInternalFrame = new JInternalFrame("Attribute Values", true, true, true, true);
+        attributeTableInternalFrame.setVisible(true);
+        attributeTableInternalFrame.setSize(renderStatsTableSize.getWidth(), renderStatsTableSize.getHeight());
+        String[] columnNames = { "Attribute", "Value" };
+        Object[][] data = mJPanel.getAttributeValues();
+        final JTable renderStats = new JTable(data, columnNames);
+        attributeTableInternalFrame.add(renderStats);
+        attributeTableInternalFrame.setLocation(upperLeftCornerStatsTable.asPoint());
+        mJPanel.associateRenderStats(renderStats);
+
+        // SETUP DESKTOP PANE WHICH HOLDS ALL INTERIOR WINDOWS
+        // -------------------------------------------------------
+        final JDesktopPane desktop = new JDesktopPane();
         desktop.add(renderInternalFrame);
         desktop.setVisible(true);
+        desktop.add(locationThumbnailInternalFrame);
+        desktop.add(attributeTableInternalFrame);
 
+        // SETUP MAIN WINDOW WHICH CONTAINS DESKTOP PANE & MENUBAR
+        // -------------------------------
+        setTitle(Global.getTitle());
+        setJMenuBar(new MenuBar(mJPanel));
+        setVisible(true);
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         // http://stackoverflow.com/questions/479523/java-swing-maximize-window
         // best voted answer on SO, not sure why the bitwise OR is necessary though
         setExtendedState(getExtendedState() | JFrame.MAXIMIZED_BOTH);
-
         setContentPane(desktop);
-        renderInternalFrame.add(mJPanel);
-
-        setSize(displayedImageSize.getWidth() + 375, displayedImageSize.getHeight() + 75);
-        setVisible(true);
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        StatusBar statusBar = new StatusBar();
-        // renderInternalFrame.add(statusBar, java.awt.BorderLayout.SOUTH);
-        mJPanel.associateStatusBar(statusBar);
-
-        // todo: clean up all this layout code
-        // todo: make table not editable
-        JInternalFrame attributeTableInternalFrame = new JInternalFrame("Attribute Values", true, true, true, true);
-        attributeTableInternalFrame.setVisible(true);
-        attributeTableInternalFrame.setSize(350, displayedImageSize.getHeight()/2 + 50);
-        String[] columnNames = { "Attribute", "Value" };
-        Object[][] data = mJPanel.getAttributeValues();
-        renderStats = new JTable(data, columnNames);
-        attributeTableInternalFrame.add(renderStats);
-        attributeTableInternalFrame.setLocation(displayedImageSize.getWidth() + 10, 5);
-        desktop.add(attributeTableInternalFrame);
-        mJPanel.associateRenderStats(renderStats);
-        JInternalFrame locationThumbnailInternalFrame = new JInternalFrame("Zoom Location", false, true, false, true);
-        LocationThumbnail locationThumbnail = new LocationThumbnail(new ImageSize(175, 212), locationThumbnailInternalFrame);
-        locationThumbnailInternalFrame.setVisible(false);
-        locationThumbnailInternalFrame.setSize(225, 200);
-        locationThumbnailInternalFrame.add(locationThumbnail);
-        locationThumbnailInternalFrame.setLocation(displayedImageSize.getWidth() + 15, displayedImageSize.getHeight()/2 + 75);
-        desktop.add(locationThumbnailInternalFrame);
-        mJPanel.associateThumbnail(locationThumbnailInternalFrame);
-        mJPanel.associateThumbnail(locationThumbnail);
     }
 
     /**
      * Only entry point of the program.
      *
-     * @param args not parsed
+     * @param args
      */
     public static void main(String... args) {
         try { // Set System L&F

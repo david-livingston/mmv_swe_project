@@ -33,6 +33,10 @@ public class Pixel implements Serializable {
         return y;
     }
 
+    public Point asPoint(){
+        return new Point(getX(), getY());
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

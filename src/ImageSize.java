@@ -10,7 +10,16 @@ import java.io.Serializable;
  */
 public class ImageSize extends ImageRegion implements Serializable {
 
-    public final static ImageSize HD1080 = new ImageSize(1080, 1920);
+    public final static ImageSize REAL_HD = new ImageSize(1080, 1920);
+    public final static ImageSize FAKE_HD = new ImageSize(720, 1280);
+
+    // NTSC 4:3, equiv square pixel resolution (SD TV signals actually use rectangular pixels)
+    // lots of different 'standard' definition formats: http://en.wikipedia.org/wiki/Standard-definition_television
+    public final static ImageSize SD = new ImageSize(480, 640);
+
+    public final static ImageSize BETTER_MONITOR = new ImageSize(768, 1024);
+    public final static ImageSize OK_MONITOR = new ImageSize(600, 800);
+    public final static ImageSize OLD_MONITOR = new ImageSize(480, 640);
 
     public ImageSize(final int height, final int width){
         super(
@@ -46,6 +55,22 @@ public class ImageSize extends ImageRegion implements Serializable {
                 input.getYMin() + newHeight
             )
         );
+    }
+
+    public Dimension asDimension(){
+        return new Dimension(getWidth(), getHeight());
+    }
+
+    public static ImageSize fromDimension(Dimension dimension){
+        return new ImageSize((int)dimension.getHeight(), (int)dimension.getWidth());
+    }
+
+    public double widthToHeight(){
+        return ((double)getWidth())/getHeight();
+    }
+
+    public double heightToWidth(){
+        return ((double)getHeight())/getWidth();
     }
 
     @Override

@@ -17,7 +17,7 @@ public class Global {
     // incremented after adding a major feature
     private static final int majorVersion = 2;
     // significant changes or bug fix, new minor feature
-    private static final char minorVersion = 'C';
+    private static final char minorVersion = 'D';
     // a new commit (if i remember) but not significant enough to incr minorVersion
     private static final int buildVersion = 0;
 
