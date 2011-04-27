@@ -212,9 +212,10 @@ public class MandelCanvas  implements Serializable {
             { "displayed y resolution: ", displayImageSize.getHeight() },
             { "displayed x/y ratio: ", displayImageSize.getWidth()/((double)displayImageSize.getHeight()) },
             { "processor count: ", Runtime.getRuntime().availableProcessors() },
-            { "total memory: ", Runtime.getRuntime().totalMemory() },
-            { "max memory: ", Runtime.getRuntime().maxMemory() },
-            { "free memory: ", Runtime.getRuntime().freeMemory() }
+            { "render thread count: ", RenderThreadManager.getBestThreadCount()},
+            { "max allocatable memory: ", (Runtime.getRuntime().maxMemory() / (1024 * 1024)) + " MB" },
+            // memory that can still be used before exception: currently free + still unallocated
+            { "remaining: ", ((Runtime.getRuntime().freeMemory() + (Runtime.getRuntime().maxMemory() - Runtime.getRuntime().totalMemory())) / (1024 * 1024)) + " MB" }
         };
     }
 

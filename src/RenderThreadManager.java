@@ -38,7 +38,7 @@ public class RenderThreadManager implements Runnable {
         return true;
     }
 
-    private static int getBestThreadCount(){
+    public static int getBestThreadCount(){
         int cpus = Runtime.getRuntime().availableProcessors();
         if(cpus >= 6) // allow high core count machines to maintain one cpu for other tasks
             --cpus;

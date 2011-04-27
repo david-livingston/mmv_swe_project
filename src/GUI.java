@@ -18,8 +18,8 @@ import java.io.File;
 public class GUI extends JFrame {
 
     // Specifies the number of horizontal and vertical pixels used displaying the picture.
-    private final static ImageSize logicalImageSize = new ImageSize(1400, 1700);
-    private final static ImageSize displayedImageSize = new ImageSize(700, 850);
+    private final static ImageSize logicalImageSize = new ImageSize(1080, 1920);
+    private final static ImageSize displayedImageSize = new ImageSize((1080*3)/4, (1920*3)/4);
 
     private final MandelJPanel mJPanel;
 
@@ -40,6 +40,11 @@ public class GUI extends JFrame {
         renderInternalFrame.setSize(displayedImageSize.getWidth(), displayedImageSize.getHeight());
         desktop.add(renderInternalFrame);
         desktop.setVisible(true);
+
+        // http://stackoverflow.com/questions/479523/java-swing-maximize-window
+        // best voted answer on SO, not sure why the bitwise OR is necessary though
+        setExtendedState(getExtendedState() | JFrame.MAXIMIZED_BOTH);
+
         setContentPane(desktop);
         renderInternalFrame.add(mJPanel);
 
