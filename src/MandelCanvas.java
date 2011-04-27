@@ -37,6 +37,8 @@ public class MandelCanvas  implements Serializable {
 
     private Component component = null;
 
+    private Palette palette;
+
     /**
      * OBJECT IS CONSTRUCTED IN LIGHTWEIGHT STATE
      *
@@ -44,11 +46,12 @@ public class MandelCanvas  implements Serializable {
      * @param requestedLogicalImageSize
      * @param requestedDisplayImageSize
      */
-    public MandelCanvas(final ComplexRegion renderRegion, final ImageSize requestedLogicalImageSize, final ImageSize requestedDisplayImageSize, final int initialCounterMax) {
+    public MandelCanvas(final ComplexRegion renderRegion, final ImageSize requestedLogicalImageSize, final ImageSize requestedDisplayImageSize, final int initialCounterMax, final Palette initialColorPalette) {
         this.renderRegion = renderRegion;
         logicalImageSize = requestedLogicalImageSize;
         displayImageSize = requestedDisplayImageSize;
         iterationMax = initialCounterMax;
+        palette = initialColorPalette;
     }
 
     /**
@@ -100,7 +103,7 @@ public class MandelCanvas  implements Serializable {
     private Color getColorAtPoint(final int x, final int y){
         final MandelPoint m = mandelPoints[x][y];
         m.iterate(iterationMax);
-        return Palette.getColor(m);
+        return palette.getColor(m);
     }
 
     public MandelCanvas toZoomedCanvas(final ImageRegion screenSelection){
@@ -111,7 +114,8 @@ public class MandelCanvas  implements Serializable {
             ),
             logicalImageSize,
             displayImageSize,
-            iterationMax
+            iterationMax,
+            palette
         );
     }
 
@@ -254,5 +258,11 @@ public class MandelCanvas  implements Serializable {
 
     public void setComponent(Component component) {
         this.component = component;
+    }
+
+    public void setPalette(String name){
+        palette = new PaletteSet().getPalette(name);
+        initLogicalBufferedImage();
+        initDisplayBufferedImage();
     }
 }

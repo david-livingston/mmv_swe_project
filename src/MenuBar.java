@@ -42,6 +42,8 @@ public class MenuBar extends JMenuBar implements ActionListener {
 
     final private MandelJPanel mJPanel;
 
+    final private PaletteSet palettes = new PaletteSet();
+
     /**
      * @param panel the container which this menubar will be added to; needed
      * so the selected menuitem will have a way to invoke the requested action
@@ -56,12 +58,14 @@ public class MenuBar extends JMenuBar implements ActionListener {
             MENU_ITEM_KEY_SAVE_STATE_AS,
             MENU_ITEM_KEY_OPEN_STATE_FILE
         ));
-        // todo: color scheme
         // todo: resolution
         add(makeMenu("Navigation",
             MENU_ITEM_KEY_HOME,
             MENU_ITEM_KEY_BACK,
             MENU_ITEM_KEY_NEXT
+        ));
+        add(makeColorPaletteMenu("Color Palettes",
+            palettes
         ));
         add(makeMenu("Advanced Options",
             MENU_ITEM_INCREASE_MAX_ITERATIONS,
@@ -85,6 +89,16 @@ public class MenuBar extends JMenuBar implements ActionListener {
     private JMenu makeMenu(final String topLevelName, final String... entries){
         final JMenu menu = new JMenu(topLevelName);
         for(String entry : entries){
+            JMenuItem item = new JMenuItem(entry);
+            item.addActionListener(this);
+            menu.add(item);
+        }
+        return menu;
+    }
+
+    private JMenu makeColorPaletteMenu(final String topLevelName, final PaletteSet ps){
+        final JMenu menu = new JMenu(topLevelName);
+        for(String entry : ps.getNames()){
             JMenuItem item = new JMenuItem(entry);
             item.addActionListener(this);
             menu.add(item);
@@ -128,6 +142,11 @@ public class MenuBar extends JMenuBar implements ActionListener {
         // Navigation | Next
         else if (matches(e, MENU_ITEM_KEY_NEXT)) {
             navForward();
+        }
+
+        // Color Palettes
+        else if(matches(e, palettes)) {
+            changePalette(e, palettes);
         }
 
         // Advanced Options | Increase Max Iterations
@@ -235,6 +254,28 @@ public class MenuBar extends JMenuBar implements ActionListener {
      */
     private boolean matches(ActionEvent e, String key){
         return e.getActionCommand().equals(key);
+    }
+
+    private boolean matches(ActionEvent e, PaletteSet ps){
+        for(String name : ps.getNames())
+            if(matches(e, name))
+                return true;
+        return false;
+    }
+
+    private boolean changePalette(ActionEvent e, PaletteSet ps){
+        String name = null;
+        for(String n : ps.getNames())
+            if(matches(e, n))
+                name = n;
+
+        if(null == name)
+            return false;
+
+        mJPanel.getNavigationHistory().getCurrent().setPalette(e.getActionCommand());
+        mJPanel.refreshBufferedImage();
+
+        return true;
     }
 
     /**

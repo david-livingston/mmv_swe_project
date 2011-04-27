@@ -26,7 +26,8 @@ public class MandelCanvasFactory {
             ),
             logicalImageSize,
             displayImageSize,
-            defaultIterationMax
+            defaultIterationMax,
+            new PaletteSet().getDefault()
         );
     }
 

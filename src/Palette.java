@@ -23,7 +23,7 @@ import java.awt.*;
  * RGB assumes each arg will be (0...255) inclusive, code doesn't check for this;
  * increasing the iteration max elsewhere in the code could break this.
  */
-public class Palette {
+public abstract class Palette {
 
     /**
      * Maps a Mandelbrot point to the color it should be displayed as on
@@ -36,45 +36,43 @@ public class Palette {
      * @param m the point being considered
      * @return color the point should be displayed as
      */
-    public static Color getColor(MandelPoint m){
-
+    public Color getColor(MandelPoint m){
         if(!m.didEscape())
             return Color.BLACK;
         else{
-            int i = m.getIterationCount();
-
-            //http://linas.org/art-gallery/escape/smooth.html
-            double renormalized_i = i + 1 - Math.log(Math.log(m.getCurrentLocation().magnitude()))/Math.log(2.0);
-
-            return new Color(
-                (float) sanitize((renormalized_i * renormalized_i) % 255.0),
-                (float) sanitize((renormalized_i * renormalized_i + renormalized_i) % 255.0),
-                (float) sanitize((renormalized_i + renormalized_i) % 255.0)
-            );
-            // another simple coloring scheme:
-            // doesn't check to make sure each r,g,b is b/w 0 & 255
-            /*
-            return new Color(
-                255 - i,
-                255 - (i * 2)/3,
-                255 - i * 2
-            );*/
+            return getColorDetail(normalize(m.getIterationCount(), m.getCurrentLocation().magnitude()));
         }
     }
 
-    public static int sanitize(int original){
-        if(original < 0)
-            original *= -1;
-        if(original > 255)
-            original = 255;
-        return original;
+    public abstract Color getColorDetail(double counter);
+
+    /**
+     * Takes the integer count of iterations to escape and converts it to a double by also
+     * considering the point's distance from the origin at the instant it escapes.
+     *
+     * Based on explanation at: http://linas.org/art-gallery/escape/smooth.html
+     *
+     * @param counter
+     * @param magnitude
+     * @return
+     */
+    public double normalize(final int counter, final double magnitude){
+        return counter + 1 - Math.log(Math.log(magnitude))/Math.log(2.0);
     }
 
-    public static double sanitize(double original){
+    public Color safeColor(double r, double g, double b){
+        return new Color(
+            (float) sanitize(r),
+            (float) sanitize(g),
+            (float) sanitize(b)
+        );
+    }
+
+    public double sanitize(double original){
         if(original < 0.0)
             original *= -1;
         if(original > 255.0)
-            original = 255.0;
+            original %= 255.0;
         return original / 255.0;
     }
 }
