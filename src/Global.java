@@ -15,9 +15,9 @@ public class Global {
     private static final int serialID = 2;
 
     // incremented after adding a major feature
-    private static final int majorVersion = 2;
+    private static final int majorVersion = 3;
     // significant changes or bug fix, new minor feature
-    private static final char minorVersion = 'D';
+    private static final char minorVersion = 'A';
     // a new commit (if i remember) but not significant enough to incr minorVersion
     private static final int buildVersion = 0;
 
