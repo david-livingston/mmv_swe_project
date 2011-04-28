@@ -12,7 +12,7 @@ public class Global {
     private final static boolean forceDebugMode = true;
 
     // incremented each time a build is released to be tested
-    private static final int serialID = 3;
+    private static final int serialID = 4;
 
     // incremented after adding a major feature
     private static final int majorVersion = 4;
