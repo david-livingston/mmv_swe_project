@@ -53,7 +53,8 @@ public class GUI extends JFrame {
         // JInternalFrame (for JDesktopPane) + JPanel
         // ----------------------------------------------------
         final MandelJPanel mJPanel = new MandelJPanel(logicalImageSize, displayedImageSize, fileToOpen);
-        final JInternalFrame renderInternalFrame = new JInternalFrame("Render Window", true, true, true, true);
+        // JInternalFrame(String title, boolean resizable, boolean closable, boolean maximizable, boolean iconifiable)
+        final JInternalFrame renderInternalFrame = new JInternalFrame("Render Window", true, false, true, true);
         renderInternalFrame.add(mJPanel);
         renderInternalFrame.setLocation(upperLeftCornerRenderWindow.asPoint());
         renderInternalFrame.setSize(renderWindowSize.asDimension());
@@ -61,7 +62,8 @@ public class GUI extends JFrame {
 
         // SETUP DISPLAY OF LOCATION THUMBNAIL
         // -----------------------------------------------
-        final JInternalFrame locationThumbnailInternalFrame = new JInternalFrame("Zoom Location", false, true, false, true);
+        // JInternalFrame(String title, boolean resizable, boolean closable, boolean maximizable, boolean iconifiable)
+        final JInternalFrame locationThumbnailInternalFrame = new JInternalFrame("Zoom Location", false, false, false, true);
         final LocationThumbnail locationThumbnail = new LocationThumbnail(thumbNailImageSize, locationThumbnailInternalFrame);
         locationThumbnailInternalFrame.setVisible(false);
         locationThumbnailInternalFrame.setSize(thumbNailFrameSize.asDimension());
@@ -73,7 +75,8 @@ public class GUI extends JFrame {
         // SETUP DISPLAY OF RENDER STATISTICS TABLE
         // todo: make table not editable
         // -----------------------------------------------
-        JInternalFrame attributeTableInternalFrame = new JInternalFrame("Attribute Values", true, true, true, true);
+        // JInternalFrame(String title, boolean resizable, boolean closable, boolean maximizable, boolean iconifiable)
+        JInternalFrame attributeTableInternalFrame = new JInternalFrame("Attribute Values", true, false, false, true);
         attributeTableInternalFrame.setVisible(true);
         attributeTableInternalFrame.setSize(renderStatsTableSize.getWidth(), renderStatsTableSize.getHeight());
         String[] columnNames = { "Attribute", "Value" };
