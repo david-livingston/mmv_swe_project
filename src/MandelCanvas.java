@@ -265,4 +265,8 @@ public class MandelCanvas  implements Serializable {
         initLogicalBufferedImage();
         initDisplayBufferedImage();
     }
+
+    public void setDisplayImageSize(ImageSize displayImageSize) {
+        this.displayImageSize = displayImageSize;
+    }
 }

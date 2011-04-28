@@ -48,7 +48,7 @@ public class MandelJPanel extends JPanel implements MouseListener, MouseMotionLi
         addComponentListener(new ComponentAdapter() {
             @Override
             public void componentResized(ComponentEvent e) {
-
+                refreshBufferedImage();
             }
         });
     }
@@ -103,6 +103,28 @@ public class MandelJPanel extends JPanel implements MouseListener, MouseMotionLi
             firstClick = new Pixel(e.getPoint());
     }
 
+    /**
+     * Make sure the zoom box doesn't stay on screen if the user leaves the area.
+     * This was previously handled by a hack b/c I didn't realize this method existed.
+     *
+     * @param e
+     */
+    public void mouseExited(MouseEvent e) {
+        firstClick = null;
+        repaint();
+    }
+
+    /**
+     * Make sure the zoom box doesn't stay on screen if user left the area.
+     * Probably redundant with mouseExited() but included just in case.
+     *
+     * @param e
+     */
+    public void mouseEntered(MouseEvent e) {
+        firstClick = null;
+        repaint();
+    }
+
     public void mouseDragged(MouseEvent e) {
         // eventually it might be good to implement zoom
         // selection with mouse dragging
@@ -128,6 +150,12 @@ public class MandelJPanel extends JPanel implements MouseListener, MouseMotionLi
     }
 
     public void refreshBufferedImage(){
+        final int height = (int)(getWidth() * navigation.getCurrent().getLogicalImageSize().heightToWidth());
+        if(height > 0){
+            // this method is called when the GUI is first constructed and this object dimensions are 0x0
+            // will cause exception if not treated as special case
+            displayedImageSize = new ImageSize(height, getWidth());
+        }
         image = navigation.getCurrent().getDisplayedBufferedImage(displayedImageSize);
         repaint();
     }
@@ -140,19 +168,8 @@ public class MandelJPanel extends JPanel implements MouseListener, MouseMotionLi
      * @param e
      */
     public void mouseMoved(MouseEvent e) {
-        if(mouseLeavingArea(e))
-            firstClick = null;
         mouseLocation = new Pixel(e.getPoint());
         repaint();
-    }
-
-    private boolean mouseLeavingArea(MouseEvent e){
-        final Pixel location = new Pixel(e.getPoint());
-        if(location.getX() < 2 || location.getY() < 2)
-            return true;
-        if(location.getX() > getWidth() - 2 || location.getY() > getHeight() - 2)
-            return true;
-        return false;
     }
 
     public BufferedImage getCurrentDisplayedImage(){
@@ -172,8 +189,6 @@ public class MandelJPanel extends JPanel implements MouseListener, MouseMotionLi
     }
 
     //-------------------------------------------
-    public void mouseEntered(MouseEvent e) {}
-    public void mouseExited(MouseEvent e) {}
     public void mouseReleased(MouseEvent e) {}
     public void mouseClicked(MouseEvent e) {}
 

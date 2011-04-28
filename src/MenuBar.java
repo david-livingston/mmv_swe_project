@@ -21,19 +21,19 @@ import java.io.*;
  */
 public class MenuBar extends JMenuBar implements ActionListener {
 
-    // TODO: installer, store these pages locally
     final private static String URL_HELP_TOPICS = "http://www.davidlivingston.info/mmv/help-topics.html";
     final private static String URL_ABOUT = "http://www.davidlivingston.info/mmv/about.html";
     final private static String URL_PROJECT_HOMEPAGE = "https://github.com/david-livingston/mmv_swe_project";
 
     // TODO: add these to a set and throw Exception if duplicate; event handling code assumes
     // these will be unique; has to be a less hackish way to do this...
-    final private static String MENU_ITEM_KEY_SAVE_AS = "Save Image As...";
-    final private static String MENU_ITEM_KEY_SAVE_STATE_AS = "Save State As...";
-    final private static String MENU_ITEM_KEY_OPEN_STATE_FILE = "Open State File...";
-    final private static String MENU_ITEM_KEY_HOME = "Home";
-    final private static String MENU_ITEM_KEY_BACK = "Back";
-    final private static String MENU_ITEM_KEY_NEXT = "Next";
+    final private static String MENU_ITEM_SAVE_IMAGE_AS = "Save Image As...";
+    final private static String MENU_ITEM_SAVE_STATE_AS = "Save State As...";
+    final private static String MENU_ITEM_OPEN_STATE_FILE = "Open State File...";
+    final private static String MENU_ITEM_HOME = "Home";
+    final private static String MENU_ITEM_BACK = "Back";
+    final private static String MENU_ITEM_NEXT = "Next";
+    final private static String MENU_ITEM_REFRESH = "Refresh";
     final private static String MENU_ITEM_INCREASE_MAX_ITERATIONS = "Increase Max Iterations";
     final private static String MENU_ITEM_INPUT_MAX_ITERATIONS = "Input Max Iterations";
     final private static String MENU_ITEM_HELP_TOPICS = "Help Topics";
@@ -54,20 +54,21 @@ public class MenuBar extends JMenuBar implements ActionListener {
         mJPanel = panel;
 
         add(makeMenu("File",
-            MENU_ITEM_KEY_SAVE_AS,
-            MENU_ITEM_KEY_SAVE_STATE_AS,
-            MENU_ITEM_KEY_OPEN_STATE_FILE
+                MENU_ITEM_SAVE_IMAGE_AS,
+                MENU_ITEM_SAVE_STATE_AS,
+                MENU_ITEM_OPEN_STATE_FILE
         ));
         // todo: resolution
         add(makeMenu("Navigation",
-            MENU_ITEM_KEY_HOME,
-            MENU_ITEM_KEY_BACK,
-            MENU_ITEM_KEY_NEXT
+                MENU_ITEM_HOME,
+                MENU_ITEM_BACK,
+                MENU_ITEM_NEXT
         ));
         add(makeColorPaletteMenu("Color Palettes",
-            palettes
+                palettes
         ));
-        add(makeMenu("Advanced Options",
+        add(makeMenu("Image Options",
+            MENU_ITEM_REFRESH,
             MENU_ITEM_INCREASE_MAX_ITERATIONS,
             MENU_ITEM_INPUT_MAX_ITERATIONS
         ));
@@ -119,28 +120,28 @@ public class MenuBar extends JMenuBar implements ActionListener {
 
         // why doesn't java have case stmts on Strings yet?
         // File | Save Image As...
-        if(matches(e, MENU_ITEM_KEY_SAVE_AS)){
+        if(matches(e, MENU_ITEM_SAVE_IMAGE_AS)){
             saveImage("mandel", "png");
         }
         // File | Save State As
-        else if(matches(e, MENU_ITEM_KEY_SAVE_STATE_AS)){
+        else if(matches(e, MENU_ITEM_SAVE_STATE_AS)){
             saveState("mandel", "mmv");
         }
         // File | Open State File
-        else if(matches(e, MENU_ITEM_KEY_OPEN_STATE_FILE)) {
+        else if(matches(e, MENU_ITEM_OPEN_STATE_FILE)) {
             openState();
         }
 
         // Navigation | Home
-        else if (matches(e, MENU_ITEM_KEY_HOME)) {
+        else if (matches(e, MENU_ITEM_HOME)) {
             navHome();
         }
         // Navigation | Back
-        else if (matches(e, MENU_ITEM_KEY_BACK)) {
+        else if (matches(e, MENU_ITEM_BACK)) {
             navBack();
         }
         // Navigation | Next
-        else if (matches(e, MENU_ITEM_KEY_NEXT)) {
+        else if (matches(e, MENU_ITEM_NEXT)) {
             navForward();
         }
 
@@ -149,11 +150,15 @@ public class MenuBar extends JMenuBar implements ActionListener {
             changePalette(e, palettes);
         }
 
-        // Advanced Options | Increase Max Iterations
+        // Image Options | Refresh
+        else if (matches(e, MENU_ITEM_REFRESH)) {
+            refresh();
+        }
+        // Image Options | Increase Max Iterations
         else if (matches(e, MENU_ITEM_INCREASE_MAX_ITERATIONS)) {
             increaseMaxIterations();
         }
-        // Advanced Options | Input Max Iterations
+        // Image Options | Input Max Iterations
         else if (matches(e, MENU_ITEM_INPUT_MAX_ITERATIONS)) {
             inputMaxIterations();
         }
@@ -402,7 +407,6 @@ public class MenuBar extends JMenuBar implements ActionListener {
         mJPanel.refreshBufferedImage();
     }
 
-    // todo: decreasing maxIterations has no effect; not sure whether to warn user it was ignored or actually decrease resolution?
     private boolean increaseMaxIterations(){
         mJPanel.getNavigationHistory().getCurrent().increaseIterationMax();
         mJPanel.refreshBufferedImage();
@@ -433,6 +437,10 @@ public class MenuBar extends JMenuBar implements ActionListener {
         mJPanel.refreshBufferedImage();
         mJPanel.updateRenderStats();
         return true;
+    }
+
+    private void refresh(){
+        mJPanel.refreshBufferedImage();
     }
 
 }
