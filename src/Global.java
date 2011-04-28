@@ -12,7 +12,7 @@ public class Global {
     private final static boolean forceDebugMode = true;
 
     // incremented each time a build is released to be tested
-    private static final int serialID = 2;
+    private static final int serialID = 3;
 
     // incremented after adding a major feature
     private static final int majorVersion = 4;
@@ -31,7 +31,7 @@ public class Global {
     }
 
     public static String getTitle(){
-        return "MMV: Multithreaded Mandelbrot Viewer \t \t v" +
+        return "HD-MMV: High Definition Multithreaded Mandelbrot Viewer \t \t v" +
             getVersion() + " \t \t " +
             (isDebugEnabled() ? "--DEBUG MODE--" : "")
         ;
