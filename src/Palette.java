@@ -25,6 +25,12 @@ import java.awt.*;
  */
 public abstract class Palette {
 
+    final private String name;
+
+    public Palette(String name){
+        this.name = name;
+    }
+
     /**
      * Maps a Mandelbrot point to the color it should be displayed as on
      * screen.
@@ -74,5 +80,9 @@ public abstract class Palette {
         if(original > 255.0)
             original %= 255.0;
         return original / 255.0;
+    }
+
+    public String getName() {
+        return name;
     }
 }

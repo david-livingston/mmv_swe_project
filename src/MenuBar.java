@@ -1,10 +1,13 @@
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import javax.swing.filechooser.*;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
 import java.io.*;
+import java.util.HashMap;
+import java.util.HashSet;
 
 /**
  * Created by IntelliJ IDEA.
@@ -43,6 +46,7 @@ public class MenuBar extends JMenuBar implements ActionListener {
     final private MandelJPanel mJPanel;
 
     final private PaletteSet palettes = new PaletteSet();
+    final private HashMap<String, JCheckBoxMenuItem> colorMenuItems = new HashMap<String, JCheckBoxMenuItem>();
 
     /**
      * @param panel the container which this menubar will be added to; needed
@@ -65,7 +69,8 @@ public class MenuBar extends JMenuBar implements ActionListener {
                 MENU_ITEM_NEXT
         ));
         add(makeColorPaletteMenu("Color Palettes",
-                palettes
+                palettes,
+                colorMenuItems
         ));
         add(makeMenu("Image Options",
             MENU_ITEM_REFRESH,
@@ -97,10 +102,13 @@ public class MenuBar extends JMenuBar implements ActionListener {
         return menu;
     }
 
-    private JMenu makeColorPaletteMenu(final String topLevelName, final PaletteSet ps){
+    private JMenu makeColorPaletteMenu(final String topLevelName, final PaletteSet ps, HashMap<String, JCheckBoxMenuItem> colorMenuItems){
         final JMenu menu = new JMenu(topLevelName);
         for(String entry : ps.getNames()){
-            JMenuItem item = new JMenuItem(entry);
+            JCheckBoxMenuItem item = new JCheckBoxMenuItem(entry);
+            if(entry.equals(ps.getDefault().getName()))
+                item.setSelected(true);
+            colorMenuItems.put(entry, item);
             item.addActionListener(this);
             menu.add(item);
         }
@@ -277,7 +285,10 @@ public class MenuBar extends JMenuBar implements ActionListener {
         if(null == name)
             return false;
 
-        mJPanel.getNavigationHistory().getCurrent().setPalette(e.getActionCommand());
+        for(String itemName : colorMenuItems.keySet())
+            colorMenuItems.get(itemName).setSelected(itemName.equals(name));
+
+        mJPanel.getNavigationHistory().getCurrent().setPalette(name);
         mJPanel.refreshBufferedImage();
 
         return true;

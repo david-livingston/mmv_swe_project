@@ -19,7 +19,7 @@ public class Global {
     // significant changes or bug fix, new minor feature
     private static final char minorVersion = 'A';
     // a new commit (if i remember) but not significant enough to incr minorVersion
-    private static final int buildVersion = 0;
+    private static final int buildVersion = 1;
 
     public static String getVersion(){
         return serialID +

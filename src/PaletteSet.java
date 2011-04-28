@@ -16,7 +16,7 @@ public class PaletteSet {
 
     public PaletteSet(){
         palettes.put(DEFAULT_NAME,
-            new Palette() {
+            new Palette(DEFAULT_NAME) {
                 @Override
                 public Color getColorDetail(double counter) {
                     return safeColor(counter * counter, counter * counter + counter, counter + counter);
@@ -24,7 +24,7 @@ public class PaletteSet {
             }
         );
         palettes.put("Sorority",
-            new Palette() {
+            new Palette("Sorority") {
                 @Override
                 public Color getColorDetail(double counter) {
                     return safeColor(counter * counter + counter, counter + counter, counter * counter);
@@ -32,7 +32,7 @@ public class PaletteSet {
             }
         );
         palettes.put("Black & White",
-            new Palette() {
+            new Palette("Black & White") {
                 @Override
                 public Color getColorDetail(double counter) {
                     return safeColor(counter * counter + counter, counter * counter + counter, counter * counter + counter);
@@ -40,7 +40,7 @@ public class PaletteSet {
             }
         );
         palettes.put("Moss",
-            new Palette() {
+            new Palette("Moss") {
                 @Override
                 public Color getColorDetail(double counter) {
                     return safeColor(255.0 - (counter * counter), 255.0 - (counter * counter), counter + counter);
@@ -48,7 +48,7 @@ public class PaletteSet {
             }
         );
         palettes.put("Frost",
-            new Palette() {
+            new Palette("Frost") {
                 @Override
                 public Color getColorDetail(double counter) {
                     return safeColor(255.0 - (counter + counter), 255.0 - (counter + counter), 255.0);
@@ -56,7 +56,7 @@ public class PaletteSet {
             }
         );
         palettes.put("Light Frost",
-            new Palette() {
+            new Palette("Light Frost") {
                 @Override
                 public Color getColorDetail(double counter) {
                     return safeColor(255.0 - (counter), 255.0 - (counter), 255.0);
@@ -64,7 +64,7 @@ public class PaletteSet {
             }
         );
         palettes.put("Lava Lamp",
-            new Palette() {
+            new Palette("Lava Lamp") {
                 @Override
                 public Color getColorDetail(double counter) {
                     return safeColor(255.0, 100.0 - (counter * counter * counter), 100.0 - (counter * counter));
