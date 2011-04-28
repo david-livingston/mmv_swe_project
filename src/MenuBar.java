@@ -201,7 +201,7 @@ public class MenuBar extends JMenuBar implements ActionListener {
         }
 
         try {
-            canvas = MandelCanvas.unmarshall(jfc.getSelectedFile());
+            canvas = MandelCanvasFactory.unmarshallFromSaveableState(jfc.getSelectedFile());
         } catch (Exception e) {
             Global.logNonFatalException("unmarshalling file", e);
             return false;
@@ -243,7 +243,9 @@ public class MenuBar extends JMenuBar implements ActionListener {
             // http://java.sun.com/developer/technicalArticles/Programming/serialization/
             FileOutputStream fos = new FileOutputStream(saveFile);
             ObjectOutputStream out = new ObjectOutputStream(fos);
-            out.writeObject(mJPanel.getNavigationHistory().getCurrent());
+            final MandelCanvas curr = mJPanel.getNavigationHistory().getCurrent();
+            final SaveableState ss = new SaveableState(curr.getRenderRegion(), curr.getLogicalImageSize(), curr.getDisplayImageSize(), curr.getIterationMax(), curr.getPalette().getName(), false);
+            out.writeObject(ss);
             out.close();
         } catch (Exception ioe) {
             Global.logNonFatalException("saving state file", ioe);

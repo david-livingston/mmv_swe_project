@@ -12,11 +12,11 @@ import java.util.Set;
 public class PaletteSet {
 
     final HashMap<String, Palette> palettes = new HashMap<String, Palette>();
-    final String DEFAULT_NAME = "Foilage";
+    final String DEFAULT_NAME = "Frost";
 
     public PaletteSet(){
-        palettes.put(DEFAULT_NAME,
-            new Palette(DEFAULT_NAME) {
+        palettes.put("Foilage",
+            new Palette("Foilage") {
                 @Override
                 public Color getColorDetail(double counter) {
                     return safeColor(counter * counter, counter * counter + counter, counter + counter);
@@ -47,8 +47,8 @@ public class PaletteSet {
                 }
             }
         );
-        palettes.put("Frost",
-            new Palette("Frost") {
+        palettes.put(DEFAULT_NAME,
+            new Palette(DEFAULT_NAME) {
                 @Override
                 public Color getColorDetail(double counter) {
                     return safeColor(255.0 - (counter + counter), 255.0 - (counter + counter), 255.0);

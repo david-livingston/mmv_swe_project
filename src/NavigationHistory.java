@@ -26,7 +26,7 @@ public class NavigationHistory {
         if(null == fileToOpen)
             current = home;
         else try {
-            current = MandelCanvas.unmarshall(fileToOpen);
+            current = MandelCanvasFactory.unmarshallFromSaveableState(fileToOpen);
         } catch (ClassNotFoundException cnfe) {
             Global.logNonFatalException("Serialization issue opening file: " + fileToOpen, cnfe);
         } catch (FileNotFoundException fnfe) {

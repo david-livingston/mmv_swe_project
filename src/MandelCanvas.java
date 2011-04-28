@@ -79,7 +79,7 @@ public class MandelCanvas  implements Serializable {
             calcLightWeightAttributes();
     }
 
-    private void calcLightWeightAttributes(){
+    public void calcLightWeightAttributes(){
         mandelPoints = new MandelPoint[logicalImageSize.getWidth()][logicalImageSize.getHeight()];
         for(int x = 0; x < logicalImageSize.getWidth(); ++x)
             for(int y = 0; y < logicalImageSize.getHeight(); ++y)
@@ -237,15 +237,6 @@ public class MandelCanvas  implements Serializable {
         return renderRegion;
     }
 
-    public static MandelCanvas unmarshall(File serialized) throws IOException, ClassNotFoundException {
-        assert null != serialized;
-        FileInputStream fis = new FileInputStream(serialized);
-        ObjectInputStream in = new ObjectInputStream(fis);
-        MandelCanvas out = (MandelCanvas) in.readObject();
-        out.calcLightWeightAttributes();
-        return out;
-    }
-
     public ImageSize getLogicalImageSize() {
         return logicalImageSize;
     }
@@ -266,7 +257,15 @@ public class MandelCanvas  implements Serializable {
         initDisplayBufferedImage();
     }
 
-    public void setDisplayImageSize(ImageSize displayImageSize) {
-        this.displayImageSize = displayImageSize;
+    public ComplexRegion getRenderRegion() {
+        return renderRegion;
+    }
+
+    public ImageSize getDisplayImageSize() {
+        return displayImageSize;
+    }
+
+    public Palette getPalette() {
+        return palette;
     }
 }

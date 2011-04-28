@@ -40,7 +40,7 @@ public class LocationThumbnail extends JPanel {
         if(null == focus)
             return;
 
-        g.setColor(Color.WHITE);
+        g.setColor(new Color(0x10dcfb));
         g.drawRect(focus.getXMin(), focus.getYMin(), focus.getXMax() - focus.getXMin(), focus.getYMax() - focus.getYMin());
         final int middleX = focus.getXMin() + (focus.getXMax() - focus.getXMin())/2;
         final int middleY = focus.getYMin() + (focus.getYMax() - focus.getYMin())/2;

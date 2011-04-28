@@ -1,3 +1,8 @@
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+
 /**
  * Created by IntelliJ IDEA.
  * User: Owner
@@ -35,5 +40,15 @@ public class MandelCanvasFactory {
 
     public MandelCanvas getHome(){
         return home;
+    }
+
+    public static MandelCanvas unmarshallFromSaveableState(File serialized) throws IOException, ClassNotFoundException {
+        assert null != serialized;
+        final FileInputStream fis = new FileInputStream(serialized);
+        final ObjectInputStream in = new ObjectInputStream(fis);
+        final SaveableState ss = (SaveableState) in.readObject();
+        final MandelCanvas out = ss.toMandelCanvas();
+        out.calcLightWeightAttributes();
+        return out;
     }
 }
