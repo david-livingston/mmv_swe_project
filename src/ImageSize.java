@@ -79,4 +79,9 @@ public class ImageSize extends ImageRegion implements Serializable {
     public int hashCode() {
         return 31 * (getHeight() + 3 * getWidth());
     }
+
+    @Override
+    public String toString(){
+        return getWidth() + " x " + getHeight();
+    }
 }

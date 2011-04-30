@@ -10,9 +10,10 @@ public class RenderThreadManager implements Runnable {
     private final Thread[] workers;
 
     public RenderThreadManager(final MandelCanvas canvas) {
-        workers = new Thread[getBestThreadCount()];
+        final int threadCount = Static.systemInfo.getBestThreadCount();
+        workers = new Thread[threadCount];
         for(int i = 0; i < workers.length; ++i)
-            workers[i] = new Thread(new RenderThread(canvas, (i + 1)), "RenderThread-" + (i+1) + "of" + getBestThreadCount());
+            workers[i] = new Thread(new RenderThread(canvas, (i + 1)), "RenderThread-" + (i+1) + "of" + threadCount);
     }
 
     public void run() {
@@ -36,14 +37,5 @@ public class RenderThreadManager implements Runnable {
             if(t.isAlive())
                 return false;
         return true;
-    }
-
-    public static int getBestThreadCount(){
-        int cpus = Runtime.getRuntime().availableProcessors();
-        if(cpus >= 6) // allow high core count machines to maintain one cpu for other tasks
-            --cpus;
-        else if(cpus < 2) // require at least 2 threads
-            cpus = 2;
-        return cpus;
     }
 }

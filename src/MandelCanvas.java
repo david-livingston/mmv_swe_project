@@ -201,28 +201,6 @@ public class MandelCanvas  implements Serializable {
         graphics2D.dispose();
     }
 
-    public Object[][] getAttributeValues(){
-        return new Object[][] {
-            { "real (x) min: ", renderRegion.getRealMin() },
-            { "real (x) max: ", renderRegion.getRealMax() },
-            { "imaginary (y) min: ", renderRegion.getImagMin() },
-            { "imaginary (y) max: ", renderRegion.getImagMax() },
-            { "delta: ", new BigDecimal(renderRegion.getAverageDelta(logicalImageSize)).toPlainString() },
-            { "iteration limit: ", iterationMax },
-            { "logical x resolution: ", logicalImageSize.getWidth() },
-            { "logical y resolution: ", logicalImageSize.getHeight() },
-            { "logical x/y ratio: ", logicalImageSize.getWidth()/((double)logicalImageSize.getHeight()) },
-            { "displayed x resolution: ", displayImageSize.getWidth() },
-            { "displayed y resolution: ", displayImageSize.getHeight() },
-            { "displayed x/y ratio: ", displayImageSize.getWidth()/((double)displayImageSize.getHeight()) },
-            { "processor count: ", Runtime.getRuntime().availableProcessors() },
-            { "render thread count: ", RenderThreadManager.getBestThreadCount()},
-            { "max allocatable memory: ", (Runtime.getRuntime().maxMemory() / (1024 * 1024)) + " MB" },
-            // memory that can still be used before exception: currently free + still unallocated
-            { "remaining: ", ((Runtime.getRuntime().freeMemory() + (Runtime.getRuntime().maxMemory() - Runtime.getRuntime().totalMemory())) / (1024 * 1024)) + " MB" }
-        };
-    }
-
     public int getIterationMax() {
         return iterationMax;
     }
@@ -267,5 +245,9 @@ public class MandelCanvas  implements Serializable {
 
     public Palette getPalette() {
         return palette;
+    }
+
+    public double getDelta(){
+        return renderRegion.getAverageDelta(logicalImageSize);
     }
 }

@@ -48,6 +48,7 @@ public class MandelJPanel extends JPanel implements MouseListener, MouseMotionLi
             @Override
             public void componentResized(ComponentEvent e) {
                 refreshBufferedImage();
+                updateRenderStats();
             }
         });
     }
@@ -145,7 +146,8 @@ public class MandelJPanel extends JPanel implements MouseListener, MouseMotionLi
     }
 
     public void updateRenderStats(){
-        renderStats.setModel(new DefaultTableModel(navigation.getCurrent().getAttributeValues(), new Object[]{ "Attribute", "Value" } ));
+        final RenderStatsTable r = new RenderStatsTable(navigation.getCurrent());
+        renderStats.setModel(new DefaultTableModel(r.getAttributeValues(), new Object[]{ "Attribute", "Value" } ));
     }
 
     public void refreshBufferedImage(){
@@ -184,7 +186,8 @@ public class MandelJPanel extends JPanel implements MouseListener, MouseMotionLi
     }
 
     public Object[][] getAttributeValues(){
-        return navigation.getCurrent().getAttributeValues();
+        // todo: this needs to be elsewhere
+        return new RenderStatsTable(navigation.getCurrent()).getAttributeValues();
     }
 
     //-------------------------------------------
@@ -204,7 +207,4 @@ public class MandelJPanel extends JPanel implements MouseListener, MouseMotionLi
         navigation.associateThumbnail(thumbnail);
     }
 
-    public void setDisplayedImageSize(final ImageSize newSize){
-        displayedImageSize = newSize;
-    }
 }

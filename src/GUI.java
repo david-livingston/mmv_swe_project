@@ -36,7 +36,10 @@ public class GUI extends JFrame {
 
         final ImageSize thumbNailImageSize = new ImageSize(216, 384); // REAL_HD / 5
         final ImageSize thumbNailFrameSize = new ImageSize(thumbNailImageSize.getHeight() + frameHeightAddition, thumbNailImageSize.getWidth() + frameWidthAddtion);
-        final ImageSize renderStatsTableSize = new ImageSize(350, 600);
+
+        final int statsTableAttributeColumnWidth = 75;
+        final int statsTableValueColumnWidth = 175;
+        final ImageSize renderStatsTableSize = new ImageSize(250, statsTableAttributeColumnWidth + statsTableValueColumnWidth);
 
         final int widthAvailable = mainWindow.getWidth() - (10 + renderStatsTableSize.getWidth());
         final int matchingHeight = (int)(widthAvailable * ((double)logicalImageSize.getHeight())/logicalImageSize.getWidth());
@@ -80,7 +83,11 @@ public class GUI extends JFrame {
         String[] columnNames = { "Attribute", "Value" };
         Object[][] data = mJPanel.getAttributeValues();
         final JTable renderStats = new JTable(data, columnNames);
-        attributeTableInternalFrame.add(renderStats);
+        renderStats.getColumnModel().getColumn(0).setPreferredWidth(statsTableAttributeColumnWidth);
+        renderStats.getColumnModel().getColumn(1).setPreferredWidth(statsTableValueColumnWidth);
+        attributeTableInternalFrame.setLayout(new BorderLayout());
+        attributeTableInternalFrame.add(renderStats.getTableHeader(), BorderLayout.PAGE_START);
+        attributeTableInternalFrame.add(renderStats, BorderLayout.CENTER);
         attributeTableInternalFrame.setLocation(upperLeftCornerStatsTable.asPoint());
         mJPanel.associateRenderStats(renderStats);
 
