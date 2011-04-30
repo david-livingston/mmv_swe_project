@@ -173,7 +173,7 @@ public class MandelCanvas  implements Serializable {
                 old.sleep(400);
             } while (render.isAlive());
         } catch (Exception e) {
-            Global.logNonFatalException("", e);
+            Static.log.nonFatalException("", e);
         } finally {
             if(null != component)
                 component.setCursor(Cursor.getDefaultCursor());

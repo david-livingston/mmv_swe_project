@@ -27,7 +27,6 @@ public class MandelJPanel extends JPanel implements MouseListener, MouseMotionLi
 
     private JInternalFrame thumbNailFrame = null;
     private JTable renderStats = null;
-    private StatusBar statusBar = null;
     private LocationThumbnail thumbnail = null;
 
     private ImageSize displayedImageSize;
@@ -198,10 +197,6 @@ public class MandelJPanel extends JPanel implements MouseListener, MouseMotionLi
 
     public void associateRenderStats(JTable renderStats) {
         this.renderStats = renderStats;
-    }
-
-    public void associateStatusBar(StatusBar statusBar) {
-        this.statusBar = statusBar;
     }
 
     public void associateThumbnail(LocationThumbnail thumbnail){

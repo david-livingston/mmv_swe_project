@@ -14,10 +14,6 @@ import java.awt.*;
  * be a Mandelbrot image is that the escaping points should be distinguishable
  * from the prisoner points.
  *
- * TODO: change from a single class with one static method; this needs to be
- * more flexible so the user can change coloring schemes while the program
- * is running.
- *
  * Color's constructor uses the red, green, blue color model.
  * Alternate color constructors are available for hue, saturation, brightness.
  * RGB assumes each arg will be (0...255) inclusive, code doesn't check for this;

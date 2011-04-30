@@ -1,13 +1,10 @@
 import javax.imageio.ImageIO;
 import javax.swing.*;
-import javax.swing.filechooser.*;
-import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
 import java.io.*;
 import java.util.HashMap;
-import java.util.HashSet;
 
 /**
  * Created by IntelliJ IDEA.
@@ -129,7 +126,7 @@ public class MenuBar extends JMenuBar implements ActionListener {
         // why doesn't java have case stmts on Strings yet?
         // File | Save Image As...
         if(matches(e, MENU_ITEM_SAVE_IMAGE_AS)){
-            saveImage("mandel", "png");
+            saveImage();
         }
         // File | Save State As
         else if(matches(e, MENU_ITEM_SAVE_STATE_AS)){
@@ -185,73 +182,8 @@ public class MenuBar extends JMenuBar implements ActionListener {
         }
         // stuff that's stubbed out but not implemented
         else {
-            Global.logError("MenuBar.actionPerformed()", "Feature not implemented: " + e.getActionCommand());
+            Static.log.error("MenuBar.actionPerformed()", "Feature not implemented: " + e.getActionCommand());
         }
-    }
-
-    private boolean openState() {
-        MandelCanvas canvas = null;
-
-        final JFileChooser jfc = new JFileChooser(findDesktop());
-        jfc.setFileFilter(new MMVSimpleFileFilter());
-        final int retVal = jfc.showOpenDialog(mJPanel);
-
-        if(JFileChooser.APPROVE_OPTION != retVal){
-            return false; // user cancelled
-        }
-
-        try {
-            canvas = MandelCanvasFactory.unmarshallFromSaveableState(jfc.getSelectedFile());
-        } catch (Exception e) {
-            Global.logNonFatalException("unmarshalling file", e);
-            return false;
-        }
-
-        mJPanel.getNavigationHistory().setCurrent(canvas);
-        mJPanel.refreshBufferedImage();
-        return true;
-    }
-
-    private boolean saveState(final String defaultName, final String defaultExtension) {
-        try {
-            // figure out where to save the image
-            final JFileChooser jfc = new JFileChooser();
-            MMVSimpleFileFilter ff = new MMVSimpleFileFilter();
-            jfc.setFileFilter(ff);
-            jfc.setSelectedFile(makeFileWithTimeTokenSuffix(defaultName, ff.getExtension(), true));
-            final int retVal = jfc.showSaveDialog(mJPanel);
-
-            if(JFileChooser.APPROVE_OPTION != retVal){
-                return false; // user cancelled
-            }
-
-            final File saveFile = ensureExtension(jfc.getSelectedFile(), ff.getExtension());
-
-            if(saveFile.exists()) {
-                switch(JOptionPane.showConfirmDialog(mJPanel, "File: " + saveFile.getName() + " already exists.\nOverwrite?")){
-                    case JOptionPane.OK_OPTION :
-                        break;
-                    case JOptionPane.NO_OPTION :
-                        return saveState(defaultName, defaultExtension);
-                    case JOptionPane.CANCEL_OPTION :
-                        return false;
-                    default:
-                        Global.logError("MenuBar.saveState()", "unexpected value returned by JOptionPane.showConfirmDialog()");
-                }
-            }
-
-            // http://java.sun.com/developer/technicalArticles/Programming/serialization/
-            FileOutputStream fos = new FileOutputStream(saveFile);
-            ObjectOutputStream out = new ObjectOutputStream(fos);
-            final MandelCanvas curr = mJPanel.getNavigationHistory().getCurrent();
-            final SaveableState ss = new SaveableState(curr.getRenderRegion(), curr.getLogicalImageSize(), curr.getDisplayImageSize(), curr.getIterationMax(), curr.getPalette().getName(), false);
-            out.writeObject(ss);
-            out.close();
-        } catch (Exception ioe) {
-            Global.logNonFatalException("saving state file", ioe);
-            return false;
-        }
-        return true;
     }
 
     /**
@@ -300,90 +232,90 @@ public class MenuBar extends JMenuBar implements ActionListener {
      * Saves the image currently being displayed to the user at a file location of the
      * user's choosing. Uses a filechooser dialog.
      *
-     * @param defaultName the file name prefilled in the save dialog
-     * @param defaultExtension the file extension prefilled int he save dialog
      * @return whether the file was successfully saved
      */
-    private boolean saveImage(final String defaultName, final String defaultExtension){
+    private boolean saveImage(){
+
+        PNGSimpleFileFilter filter = new PNGSimpleFileFilter();
+
+        final File saveFile = FileUtilities.getFileFromSaveDialog(
+            mJPanel,
+            "mandel",
+            FileUtilities.getDesktop(),
+            filter,
+            false
+        );
+
+        if(null == saveFile)
+            return false;
+
         try {
-            // figure out where to save the image
-            final JFileChooser jfc = new JFileChooser();
-            PNGSimpleFileFilter ff = new PNGSimpleFileFilter();
-            jfc.setFileFilter(ff);
-            jfc.setSelectedFile(makeFileWithTimeTokenSuffix(defaultName, ff.getExtension(), false));
-            final int retVal = jfc.showSaveDialog(mJPanel);
-
-            if(JFileChooser.APPROVE_OPTION != retVal){
-                return false; // user cancelled
-            }
-
-            final File saveFile = ensureExtension(jfc.getSelectedFile(), ff.getExtension());
-
-            if(saveFile.exists()) {
-                switch(JOptionPane.showConfirmDialog(mJPanel, "File: " + saveFile.getName() + " already exists.\nOverwrite?")){
-                    case JOptionPane.OK_OPTION :
-                        break;
-                    case JOptionPane.NO_OPTION :
-                        return saveImage(defaultName, defaultExtension);
-                    case JOptionPane.CANCEL_OPTION :
-                        return false;
-                    default:
-                        Global.logError("MenuBar.saveImage()", "unexpected value returned by JOptionPane.showConfirmDialog()");
-                }
-            }
-
             // save image as PNG, doc re. saving BufferedImage:
             // http://download.oracle.com/javase/tutorial/2d/images/saveimage.html
-            // TODO: other formats, esp. lossless format (bmp ?)
             BufferedImage bi = mJPanel.getCurrentLogicalImage();
-            ImageIO.write(bi, ff.getExtension(), saveFile);
+            ImageIO.write(bi, filter.getExtension(), saveFile);
         } catch (Exception ioe) {
-            Global.logNonFatalException("", ioe);
+            Static.log.nonFatalException("", ioe);
             return false;
         }
+
         return true;
     }
 
-    private File findDesktop(){
-        // adapted from: http://stackoverflow.com/questions/570401/in-java-under-windows-how-do-i-find-a-redirected-desktop-folder
-        FileSystemView fileSys = FileSystemView.getFileSystemView();
-        // why is this undocumented method named getHomeDirectory() rather than getDesktopDirectory()
-        // does it ever fail?
-        // might be a Windows only solution :| also look at FileSystemView.getRoots(): File[]
-        File desktop = fileSys.getHomeDirectory();
-        if(!desktop.exists() || !desktop.canRead()) {
-            Global.logError("MenuBar.findDesktop()", "location: " + desktop.getAbsolutePath() + ", exists: " + desktop.exists() + ", can read: " + desktop.canRead());
-            return null;
-        }
-        return desktop;
-    }
+    private boolean saveState(final String defaultName, final String defaultExtension) {
 
-    private File ensureExtension(final File file, final String ext){
-        if(file.getName().endsWith("." + ext))
-            return file;
-        else
-            return new File(file.getParent(), file.getName() + "." + ext);
-    }
+        MMVSimpleFileFilter filter = new MMVSimpleFileFilter();
 
-    private File makeFileWithTimeTokenSuffix(final String name, final String ext, boolean includeBuildString){
-        final String longerRawName = name + (includeBuildString? "_v" + Global.getVersion() : "");
-        final String longerName = longerRawName + "." + ext;
+        final File saveFile = FileUtilities.getFileFromSaveDialog(
+            mJPanel,
+            "mandel",
+            FileUtilities.getDesktop(),
+            filter,
+            true
+        );
 
-        final File desktop = findDesktop();
-        File out = desktop != null ? new File(desktop, longerName) : new File(longerName);
+        if(null == saveFile)
+            return false;
 
-        if(out.exists()){
-            File parent = out.getParentFile();
-            for(int i = 1; i < 1000; ++i){
-                File tmp = new File(parent, longerRawName + " (" + i + ")." + ext);
-                if(!tmp.exists()){
-                    out = tmp;
-                    break;
-                }
-            }
+        try {
+            // http://java.sun.com/developer/technicalArticles/Programming/serialization/
+            FileOutputStream fos = new FileOutputStream(saveFile);
+            ObjectOutputStream out = new ObjectOutputStream(fos);
+            final MandelCanvas curr = mJPanel.getNavigationHistory().getCurrent();
+            final SaveableState ss = new SaveableState(curr.getRenderRegion(), curr.getLogicalImageSize(), curr.getDisplayImageSize(), curr.getIterationMax(), curr.getPalette().getName(), false);
+            out.writeObject(ss);
+            out.close();
+        } catch (Exception ioe) {
+            Static.log.nonFatalException("saving state file", ioe);
+            return false;
         }
 
-        return out;
+        return true;
+    }
+
+
+    private boolean openState() {
+        final File selectedFile = FileUtilities.getFileFromOpenDialog(
+            mJPanel,
+            FileUtilities.getDesktop(),
+            new MMVSimpleFileFilter()
+        );
+
+        if(null == selectedFile)
+            return false;
+
+        MandelCanvas canvas;
+
+        try {
+            canvas = MandelCanvasFactory.unmarshallFromSaveableState(selectedFile);
+        } catch (Exception e) {
+            Static.log.nonFatalException("unmarshalling file", e);
+            return false;
+        }
+
+        mJPanel.getNavigationHistory().setCurrent(canvas);
+        mJPanel.refreshBufferedImage();
+        return true;
     }
 
     /**
@@ -399,7 +331,7 @@ public class MenuBar extends JMenuBar implements ActionListener {
         try {
             java.awt.Desktop.getDesktop().browse(java.net.URI.create(url));
         } catch (Exception e){
-            Global.logNonFatalException("Error opening webpage: " + url, e);
+            Static.log.nonFatalException("Error opening webpage: " + url, e);
             return false;
         }
         return true;
@@ -439,11 +371,11 @@ public class MenuBar extends JMenuBar implements ActionListener {
         try {
             newIterMax = Integer.parseInt(input);
             if(newIterMax < 0){
-                Global.logUserError("MenuBar.changeMaxIterations()", "iterMax can't be negative, input was: " + input);
+                Static.log.userError("MenuBar.changeMaxIterations()", "iterMax can't be negative, input was: " + input);
                 return false;
             }
         } catch (Exception e) {
-            Global.logError("MenuBar.changeMaxIterations()", "could not parse input as integer: " + input);
+            Static.log.error("MenuBar.changeMaxIterations()", "could not parse input as integer: " + input);
             return false;
         }
         mJPanel.getNavigationHistory().getCurrent().setIterationMax(newIterMax);

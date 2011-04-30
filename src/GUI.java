@@ -1,5 +1,4 @@
 import javax.swing.*;
-import javax.swing.table.JTableHeader;
 import java.awt.*;
 import java.io.File;
 
@@ -73,7 +72,6 @@ public class GUI extends JFrame {
         mJPanel.associateThumbnail(locationThumbnail);
 
         // SETUP DISPLAY OF RENDER STATISTICS TABLE
-        // todo: make table not editable
         // -----------------------------------------------
         // JInternalFrame(String title, boolean resizable, boolean closable, boolean maximizable, boolean iconifiable)
         JInternalFrame attributeTableInternalFrame = new JInternalFrame("Attribute Values", true, false, false, true);
@@ -96,7 +94,7 @@ public class GUI extends JFrame {
 
         // SETUP MAIN WINDOW WHICH CONTAINS DESKTOP PANE & MENUBAR
         // -------------------------------
-        setTitle(Global.getTitle());
+        setTitle(VersionInfo.getTitle());
         setJMenuBar(new MenuBar(mJPanel));
         setVisible(true);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -115,7 +113,7 @@ public class GUI extends JFrame {
         try { // Set System L&F
             UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
         } catch (Exception e) {
-            Global.logError("GUI.main()", "Exception setting native look & feel: " + e);
+            Static.log.error("GUI.main()", "Exception setting native look & feel: " + e);
         }
 
         File fileToOpen = null;

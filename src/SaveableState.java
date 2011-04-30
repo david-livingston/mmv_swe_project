@@ -51,7 +51,7 @@ public class SaveableState implements Serializable {
 
         Palette palette = new PaletteSet().getPalette(colorPaletteName);
         if(null == palette){
-            Global.logError("SaveableState.toMandelCanvas()", "Did not find palette: " + colorPaletteName);
+            Static.log.error("SaveableState.toMandelCanvas()", "Did not find palette: " + colorPaletteName);
             palette = new PaletteSet().getDefault();
         }
 

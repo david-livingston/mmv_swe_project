@@ -28,11 +28,11 @@ public class NavigationHistory {
         else try {
             current = MandelCanvasFactory.unmarshallFromSaveableState(fileToOpen);
         } catch (ClassNotFoundException cnfe) {
-            Global.logNonFatalException("Serialization issue opening file: " + fileToOpen, cnfe);
+            Static.log.nonFatalException("Serialization issue opening file: " + fileToOpen, cnfe);
         } catch (FileNotFoundException fnfe) {
-            Global.logNonFatalException("Could not find file: " + fileToOpen, fnfe);
+            Static.log.nonFatalException("Could not find file: " + fileToOpen, fnfe);
         } catch (IOException ioe) {
-            Global.logNonFatalException("IOException in InputStream while unmarshalling file: " + fileToOpen, ioe);
+            Static.log.nonFatalException("IOException in InputStream while unmarshalling file: " + fileToOpen, ioe);
         }
     }
 
@@ -52,7 +52,7 @@ public class NavigationHistory {
             current = current.toZoomedCanvas(screenSelection);
         } catch (OutOfMemoryError ouch) {
             previous.clear();
-            Global.logError("NavigationHistory.zoom()", "Navigation history abandoned b/c heap space exceeded.");
+            Static.log.error("NavigationHistory.zoom()", "Navigation history abandoned b/c heap space exceeded.");
             current = current.toZoomedCanvas(screenSelection);
         }
     }
