@@ -21,14 +21,26 @@ public class MandelPoint implements Serializable {
     private final double squaredMaxDistance = 4.0;
     private boolean escaped = false;
 
+    /**
+     * Construct a MandelPoint which starts at (before iteration) the input
+     * ComplexPoint. The MandelPoint will be iterated through
+     * z <- z^2 + c, where z and c are both initially set to the starting
+     * location, c is held constant, and z is updated.
+     *
+     * @param startingLocation
+     */
     public MandelPoint(final ComplexNumber startingLocation){
         this.startingLocation = currentLocation = startingLocation;
     }
 
-    // this is the key method in the program
-    // it labels a complex point as either a prisoner or escapee of the mandelbrot set
-    // if escapee it also indicates how long it took for the point to escape
-    // see wikipedia article for details: http://en.wikipedia.org/wiki/Mandelbrot_set#Escape_time_algorithm
+    /**
+     * This is the key method in the program it labels a complex point
+     * as either a prisoner or escapee of the mandelbrot set if escapee
+     * it also indicates how long it took for the point to escape see wikipedia
+     * article for details: http://en.wikipedia.org/wiki/Mandelbrot_set#Escape_time_algorithm
+     *
+     * @param iterationLimit
+     */
     public void iterate(final int iterationLimit){
         if(escaped)
             return;

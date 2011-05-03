@@ -7,6 +7,15 @@ import java.util.LinkedHashMap;
  * Date: 4/30/11
  * Time: 9:11 AM
  * To change this template use File | Settings | File Templates.
+ *
+ * Model for the statistics table shown in the GUI.
+ *
+ * TODO: time renders
+ * TODO: display stats about how many pixels are prisoners/escapees
+ * TODO: tool-tips for some rows (esp. memory)
+ * TODO: update thread
+ * TODO: pull some of the GUI code here from MainWindow.java (or preferably in a separate class)
+ * TODO: formatting of values (e.g. commas in integer values > 999)
  */
 public class RenderStatsTable {
 
@@ -33,11 +42,17 @@ public class RenderStatsTable {
     }
 
     public void updateSystemStats(){
-        rows.put("CPU Count", "" + Static.systemInfo.getProcessorCount());
-        rows.put("Max Usable Mem", "" + strFromByteCount(Static.systemInfo.getMaxMemory()));
-        rows.put("Remaining Mem", "" + strFromByteCount(Static.systemInfo.getRemainingMemory()) + "  (" + Static.systemInfo.getPercentRemainingMemory() + "%)");
+        rows.put("CPU Count", "" + Main.systemInfo.getProcessorCount());
+        rows.put("Max Usable Mem", "" + strFromByteCount(Main.systemInfo.getMaxMemory()));
+        rows.put("Remaining Mem", "" + strFromByteCount(Main.systemInfo.getRemainingMemory()) + "  (" + Main.systemInfo.getPercentRemainingMemory() + "%)");
     }
 
+    /**
+     * todo: control how many decimal places are displayed
+     *
+     * @param d
+     * @return
+     */
     private static String strFromDouble(Double d){
         return new BigDecimal(d).toPlainString();
     }
@@ -46,6 +61,11 @@ public class RenderStatsTable {
         return (size/(1024 * 1024)) + " MB";
     }
 
+    /**
+     * The GUI component expects data to be provided as a 2d array.
+     *
+     * @return
+     */
     public String[][] getAttributeValues(){
         final String[][] out = new String[rows.size()][2];
         int ctr = 0;

@@ -23,6 +23,17 @@ public class SaveableState implements Serializable {
     final private int displayXResolution;
     final private int displayYResolution;
 
+    /**
+     * Use all the attributes which define how to begin rendering the picture;
+     * do not save any attribute which is derivable from this minimal base set.
+     *
+     * @param renderRegion
+     * @param logicalImageSize
+     * @param displayImageSize
+     * @param maxIterations
+     * @param colorPaletteName
+     * @param arbitraryPrecisionEnabled
+     */
     public SaveableState(
             final ComplexRegion renderRegion,
             final ImageSize logicalImageSize,
@@ -45,13 +56,18 @@ public class SaveableState implements Serializable {
         displayYResolution = displayImageSize.getHeight();
     }
 
+    /**
+     * Get the full object from the minimal starting information saved in this.
+     *
+     * @return
+     */
     public MandelCanvas toMandelCanvas(){
         // todo: implement arbitrary precision
         assert !arbitraryPrecisionEnabled;
 
         Palette palette = new PaletteSet().getPalette(colorPaletteName);
         if(null == palette){
-            Static.log.error("SaveableState.toMandelCanvas()", "Did not find palette: " + colorPaletteName);
+            Main.log.error("SaveableState.toMandelCanvas()", "Did not find palette: " + colorPaletteName);
             palette = new PaletteSet().getDefault();
         }
 

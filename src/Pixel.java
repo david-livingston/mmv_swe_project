@@ -7,6 +7,14 @@ import java.io.Serializable;
  * Date: 4/3/11
  * Time: 12:14 PM
  * To change this template use File | Settings | File Templates.
+ *
+ * Custom version of java.awt.Point which uses floats for some reason and
+ * has unneeded functionality. This object (unlike Point?) does not allow
+ * coordinates that would be outside of the displayed quadrant (all pts
+ * are quad 2, i.e. having both components non-negative).
+ *
+ * Methods are provided for converting to and from java.awt.Point objects
+ * since many Swing methods require those objects as inputs.
  */
 public class Pixel implements Serializable {
 

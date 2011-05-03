@@ -2,7 +2,6 @@ import java.awt.*;
 import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
 import java.io.*;
-import java.math.BigDecimal;
 
 /**
  * Created by IntelliJ IDEA.
@@ -19,6 +18,11 @@ import java.math.BigDecimal;
  * colors with Palette.java.
  *
  * Most of the associated GUI code for this picture is in MandelJPanel.java.
+ *
+ * TODO: class needs refactoring, two types of attributes, always calculated and
+ * lightweight (may or may not be calculated). The need for this has been
+ * reduced since the introduction of the SaveableState class. Separate all
+ * attributes into two sets: TransientState (new class) and SaveableState.
  */
 public class MandelCanvas  implements Serializable {
 
@@ -79,6 +83,13 @@ public class MandelCanvas  implements Serializable {
             calcLightWeightAttributes();
     }
 
+    /**
+     * Calculates, and stores, values for light-weight attributes.
+     *
+     * This may be necessary because the object has just been constructed or
+     * because it was set to a light-weight state (presumably to reduce
+     * memory requirements).
+     */
     public void calcLightWeightAttributes(){
         mandelPoints = new MandelPoint[logicalImageSize.getWidth()][logicalImageSize.getHeight()];
         for(int x = 0; x < logicalImageSize.getWidth(); ++x)
@@ -96,6 +107,9 @@ public class MandelCanvas  implements Serializable {
      * NOTE: this method assumes the object is not in a lightweight state.
      * Array access violations will occur if this assumption is violated.
      *
+     * This method calls m.iterate() which will perform the Mandelbrot
+     * calculation if needed.
+     *
      * @param x horizontal offset of pixel from top-left (0,0)
      * @param y vertical offset of pixel from top-left (0,0)
      * @return the color at input pixel
@@ -106,6 +120,13 @@ public class MandelCanvas  implements Serializable {
         return palette.getColor(m);
     }
 
+    /**
+     * Given a selected area on this canvas, returns a new MandelCanvas bounded
+     * by that selection.
+     *
+     * @param screenSelection
+     * @return
+     */
     public MandelCanvas toZoomedCanvas(final ImageRegion screenSelection){
         return new MandelCanvas(
             new ComplexRegion(
@@ -119,14 +140,39 @@ public class MandelCanvas  implements Serializable {
         );
     }
 
+    /**
+     * Referencing the ImageSize displayed on screen, map a pixel location
+     * (probably a mouse click) onto its corresponding complex number.
+     *
+     * @param pixel
+     * @return
+     */
     public ComplexNumber pointToCoordinates(Pixel pixel){
         return renderRegion.getComplexPointFromPixel(pixel, displayImageSize, true);
     }
 
+    /**
+     * For a given ComplexNumber map to the closest Pixel on the displayed
+     * ImageSize.
+     *
+     * @param coordinates
+     * @return
+     */
     public Pixel coordinatesToPoint(ComplexNumber coordinates){
         return renderRegion.getPixelFromComplexPoint(coordinates, displayImageSize);
     }
 
+    /**
+     * Accessor for the image object which should be displayed to user (not the image
+     * for saving).
+     *
+     * If this object is in a lightweight state then it will be fully evaluated (taken
+     * out of lightweight state) first. If the size of the attribute displayImage has
+     * changed, the returned image will first be updated to match the new size.
+     *
+     * @param requestedDisplayImageSize
+     * @return
+     */
     public BufferedImage getDisplayedBufferedImage(ImageSize requestedDisplayImageSize){
         setLightWeight(false);
 
@@ -141,6 +187,13 @@ public class MandelCanvas  implements Serializable {
         return displayedBufferedImage;
     }
 
+    /**
+     * Accessor for the image with a one-to-one correspondence between pixels and the MandelPoint
+     * objects upon which the images are based. This is the image that can be saved to disk and
+     * serves as the basis for the scaled version displayed to the user.
+     *
+     * @return
+     */
     public BufferedImage getLogicalBufferedImage(){
         setLightWeight(false);
         return logicalBufferedImage;
@@ -173,22 +226,36 @@ public class MandelCanvas  implements Serializable {
                 old.sleep(400);
             } while (render.isAlive());
         } catch (Exception e) {
-            Static.log.nonFatalException("", e);
+            Main.log.nonFatalException("", e);
         } finally {
             if(null != component)
                 component.setCursor(Cursor.getDefaultCursor());
         }
     }
 
+    /**
+     * Sets the color for each pixel in the logical image.
+     *
+     * @param column
+     */
     public void initLogicalBufferedImageColumn(final int column){
         for(int y = 0; y < logicalImageSize.getHeight(); ++y)
             logicalBufferedImage.setRGB(column, y, getColorAtPoint(column, y).getRGB());
     }
 
+    /**
+     * @return number of pixels comprising the x (real) axis.
+     */
     public int getColumnCount(){
         return logicalImageSize.getWidth();
     }
 
+    /**
+     * Creates a scaled version of the logical image.
+     *
+     * There are quicker scaling methods in the Java standard library but
+     * none that give better picture quality.
+     */
     private void initDisplayBufferedImage(){
         // http://helpdesk.objects.com.au/java/how-do-i-scale-a-bufferedimage
         final double scaleX = displayImageSize.getWidth()/((double)logicalImageSize.getWidth());
@@ -201,52 +268,107 @@ public class MandelCanvas  implements Serializable {
         graphics2D.dispose();
     }
 
+    /**
+     * @return last value for how many iterations a pixel is allowed before
+     *   it a prisoner point if it did not pass the escape radius.
+     */
     public int getIterationMax() {
         return iterationMax;
     }
 
+    /**
+     * Setter. Since the logical image is dependent on this attribute, and the
+     * displayed image on the logical image, a change requires recalculating
+     * both.
+     *
+     * @param iterationMax
+     */
     public void setIterationMax(int iterationMax) {
         this.iterationMax = iterationMax;
         initLogicalBufferedImage();
         initDisplayBufferedImage();
     }
 
-    public ComplexRegion getAsComplexRectangle(){
-        return renderRegion;
-    }
-
+    /**
+     * @return
+     */
     public ImageSize getLogicalImageSize() {
         return logicalImageSize;
     }
 
+    /**
+     * Rather than having the user specify a new value for iteration max, this
+     * method increases it using a predefined formula.
+     *
+     * TODO: more intelligent increasing strategy; when that is done, use it
+     * to automatically increase iteration max everytime the image is zoomed.
+     */
     public void increaseIterationMax() {
         setIterationMax(iterationMax + (int)Math.pow((double)iterationMax, 1.2));
         initLogicalBufferedImage();
         initDisplayBufferedImage();
     }
 
+    /**
+     * This object must have a reference to a Component object so it can set
+     * the cursor to busy when it is rendering.
+     *
+     * todo: not this
+     *
+     * @param component
+     */
     public void setComponent(Component component) {
         this.component = component;
     }
 
+    /**
+     * Both logical and displayed images are based on a coloring scheme. This
+     * method allows a new scheme to be indicated and updates both images.
+     *
+     * @param name
+     */
     public void setPalette(String name){
         palette = new PaletteSet().getPalette(name);
         initLogicalBufferedImage();
         initDisplayBufferedImage();
     }
 
+    /**
+     * Accessor for the complex values that define the bounds of this image.
+     *
+     * @return
+     */
     public ComplexRegion getRenderRegion() {
         return renderRegion;
     }
 
+    /**
+     * The size of the scaled image which is presented to user.
+     *
+     * @return
+     */
     public ImageSize getDisplayImageSize() {
         return displayImageSize;
     }
 
+    /**
+     * The palette which determined coloring of the currently set logical
+     * and display images.
+     *
+     * @return
+     */
     public Palette getPalette() {
         return palette;
     }
 
+    /**
+     * Distance between two vertically or horizontally adjacent complex numbers
+     * quantized to match the pixelation of the logical image, assuming aspect
+     * ratio has been enforced and these distances are equal, if not: then the
+     * average of the two.
+     *
+     * @return
+     */
     public double getDelta(){
         return renderRegion.getAverageDelta(logicalImageSize);
     }

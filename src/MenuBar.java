@@ -45,6 +45,8 @@ public class MenuBar extends JMenuBar implements ActionListener {
     final private PaletteSet palettes = new PaletteSet();
     final private HashMap<String, JCheckBoxMenuItem> colorMenuItems = new HashMap<String, JCheckBoxMenuItem>();
 
+    private File lastFolderAccessed = null;
+
     /**
      * @param panel the container which this menubar will be added to; needed
      * so the selected menuitem will have a way to invoke the requested action
@@ -182,7 +184,7 @@ public class MenuBar extends JMenuBar implements ActionListener {
         }
         // stuff that's stubbed out but not implemented
         else {
-            Static.log.error("MenuBar.actionPerformed()", "Feature not implemented: " + e.getActionCommand());
+            Main.log.error("MenuBar.actionPerformed()", "Feature not implemented: " + e.getActionCommand());
         }
     }
 
@@ -241,7 +243,7 @@ public class MenuBar extends JMenuBar implements ActionListener {
         final File saveFile = FileUtilities.getFileFromSaveDialog(
             mJPanel,
             "mandel",
-            FileUtilities.getDesktop(),
+            null == lastFolderAccessed ? FileUtilities.getDesktop() : lastFolderAccessed,
             filter,
             false
         );
@@ -249,13 +251,15 @@ public class MenuBar extends JMenuBar implements ActionListener {
         if(null == saveFile)
             return false;
 
+        lastFolderAccessed = saveFile.getParentFile();
+
         try {
             // save image as PNG, doc re. saving BufferedImage:
             // http://download.oracle.com/javase/tutorial/2d/images/saveimage.html
             BufferedImage bi = mJPanel.getCurrentLogicalImage();
             ImageIO.write(bi, filter.getExtension(), saveFile);
         } catch (Exception ioe) {
-            Static.log.nonFatalException("", ioe);
+            Main.log.nonFatalException("", ioe);
             return false;
         }
 
@@ -269,13 +273,15 @@ public class MenuBar extends JMenuBar implements ActionListener {
         final File saveFile = FileUtilities.getFileFromSaveDialog(
             mJPanel,
             "mandel",
-            FileUtilities.getDesktop(),
+            null == lastFolderAccessed ? FileUtilities.getDesktop() : lastFolderAccessed,
             filter,
             true
         );
 
         if(null == saveFile)
             return false;
+
+        lastFolderAccessed = saveFile.getParentFile();
 
         try {
             // http://java.sun.com/developer/technicalArticles/Programming/serialization/
@@ -286,7 +292,7 @@ public class MenuBar extends JMenuBar implements ActionListener {
             out.writeObject(ss);
             out.close();
         } catch (Exception ioe) {
-            Static.log.nonFatalException("saving state file", ioe);
+            Main.log.nonFatalException("saving state file", ioe);
             return false;
         }
 
@@ -297,19 +303,21 @@ public class MenuBar extends JMenuBar implements ActionListener {
     private boolean openState() {
         final File selectedFile = FileUtilities.getFileFromOpenDialog(
             mJPanel,
-            FileUtilities.getDesktop(),
+            null == lastFolderAccessed ? FileUtilities.getDesktop() : lastFolderAccessed,
             new MMVSimpleFileFilter()
         );
 
         if(null == selectedFile)
             return false;
 
+        lastFolderAccessed = selectedFile.getParentFile();
+
         MandelCanvas canvas;
 
         try {
             canvas = MandelCanvasFactory.unmarshallFromSaveableState(selectedFile);
         } catch (Exception e) {
-            Static.log.nonFatalException("unmarshalling file", e);
+            Main.log.nonFatalException("unmarshalling file", e);
             return false;
         }
 
@@ -331,7 +339,7 @@ public class MenuBar extends JMenuBar implements ActionListener {
         try {
             java.awt.Desktop.getDesktop().browse(java.net.URI.create(url));
         } catch (Exception e){
-            Static.log.nonFatalException("Error opening webpage: " + url, e);
+            Main.log.nonFatalException("Error opening webpage: " + url, e);
             return false;
         }
         return true;
@@ -371,11 +379,11 @@ public class MenuBar extends JMenuBar implements ActionListener {
         try {
             newIterMax = Integer.parseInt(input);
             if(newIterMax < 0){
-                Static.log.userError("MenuBar.changeMaxIterations()", "iterMax can't be negative, input was: " + input);
+                Main.log.userError("MenuBar.changeMaxIterations()", "iterMax can't be negative, input was: " + input);
                 return false;
             }
         } catch (Exception e) {
-            Static.log.error("MenuBar.changeMaxIterations()", "could not parse input as integer: " + input);
+            Main.log.error("MenuBar.changeMaxIterations()", "could not parse input as integer: " + input);
             return false;
         }
         mJPanel.getNavigationHistory().getCurrent().setIterationMax(newIterMax);

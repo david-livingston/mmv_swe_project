@@ -8,6 +8,9 @@ import java.util.Set;
  * Date: 4/27/11
  * Time: 5:46 PM
  * To change this template use File | Settings | File Templates.
+ *
+ * Class serves as a group of color schemes (with a default indicated) that
+ * a user may choose to have the raw Mandelbrot calculations colored by.
  */
 public class PaletteSet {
 

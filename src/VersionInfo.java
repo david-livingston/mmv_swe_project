@@ -12,7 +12,7 @@ public class VersionInfo {
     // set to true for developer builds
     // in regular builds, user can enable assertions to activiate debug mode
     private final static boolean forceDebugMode = true;
-    public final static boolean DEBUG = forceDebugMode || areAssertionsEnabled();
+    public final static boolean DEBUG = forceDebugMode || SystemInfo.areAssertionsEnabled();
 
     // incremented each time a build is released to be tested
     private static final int serialID = 4;
@@ -38,13 +38,5 @@ public class VersionInfo {
             getVersion() + " \t \t " +
             (DEBUG ? "--DEBUG MODE--" : "")
         ;
-    }
-
-    private static boolean areAssertionsEnabled(){
-        boolean assertsEnabled = false;
-        // intentional side effect to detect whether assertions are enabled, based on example at:
-        // http://download.oracle.com/javase/1.4.2/docs/guide/lang/assert.html
-        assert assertsEnabled = true;
-        return assertsEnabled;
     }
 }

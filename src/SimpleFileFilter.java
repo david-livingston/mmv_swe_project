@@ -7,6 +7,11 @@ import java.io.File;
  * Date: 4/6/11
  * Time: 12:12 PM
  * To change this template use File | Settings | File Templates.
+ *
+ * Base functionality for a GUI file dialog filter. Display directories and
+ * files ending in the specified extension. Description provided to user re.
+ * the filter is simply the extension name unless overridden to be more
+ * helpful.
  */
 public abstract class SimpleFileFilter extends FileFilter {
 

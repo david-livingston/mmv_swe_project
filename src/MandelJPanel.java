@@ -11,10 +11,8 @@ import java.io.File;
  * Date: Feb 13, 2011
  * Time: 8:11:30 PM
  * To change this template use File | Settings | File Templates.
- */
-
-/**
- * GUI code necessary to connect the JFrame application (GUI.java) and its menubar
+ *
+ * GUI code necessary to connect the JFrame object (MainWindow.java) and its menubar
  * (MenuBar.java) to the picture (MandelCanvas.java).
  */
 public class MandelJPanel extends JPanel implements MouseListener, MouseMotionListener {
@@ -48,6 +46,8 @@ public class MandelJPanel extends JPanel implements MouseListener, MouseMotionLi
             @Override
             public void componentResized(ComponentEvent e) {
                 refreshBufferedImage();
+
+                // todo: this should have its own update timer/thread
                 updateRenderStats();
             }
         });
@@ -125,11 +125,21 @@ public class MandelJPanel extends JPanel implements MouseListener, MouseMotionLi
         repaint();
     }
 
+    /**
+     *
+     * @param e
+     */
     public void mouseDragged(MouseEvent e) {
         // eventually it might be good to implement zoom
         // selection with mouse dragging
     }
 
+    /**
+     * Initiates the zooming process.
+     *
+     * @param selection the selected region (relative to displayed image size)
+     *  to zoom in on
+     */
     void doZoom(final ImageRegion selection){
         thumbnail.setFocus(
             new ComplexRegion(
@@ -141,17 +151,30 @@ public class MandelJPanel extends JPanel implements MouseListener, MouseMotionLi
         navigation.zoom(selection);
         navigation.getCurrent().setComponent(this);
         refreshBufferedImage();
+
+        // thumbnail isn't displayed on startup because it would show the exact same
+        // view as the render window, make sure it's turned on after we zoom
         thumbNailFrame.setVisible(true);
         updateRenderStats();
     }
 
+    /**
+     *
+     */
     public void updateRenderStats(){
+        // todo: why am I creating a new stats table here instead of just updating the old one?
         final RenderStatsTable r = new RenderStatsTable(navigation.getCurrent());
         renderStats.setModel(new DefaultTableModel(r.getAttributeValues(), new Object[]{ "Attribute", "Value" } ));
     }
 
+    /**
+     * Ensures the displayed image held by MandelCanvas object currently selected is uptodate, retrieve it,
+     * repaint it into window.
+     */
     public void refreshBufferedImage(){
+        // todo: replace this line w/ functionality in MandelCanvas
         final int height = (int)(getWidth() * navigation.getCurrent().getLogicalImageSize().heightToWidth());
+
         if(height > 0){
             // this method is called when the GUI is first constructed and this object dimensions are 0x0
             // will cause exception if not treated as special case
@@ -173,16 +196,50 @@ public class MandelJPanel extends JPanel implements MouseListener, MouseMotionLi
         repaint();
     }
 
-    public BufferedImage getCurrentDisplayedImage(){
-        return navigation.getCurrent().getDisplayedBufferedImage(displayedImageSize);
-    }
-
+    /**
+     * Gets the raw (not scaled) image held by the currently selected (in navigation)
+     * MandelCanvas object.
+     *
+     * @return
+     */
     public BufferedImage getCurrentLogicalImage(){
         return navigation.getCurrent().getLogicalBufferedImage();
     }
 
+    /**
+     * Accessor for the navigation history used by this render window.
+     *
+     * @return
+     */
     public NavigationHistory getNavigationHistory(){
         return navigation;
+    }
+
+    /**
+     *
+     * @param renderStats
+     */
+    public void associateRenderStats(JTable renderStats) {
+        this.renderStats = renderStats;
+    }
+
+    /**
+     * TODO: Thumbnail should be refactored into one class instead of passing references
+     * to its window separately everywhere.
+     *
+     * @param locationThumbnailInternalFrame
+     */
+    public void associateThumbnail(JInternalFrame locationThumbnailInternalFrame) {
+        thumbNailFrame = locationThumbnailInternalFrame;
+    }
+
+    /**
+     *
+     * @param thumbnail
+     */
+    public void associateThumbnail(LocationThumbnail thumbnail){
+        this.thumbnail = thumbnail;
+        navigation.associateThumbnail(thumbnail);
     }
 
     public Object[][] getAttributeValues(){
@@ -193,18 +250,5 @@ public class MandelJPanel extends JPanel implements MouseListener, MouseMotionLi
     //-------------------------------------------
     public void mouseReleased(MouseEvent e) {}
     public void mouseClicked(MouseEvent e) {}
-
-    public void associateThumbnail(JInternalFrame locationThumbnailInternalFrame) {
-        thumbNailFrame = locationThumbnailInternalFrame;
-    }
-
-    public void associateRenderStats(JTable renderStats) {
-        this.renderStats = renderStats;
-    }
-
-    public void associateThumbnail(LocationThumbnail thumbnail){
-        this.thumbnail = thumbnail;
-        navigation.associateThumbnail(thumbnail);
-    }
 
 }

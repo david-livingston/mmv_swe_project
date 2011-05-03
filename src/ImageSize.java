@@ -7,12 +7,23 @@ import java.io.Serializable;
  * Date: 4/3/11
  * Time: 11:51 AM
  * To change this template use File | Settings | File Templates.
+ *
+ * Encapsulates information about the size of a 2d array of pixels, with the
+ * upper left corner being considered (0,0).
+ *
  */
 public class ImageSize extends ImageRegion implements Serializable {
 
     public final static ImageSize REAL_HD = new ImageSize(1080, 1920);
     public final static ImageSize FAKE_HD = new ImageSize(720, 1280);
 
+    /**
+     * Notice although this class is similar to the java standard class
+     * Dimension, the constructor params are not in the same order.
+     *
+     * @param height
+     * @param width
+     */
     public ImageSize(final int height, final int width){
         super(
             new Pixel(0, 0),
@@ -20,47 +31,59 @@ public class ImageSize extends ImageRegion implements Serializable {
         );
     }
 
-
+    /**
+     * Takes an ImageRegion and returns an adjusted version with dimensions adjusted so it
+     * matches the aspect ratio of this object. The param anchor should be one of the for
+     * corners of the param input, and the returned adjusted ImageRegion will still have
+     * that point as a corner.
+     *
+     * Useful in adjusting zoom boxes and image resizes so aspect ratio is maintained.
+     *
+     * @param anchor
+     * @param input
+     * @return
+     */
     public ImageRegion adjustImageRegionAspectRatio(final Pixel anchor, final ImageRegion input){
-        final double correct_width_to_height = ((double)getWidth()/getHeight());
-        final double correct_height_to_width = ((double)getHeight()/getWidth());
+        assert anchor.getX() == input.getXMax() || anchor.getX() == input.getXMin();
+        assert anchor.getY() == input.getYMax() || anchor.getY() == input.getYMin();
 
-        // I'm sure there's a much smarter way to do this.
-        int newWidth = (int)(correct_width_to_height * input.getHeight());
-        int newHeight = (int) (correct_height_to_width * newWidth);
-        newWidth = (int)(correct_width_to_height * newHeight);
+        int newHeight = (int) (heightToWidth() * input.getWidth());
 
-        if(anchor.getX() > input.getXMin() || anchor.getY() > input.getYMin()){
-            return new ImageRegion(
-                new Pixel(
-                    input.getXMax() - newWidth,
-                    input.getYMax() - newHeight
-                ),
-                input.getLowerRightCorner()
-            );
-        }
+        final int otherX = anchor.getX() == input.getXMax() ? input.getXMin() : input.getXMax();
+        final int otherY = anchor.getY() == input.getYMax() ? anchor.getY() - newHeight : anchor.getY() + newHeight;
 
-        return new ImageRegion(
-            input.getUpperLeftCorner(),
-            new Pixel(
-                input.getXMin() + newWidth,
-                input.getYMin() + newHeight
-            )
-        );
+        return new ImageRegion(anchor, new Pixel(otherX, otherY));
     }
 
+    /**
+     * Useful because many Swing methods take Dimension objects as input and
+     * the Dimension class has a different constructor order than this class.
+     *
+     * @return this object (at least the height & width) represented as a
+     *  Dimension object
+     */
     public Dimension asDimension(){
         return new Dimension(getWidth(), getHeight());
     }
 
+    /**
+     * @param dimension height and width attributes in a Dimension object
+     * @return the equivalent ImageSize
+     */
     public static ImageSize fromDimension(Dimension dimension){
         return new ImageSize((int)dimension.getHeight(), (int)dimension.getWidth());
     }
 
+    /**
+     * @return an aspect ratio for this object (width divided by height)
+     */
     public double widthToHeight(){
         return ((double)getWidth())/getHeight();
     }
 
+    /**
+     * @return the aspect ratio of this object (height to width)
+     */
     public double heightToWidth(){
         return ((double)getHeight())/getWidth();
     }

@@ -14,10 +14,13 @@ import java.awt.*;
  * be a Mandelbrot image is that the escaping points should be distinguishable
  * from the prisoner points.
  *
- * Color's constructor uses the red, green, blue color model.
- * Alternate color constructors are available for hue, saturation, brightness.
- * RGB assumes each arg will be (0...255) inclusive, code doesn't check for this;
- * increasing the iteration max elsewhere in the code could break this.
+ * Color palettes electing not to normalize their counter values can be made
+ * much more efficient by using a color lookup table for some counter values.
+ *
+ * Most currently implemented Palettes simply compute (r,b,g) triplets based
+ * on a counter value. However, more complex schemes are possible (e.g.
+ * being initialized on a MandelCanvas and doing logarithmic scaling between
+ * counter values and color values).
  */
 public abstract class Palette {
 
@@ -46,6 +49,12 @@ public abstract class Palette {
         }
     }
 
+    /**
+     * Primary function of the class; realized by subclasses.
+     *
+     * @param counter
+     * @return
+     */
     public abstract Color getColorDetail(double counter);
 
     /**

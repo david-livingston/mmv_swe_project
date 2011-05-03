@@ -8,14 +8,10 @@ import java.io.File;
  * Date: Feb 13, 2011
  * Time: 7:57:37 PM
  * To change this template use File | Settings | File Templates.
+ *
+ * Container window for every other GUI element.
  */
-
-/*
- * This is both the class that launches the program and the container
- * for all the other GUI elements; seems appropriate in an event driven
- * program this small.
- */
-public class GUI extends JFrame {
+public class MainWindow extends JFrame {
 
     // Specifies the number of horizontal and vertical pixels used for calculating the picture
     // dimensions of picture rendered on screen will likely be different
@@ -23,8 +19,12 @@ public class GUI extends JFrame {
 
     /**
      * Constructs the GUI which has the effect of launching the program.
+     *
+     * @param fileToOpen saved state file which the program is being launched to examine; if null, program
+     *  is being launched normally and should begin at the home screen (zoomed out view of the Mandelbrot
+     *  set).
      */
-    private GUI(File fileToOpen) {
+    public MainWindow(File fileToOpen) {
 
         final int frameHeightAddition = 25;
         final int frameWidthAddtion = 10;
@@ -34,7 +34,8 @@ public class GUI extends JFrame {
         // give from for title bar, menu bar, and possible bottom task bar
         final ImageSize mainWindow = new ImageSize(monitorResolution.getHeight() - 4 * frameHeightAddition, monitorResolution.getWidth());
 
-        final ImageSize thumbNailImageSize = new ImageSize(216, 384); // REAL_HD / 5
+        final int thumbNailSizeDivisor = 6;
+        final ImageSize thumbNailImageSize = new ImageSize(ImageSize.REAL_HD.getHeight()/thumbNailSizeDivisor, ImageSize.REAL_HD.getWidth()/thumbNailSizeDivisor);
         final ImageSize thumbNailFrameSize = new ImageSize(thumbNailImageSize.getHeight() + frameHeightAddition, thumbNailImageSize.getWidth() + frameWidthAddtion);
 
         final int statsTableAttributeColumnWidth = 75;
@@ -109,30 +110,5 @@ public class GUI extends JFrame {
         // best voted answer on SO, not sure why the bitwise OR is necessary though
         setExtendedState(getExtendedState() | JFrame.MAXIMIZED_BOTH);
         setContentPane(desktop);
-    }
-
-    /**
-     * Only entry point of the program.
-     *
-     * @param args
-     */
-    public static void main(String... args) {
-        try { // Set System L&F
-            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-        } catch (Exception e) {
-            Static.log.error("GUI.main()", "Exception setting native look & feel: " + e);
-        }
-
-        File fileToOpen = null;
-        boolean sawOpenArg = false;
-
-        for(String arg : args)
-            if(sawOpenArg){
-                fileToOpen = new File(arg);
-                break;
-            } else
-                sawOpenArg = arg.equalsIgnoreCase("-open");
-
-        new GUI(fileToOpen);
     }
 }

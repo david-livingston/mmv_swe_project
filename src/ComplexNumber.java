@@ -14,10 +14,12 @@ import java.io.Serializable;
  * (a + bi).
  *
  * This class only implements the methods necessary for generating the
- * Mandelbrot set. Using objects and method calls for the numbers in the
- * Mandelbrot calculation may make the code clearer but I'm not sure about
- * the overhead; performance should probably be tested to see how much of this
- * the compiler optimizes away.
+ * Mandelbrot set.
+ *
+ * For prototyping, the Mandelbrot calculations were done with these methods. Currently
+ * most of the Mandelbrot code is inline for (presumably) better performance, but the
+ * unused methods remain as an illustration of how to implement the calculations with
+ * BigDecimals if the arbitrary precision feature is ever implemented.
  */
 public class ComplexNumber implements Serializable {
 

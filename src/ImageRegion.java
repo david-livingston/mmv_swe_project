@@ -7,13 +7,32 @@ import java.io.Serializable;
  * Date: 3/28/11
  * Time: 2:09 PM
  * To change this template use File | Settings | File Templates.
+ *
+ * Given a 2D array of pixels numbered (0,0) for the upper left corner, this
+ * class describes a subset of pixels enclosed by a rectangle with sides
+ * parallel / perpendicular to the edges of the 2d array.
+ *
+ * This class is primarily used to indicate zoom boxes that the user has
+ * selected with a mouse which are then translated to ComplexRegion objects
+ * for zooming into the next picture to be displayed.
+ *
+ * Subclassed by ImageSize.
  */
 public class ImageRegion implements Serializable {
 
     private final Pixel upperLeft;
     private final Pixel lowerRight;
 
+    /**
+     * The input coordinates are given relative to the upper left corner (0,0)
+     * of a 2d pixel array. The coordinates should be opposite corners (they
+     * should not reside on the same line segment).
+     *
+     * @param point1
+     * @param point2
+     */
     public ImageRegion(final Pixel point1, final Pixel point2) {
+
         final int xmin, xmax, ymin, ymax;
 
         if(point1.getX() < point2.getX()) {
