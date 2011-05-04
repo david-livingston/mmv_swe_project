@@ -15,7 +15,7 @@ public class MainWindow extends JFrame {
 
     // Specifies the number of horizontal and vertical pixels used for calculating the picture
     // dimensions of picture rendered on screen will likely be different
-    private final static ImageSize logicalImageSize = ImageSize.REAL_HD;
+    private final ImageSize logicalImageSize;
 
     /**
      * Constructs the GUI which has the effect of launching the program.
@@ -24,7 +24,9 @@ public class MainWindow extends JFrame {
      *  is being launched normally and should begin at the home screen (zoomed out view of the Mandelbrot
      *  set).
      */
-    public MainWindow(File fileToOpen) {
+    public MainWindow(final ImageSize initialLogicalImageSize, final File fileToOpen) {
+
+        logicalImageSize = initialLogicalImageSize;
 
         final int frameHeightAddition = 25;
         final int frameWidthAddition = 10;
@@ -44,7 +46,9 @@ public class MainWindow extends JFrame {
 
         final int widthAvailable = mainWindow.getWidth() - (10 + renderStatsTableSize.getWidth());
         final int matchingHeight = (int)(widthAvailable * ((double)logicalImageSize.getHeight())/logicalImageSize.getWidth());
-        final ImageSize displayedImageSize = new ImageSize(matchingHeight, widthAvailable);
+        ImageSize displayedImageSize = new ImageSize(matchingHeight, widthAvailable);
+        if(displayedImageSize.largerThan(logicalImageSize))
+            displayedImageSize = logicalImageSize;
         final ImageSize renderWindowSize = new ImageSize(displayedImageSize.getHeight() + frameHeightAddition, displayedImageSize.getWidth() + frameWidthAddition);
         assert 0.001 > Math.abs(logicalImageSize.heightToWidth() - displayedImageSize.heightToWidth());
 

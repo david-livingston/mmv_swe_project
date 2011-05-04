@@ -151,7 +151,7 @@ public class FileUtilities {
      * @param window the save dialog will be associated with this gui element (okay to pass null here?)
      * @param initialDirectory the folder initially selected for viewing when the dialog opens, does not prevent the
      *  user from navigating to another folder to find a file to open, okay to pass null here
-     * @param filter // todo: should be list instead of single filter
+     * @param filter
      * @return
      */
     public static File getFileFromOpenDialog(final Component window, File initialDirectory, final SimpleFileFilter filter){
@@ -168,12 +168,16 @@ public class FileUtilities {
         // see if there is a file matching the input filter in the initial directory that we can
         // pre-select for the user
         if(null != initialDirectory){
+            File mostRecent = null;
             for(File f : initialDirectory.listFiles())
                 if(f.isFile() && filter.accept(f)){
-                    jfc.setSelectedFile(f);
-                    System.out.println("selected: " + f);
-                    break;
+                    if(null == mostRecent)
+                        mostRecent = f;
+                    else if(f.lastModified() > mostRecent.lastModified())
+                        mostRecent = f;
                 }
+            if(null != mostRecent)
+                jfc.setSelectedFile(mostRecent);
         }
 
         if(JFileChooser.APPROVE_OPTION != jfc.showOpenDialog(window))

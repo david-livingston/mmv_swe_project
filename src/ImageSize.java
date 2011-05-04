@@ -11,11 +11,17 @@ import java.io.Serializable;
  * Encapsulates information about the size of a 2d array of pixels, with the
  * upper left corner being considered (0,0).
  *
+ * This is imply a constrained extension of ImageRegion (with upper left
+ * corner fixed at (0,0)). Class is immutable like ImageRegion.
+ *
  */
 public class ImageSize extends ImageRegion implements Serializable {
 
+    public final static ImageSize GREAT_MONITOR = new ImageSize(1600, 2560);
     public final static ImageSize REAL_HD = new ImageSize(1080, 1920);
     public final static ImageSize FAKE_HD = new ImageSize(720, 1280);
+    public final static ImageSize EXAMPLE_NTSC_4_to_3_SD = new ImageSize(480, 640);
+    public final static ImageSize EXAMPLE_NTSC_16_to_9_SD = new ImageSize(480, 872);
 
     /**
      * Notice although this class is similar to the java standard class
@@ -86,6 +92,25 @@ public class ImageSize extends ImageRegion implements Serializable {
      */
     public double heightToWidth(){
         return ((double)getHeight())/getWidth();
+    }
+
+    /**
+     * @return The number of pixels contained by an image with this object's
+     *  dimensions.
+     */
+    public int pixelCount(){
+        return getHeight() * getWidth();
+    }
+
+    /**
+     * Compares this object to the input ImageSize and returns whether this
+     *  object is larger.
+     *
+     * @param rightHandSide
+     * @return
+     */
+    public boolean largerThan(ImageSize rightHandSide){
+        return pixelCount() > rightHandSide.pixelCount();
     }
 
     @Override

@@ -17,6 +17,7 @@ public class Main {
 
     final public static SystemInfo systemInfo = new SystemInfo();
     final public static SimpleLogger log = new SimpleLogger(VersionInfo.DEBUG);
+    final public static ImageSize defaultLogicalImageSize = ImageSize.FAKE_HD;
 
     /**
      * Only entry point of the program.
@@ -40,7 +41,26 @@ public class Main {
             } else
                 sawOpenArg = arg.equalsIgnoreCase("-open");
 
-        new MainWindow(fileToOpen);
+        ImageSize initialLogicalImageSize = defaultLogicalImageSize;
+        boolean sawSizeArg = false;
+
+        for(String arg : args)
+            if(sawSizeArg){
+                if(arg.equalsIgnoreCase("hd") || arg.equalsIgnoreCase("real_hd"))
+                    initialLogicalImageSize = ImageSize.REAL_HD;
+                else if(arg.equalsIgnoreCase("fake_hd"))
+                    initialLogicalImageSize = ImageSize.FAKE_HD;
+                else if(arg.equalsIgnoreCase("huge"))
+                    initialLogicalImageSize = ImageSize.GREAT_MONITOR;
+                else if(arg.equalsIgnoreCase("sd") || arg.equalsIgnoreCase("sd1"))
+                    initialLogicalImageSize = ImageSize.EXAMPLE_NTSC_16_to_9_SD;
+                else if(arg.equalsIgnoreCase("sd2"))
+                    initialLogicalImageSize = ImageSize.EXAMPLE_NTSC_4_to_3_SD;
+                break;
+            } else
+                sawSizeArg = arg.equalsIgnoreCase("-size");
+
+        new MainWindow(initialLogicalImageSize, fileToOpen);
     }
 
 }

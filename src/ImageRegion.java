@@ -56,19 +56,19 @@ public class ImageRegion implements Serializable {
     }
 
     public int getXMin(){
-        return (int) upperLeft.getX();
+        return upperLeft.getX();
     }
 
     public int getYMin(){
-        return (int) upperLeft.getY();
+        return upperLeft.getY();
     }
 
     public int getXMax(){
-        return (int) lowerRight.getX();
+        return lowerRight.getX();
     }
 
     public int getYMax(){
-        return (int) lowerRight.getY();
+        return lowerRight.getY();
     }
 
     public int getWidth(){
