@@ -27,7 +27,7 @@ public class MainWindow extends JFrame {
     public MainWindow(File fileToOpen) {
 
         final int frameHeightAddition = 25;
-        final int frameWidthAddtion = 10;
+        final int frameWidthAddition = 10;
 
         // this is somewhat naive b/c it gets the resolution of the primary display & doesn't consider multiple monitors
         final ImageSize monitorResolution = ImageSize.fromDimension(Toolkit.getDefaultToolkit().getScreenSize());
@@ -36,7 +36,7 @@ public class MainWindow extends JFrame {
 
         final int thumbNailSizeDivisor = 6;
         final ImageSize thumbNailImageSize = new ImageSize(ImageSize.REAL_HD.getHeight()/thumbNailSizeDivisor, ImageSize.REAL_HD.getWidth()/thumbNailSizeDivisor);
-        final ImageSize thumbNailFrameSize = new ImageSize(thumbNailImageSize.getHeight() + frameHeightAddition, thumbNailImageSize.getWidth() + frameWidthAddtion);
+        final ImageSize thumbNailFrameSize = new ImageSize(thumbNailImageSize.getHeight() + frameHeightAddition, thumbNailImageSize.getWidth() + frameWidthAddition);
 
         final int statsTableAttributeColumnWidth = 75;
         final int statsTableValueColumnWidth = 175;
@@ -45,7 +45,7 @@ public class MainWindow extends JFrame {
         final int widthAvailable = mainWindow.getWidth() - (10 + renderStatsTableSize.getWidth());
         final int matchingHeight = (int)(widthAvailable * ((double)logicalImageSize.getHeight())/logicalImageSize.getWidth());
         final ImageSize displayedImageSize = new ImageSize(matchingHeight, widthAvailable);
-        final ImageSize renderWindowSize = new ImageSize(displayedImageSize.getHeight() + frameHeightAddition, displayedImageSize.getWidth() + frameWidthAddtion);
+        final ImageSize renderWindowSize = new ImageSize(displayedImageSize.getHeight() + frameHeightAddition, displayedImageSize.getWidth() + frameWidthAddition);
         assert 0.001 > Math.abs(logicalImageSize.heightToWidth() - displayedImageSize.heightToWidth());
 
         final Pixel upperLeftCornerThumbNailWindow = new Pixel(mainWindow.getWidth() - thumbNailFrameSize.getWidth(), mainWindow.getHeight() - thumbNailFrameSize.getHeight());

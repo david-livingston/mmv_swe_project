@@ -10,7 +10,7 @@ import javax.swing.*;
 public class VersionInfo {
 
     // set to true for developer builds
-    // in regular builds, user can enable assertions to activiate debug mode
+    // in regular builds, user can enable assertions to activate debug mode
     private final static boolean forceDebugMode = true;
     public final static boolean DEBUG = forceDebugMode || SystemInfo.areAssertionsEnabled();
 
