@@ -15,12 +15,12 @@ public class VersionInfo {
     public final static boolean DEBUG = forceDebugMode || SystemInfo.areAssertionsEnabled();
 
     // incremented each time a build is released to be tested
-    private static final int serialID = 5;
+    private static final int serialID = 6;
 
     // incremented after adding a major feature
-    private static final int majorVersion = 4;
+    private static final int majorVersion = 5;
     // significant changes or bug fix, new minor feature
-    private static final char minorVersion = 'C';
+    private static final char minorVersion = 'A';
     // a new commit (if i remember) but not significant enough to incr minorVersion
     private static final int buildVersion = 0;
 
