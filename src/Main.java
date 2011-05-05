@@ -57,6 +57,8 @@ public class Main {
                     initialLogicalImageSize = ImageSize.GREAT_MONITOR;
                 else if(arg.equalsIgnoreCase("sd") || arg.equalsIgnoreCase("sd1"))
                     initialLogicalImageSize = ImageSize.EXAMPLE_NTSC_16_to_9_SD;
+                else if(arg.equalsIgnoreCase("dvd"))
+                    initialLogicalImageSize = ImageSize.DVD;
                 else if(arg.equalsIgnoreCase("sd2"))
                     initialLogicalImageSize = ImageSize.EXAMPLE_NTSC_4_to_3_SD;
                 break;

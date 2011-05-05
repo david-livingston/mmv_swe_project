@@ -21,6 +21,7 @@ public class ImageSize extends ImageRegion implements Serializable {
     public final static ImageSize REAL_HD = new ImageSize(1080, 1920);
     public final static ImageSize FAKE_HD = new ImageSize(720, 1280);
     public final static ImageSize EXAMPLE_NTSC_4_to_3_SD = new ImageSize(480, 640);
+    public final static ImageSize DVD = new ImageSize(480, 720);
     public final static ImageSize EXAMPLE_NTSC_16_to_9_SD = new ImageSize(480, 872);
 
     /**
