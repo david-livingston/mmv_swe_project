@@ -52,6 +52,7 @@ public class RenderStatsTable {
         if(Main.stats_table_force_gc)
             System.gc(); // just a suggestion
         rows.put("CPU Count", "" + Main.systemInfo.getProcessorCount());
+        rows.put("CPUs Used", "" + Main.systemInfo.getBestThreadCount());
         rows.put("Max Usable Mem", "" + StringFormats.strFromByteCount(Main.systemInfo.getMaxMemory()));
         rows.put("Remaining Mem", (Main.stats_table_force_gc ? "" : "~ ") + StringFormats.strFromByteCount(Main.systemInfo.getRemainingMemory()) + "  " + Main.systemInfo.getPercentRemainingMemoryAsString());
     }

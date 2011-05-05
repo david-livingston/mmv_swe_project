@@ -69,6 +69,25 @@ public class Main {
                 break;
             }
 
+        int cores_reserved = SystemInfo.UNSPECIFIED_RESERVED_CORES;
+        boolean sawCoreArg = false;
+
+        for(String arg : args)
+            if(sawCoreArg){
+                try {
+                    cores_reserved = Integer.parseInt(arg);
+                } catch (Exception e) {
+                    log.nonFatalException("Invalid command line arg for reserved cores: " + arg, e);
+                } finally {
+                    break;
+                }
+            } else {
+                sawCoreArg = arg.equalsIgnoreCase("-reserved_cpus");
+            }
+
+        if(cores_reserved != SystemInfo.UNSPECIFIED_RESERVED_CORES && cores_reserved >= 0 && cores_reserved < systemInfo.getProcessorCount())
+            systemInfo.setReservedCores(cores_reserved);
+
         new MainWindow(initialLogicalImageSize, fileToOpen);
     }
 

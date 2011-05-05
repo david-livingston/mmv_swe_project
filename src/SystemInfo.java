@@ -11,6 +11,9 @@ public class SystemInfo {
 
     private final int processorCount;
     private final long maxMemory;
+    public static final int UNSPECIFIED_RESERVED_CORES = -2730; // or any rand negative value
+    private int reservedProcessorCores = UNSPECIFIED_RESERVED_CORES;
+
 
     /**
      * Setting this to true will make the value displayed for remaining
@@ -81,14 +84,18 @@ public class SystemInfo {
      */
     public int getBestThreadCount() {
         final int cpus = getProcessorCount();
-        if(cpus >= 12)
-            return cpus - 2;
-        else if(cpus >= 6)
-            return cpus - 1;
-        else if(cpus > 0) // just b/c I'm paranoid
-            return cpus;
-        else
-            return 1;
+        if(reservedProcessorCores != UNSPECIFIED_RESERVED_CORES){
+            return cpus - reservedProcessorCores;
+        } else { // user did not specify, guess
+            if(cpus >= 12)
+                return cpus - 2;
+            else if(cpus >= 6)
+                return cpus - 1;
+            else if(cpus > 0) // just b/c I'm paranoid
+                return cpus;
+            else
+                return 1;
+        }
     }
 
     /**
@@ -104,5 +111,9 @@ public class SystemInfo {
         // http://download.oracle.com/javase/1.4.2/docs/guide/lang/assert.html
         assert assertsEnabled = true;
         return assertsEnabled;
+    }
+
+    public void setReservedCores(int cores_reserved) {
+        reservedProcessorCores = cores_reserved;
     }
 }
