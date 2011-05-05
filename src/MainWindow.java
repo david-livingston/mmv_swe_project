@@ -110,6 +110,12 @@ public class MainWindow extends JFrame {
         setJMenuBar(new MenuBar(mJPanel));
         setVisible(true);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
+        // set an initial size so when we drag the window somewhere by the
+        // menubar it doesn't return to a non-maximized size of (0x0)
+        // todo: make returning to non-maximized size also resize interior windows
+        setSize(ImageSize.EXAMPLE_NTSC_16_to_9_SD.asDimension());
+
         // http://stackoverflow.com/questions/479523/java-swing-maximize-window
         // best voted answer on SO, not sure why the bitwise OR is necessary though
         setExtendedState(getExtendedState() | JFrame.MAXIMIZED_BOTH);
