@@ -293,6 +293,7 @@ public class MenuBar extends JMenuBar implements ActionListener {
             final SaveableState ss = new SaveableState(curr.getRenderRegion(), curr.getLogicalImageSize(), curr.getDisplayImageSize(), curr.getIterationMax(), curr.getPalette().getName(), false);
             out.writeObject(ss);
             out.close();
+            mJPanel.getNavigationHistory().getCurrent().setAsSaved();
         } catch (Exception ioe) {
             Main.log.nonFatalException("saving state file", ioe);
             return false;

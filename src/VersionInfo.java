@@ -11,7 +11,7 @@ public class VersionInfo {
 
     // set to true for developer builds
     // in regular builds, user can enable assertions to activate debug mode
-    private final static boolean forceDebugMode = false;
+    private final static boolean forceDebugMode = true;
     public final static boolean DEBUG = forceDebugMode || SystemInfo.areAssertionsEnabled();
 
     // incremented each time a build is released to be tested
@@ -22,7 +22,7 @@ public class VersionInfo {
     // significant changes or bug fix, new minor feature
     private static final char minorVersion = 'A';
     // a new commit (if i remember) but not significant enough to incr minorVersion
-    private static final int buildVersion = 0;
+    private static final int buildVersion = 1;
 
     public static String getVersion(){
         return serialID +
