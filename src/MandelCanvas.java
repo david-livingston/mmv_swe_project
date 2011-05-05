@@ -39,9 +39,12 @@ public class MandelCanvas  implements Serializable {
 
     private transient boolean isLightWeight = true;
 
-    private Component component = null;
+    private MandelJPanel mJPanel = null;
 
     private Palette palette;
+
+    private int prisonerCount = 0;
+    private int escapeeCount = 0;
 
     /**
      * OBJECT IS CONSTRUCTED IN LIGHTWEIGHT STATE
@@ -209,8 +212,8 @@ public class MandelCanvas  implements Serializable {
      */
     private void initLogicalBufferedImage(){
         try{
-            if(null != component)
-                component.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+            if(null != mJPanel)
+                mJPanel.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
 
             logicalBufferedImage = new BufferedImage(logicalImageSize.getWidth(), logicalImageSize.getHeight(), BufferedImage.TYPE_INT_ARGB);
 
@@ -221,15 +224,14 @@ public class MandelCanvas  implements Serializable {
             Thread old = Thread.currentThread();
             Thread render = new Thread(new RenderThreadManager(this));
             render.start();
-
             do {
                 old.sleep(400);
             } while (render.isAlive());
         } catch (Exception e) {
             Main.log.nonFatalException("", e);
         } finally {
-            if(null != component)
-                component.setCursor(Cursor.getDefaultCursor());
+            if(null != mJPanel)
+                mJPanel.setCursor(Cursor.getDefaultCursor());
         }
     }
 
@@ -315,10 +317,10 @@ public class MandelCanvas  implements Serializable {
      *
      * todo: not this
      *
-     * @param component
+     * @param mJPanel
      */
-    public void setComponent(Component component) {
-        this.component = component;
+    public void setmJPanel(MandelJPanel mJPanel) {
+        this.mJPanel = mJPanel;
     }
 
     /**
@@ -371,5 +373,24 @@ public class MandelCanvas  implements Serializable {
      */
     public double getDelta(){
         return renderRegion.getAverageDelta(logicalImageSize);
+    }
+
+    public void updatePrisonerOrEscapeeCounts(){
+        setLightWeight(false);
+        prisonerCount = escapeeCount = 0;
+        for(MandelPoint[] foo : mandelPoints)
+            for(MandelPoint p : foo)
+                if(p.didEscape())
+                    ++escapeeCount;
+                else
+                    ++prisonerCount;
+    }
+
+    public int getEscapeeCount(){
+        return escapeeCount;
+    }
+
+    public int getPrisonerCount(){
+        return prisonerCount;
     }
 }

@@ -130,6 +130,6 @@ public class ImageSize extends ImageRegion implements Serializable {
 
     @Override
     public String toString(){
-        return getWidth() + " x " + getHeight();
+        return StringFormats.strFromInt(getWidth()) + " x " + StringFormats.strFromInt(getHeight());
     }
 }

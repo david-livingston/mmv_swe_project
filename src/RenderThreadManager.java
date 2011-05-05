@@ -15,8 +15,10 @@
 public class RenderThreadManager implements Runnable {
 
     private final Thread[] workers;
+    private final MandelCanvas canvas;
 
     public RenderThreadManager(final MandelCanvas canvas) {
+        this.canvas = canvas;
         final int threadCount = Main.systemInfo.getBestThreadCount();
         workers = new Thread[threadCount];
         for(int i = 0; i < workers.length; ++i)

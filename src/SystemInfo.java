@@ -68,8 +68,9 @@ public class SystemInfo {
         return r.freeMemory() + (getMaxMemory() - r.totalMemory());
     }
 
-    public int getPercentRemainingMemory() {
-        return (int) (100.0 * ((double)getRemainingMemory())/getMaxMemory());
+    public String getPercentRemainingMemoryAsString() {
+        // return (int) (100.0 * ((double)getRemainingMemory())/getMaxMemory());
+        return StringFormats.strFromRatio(getRemainingMemory(), getMaxMemory());
     }
 
     /**

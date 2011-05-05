@@ -15,9 +15,12 @@ import java.io.File;
  */
 public class Main {
 
+    // options which can be changed at command line
+    final public static ImageSize defaultLogicalImageSize = ImageSize.REAL_HD;
+    public static boolean stats_table_force_gc = false;
+
     final public static SystemInfo systemInfo = new SystemInfo();
     final public static SimpleLogger log = new SimpleLogger(VersionInfo.DEBUG);
-    final public static ImageSize defaultLogicalImageSize = ImageSize.FAKE_HD;
 
     /**
      * Only entry point of the program.
@@ -59,6 +62,12 @@ public class Main {
                 break;
             } else
                 sawSizeArg = arg.equalsIgnoreCase("-size");
+
+        for(String arg : args)
+            if(arg.equalsIgnoreCase("-gc_before_stats_update")){
+                stats_table_force_gc = true;
+                break;
+            }
 
         new MainWindow(initialLogicalImageSize, fileToOpen);
     }

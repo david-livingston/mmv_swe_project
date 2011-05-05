@@ -40,9 +40,9 @@ public class MainWindow extends JFrame {
         final ImageSize thumbNailImageSize = new ImageSize(ImageSize.REAL_HD.getHeight()/thumbNailSizeDivisor, ImageSize.REAL_HD.getWidth()/thumbNailSizeDivisor);
         final ImageSize thumbNailFrameSize = new ImageSize(thumbNailImageSize.getHeight() + frameHeightAddition, thumbNailImageSize.getWidth() + frameWidthAddition);
 
-        final int statsTableAttributeColumnWidth = 75;
-        final int statsTableValueColumnWidth = 175;
-        final ImageSize renderStatsTableSize = new ImageSize(250, statsTableAttributeColumnWidth + statsTableValueColumnWidth);
+        final int statsTableAttributeColumnWidth = 50;
+        final int statsTableValueColumnWidth = 225;
+        final ImageSize renderStatsTableSize = new ImageSize(350, statsTableAttributeColumnWidth + statsTableValueColumnWidth);
 
         final int widthAvailable = mainWindow.getWidth() - (10 + renderStatsTableSize.getWidth());
         final int matchingHeight = (int)(widthAvailable * ((double)logicalImageSize.getHeight())/logicalImageSize.getWidth());
@@ -88,8 +88,8 @@ public class MainWindow extends JFrame {
         String[] columnNames = { "Attribute", "Value" };
         Object[][] data = mJPanel.getAttributeValues();
         final JTable renderStats = new JTable(data, columnNames);
-        renderStats.getColumnModel().getColumn(0).setPreferredWidth(statsTableAttributeColumnWidth);
-        renderStats.getColumnModel().getColumn(1).setPreferredWidth(statsTableValueColumnWidth);
+        renderStats.getColumnModel().getColumn(0).setWidth(statsTableAttributeColumnWidth);
+        renderStats.getColumnModel().getColumn(1).setWidth(statsTableValueColumnWidth);
         attributeTableInternalFrame.setLayout(new BorderLayout());
         attributeTableInternalFrame.add(renderStats.getTableHeader(), BorderLayout.PAGE_START);
         attributeTableInternalFrame.add(renderStats, BorderLayout.CENTER);

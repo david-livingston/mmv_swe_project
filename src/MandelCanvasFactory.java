@@ -24,7 +24,7 @@ public class MandelCanvasFactory {
     private final double defaultImaginaryMinimum; // auto calc'ed for proper aspect ratio, in theory should be -1.0 * defaultImaginaryMaximum
     private final double defaultDelta;
 
-    private final int defaultIterationMax = 100;
+    private final int defaultIterationMax = 128;
 
     private final MandelCanvas home;
 

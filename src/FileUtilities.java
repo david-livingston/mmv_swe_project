@@ -59,7 +59,7 @@ public class FileUtilities {
      * @return
      */
     public static File makeFileWithSequentialIDSuffix(final File file, final String ext, boolean includeBuildString){
-        assert !file.isDirectory() && file.isFile();
+        assert !file.isDirectory() && (!file.exists() || file.isFile());
         final String name = file.getName();
         final String longerRawName = name + (includeBuildString? "_v" + VersionInfo.getVersion() : "");
         final String longerName = longerRawName + "." + ext;

@@ -1,4 +1,6 @@
 import java.math.BigDecimal;
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
 import java.util.LinkedHashMap;
 
 /**
@@ -10,12 +12,9 @@ import java.util.LinkedHashMap;
  *
  * Model for the statistics table shown in the GUI.
  *
- * TODO: time renders
- * TODO: display stats about how many pixels are prisoners/escapees
  * TODO: tool-tips for some rows (esp. memory)
  * TODO: update thread
  * TODO: pull some of the GUI code here from MainWindow.java (or preferably in a separate class)
- * TODO: formatting of values (e.g. commas in integer values > 999)
  */
 public class RenderStatsTable {
 
@@ -25,40 +24,36 @@ public class RenderStatsTable {
      * it the same way */
     private LinkedHashMap<String, String> rows = new LinkedHashMap<String, String>();
 
+    private long renderStartTime = 0L;
+    private long renderStopTime = 0L;
+
     public RenderStatsTable(MandelCanvas canvas) {
         updateCanvas(canvas);
         updateSystemStats();
     }
 
-    public void updateCanvas(MandelCanvas canvas) {
-        rows.put("Real Min", strFromDouble(canvas.getRenderRegion().getRealMin()));
-        rows.put("Real Max", strFromDouble(canvas.getRenderRegion().getRealMax()));
-        rows.put("Imag Min", strFromDouble(canvas.getRenderRegion().getImagMin()));
-        rows.put("Imag Max", strFromDouble(canvas.getRenderRegion().getImagMax()));
-        rows.put("Delta", strFromDouble(canvas.getDelta()));
+    private void updateCanvas(MandelCanvas canvas) {
+        rows.put("Iteration Max", "" + StringFormats.strFromInt(canvas.getIterationMax()));
+        canvas.updatePrisonerOrEscapeeCounts();
+        rows.put("Prisoners", StringFormats.strFromInt(canvas.getPrisonerCount()) + "  " + StringFormats.strFromRatio(canvas.getPrisonerCount(), canvas.getLogicalImageSize().pixelCount()));
+        rows.put("Escapees", StringFormats.strFromInt(canvas.getEscapeeCount()) + "  " + StringFormats.strFromRatio(canvas.getEscapeeCount(), canvas.getLogicalImageSize().pixelCount()));
+        // rows.put("Render (or update) Time", getRenderTimerSecondsElapsed() + " secs");
+        rows.put("Real Min", StringFormats.strFromDouble(canvas.getRenderRegion().getRealMin()));
+        rows.put("Real Max", StringFormats.strFromDouble(canvas.getRenderRegion().getRealMax()));
+        rows.put("Imag Min", StringFormats.strFromDouble(canvas.getRenderRegion().getImagMin()));
+        rows.put("Imag Max", StringFormats.strFromDouble(canvas.getRenderRegion().getImagMax()));
+        rows.put("Delta", StringFormats.strFromDouble(canvas.getDelta()));
         rows.put("Logical Size", "" + canvas.getLogicalImageSize());
-        rows.put("Displayed Size", "" + canvas.getDisplayImageSize());
-        rows.put("Aspect Ratio", strFromDouble(canvas.getLogicalImageSize().widthToHeight()));
+        rows.put("Displayed Size", "" + canvas.getDisplayImageSize() + "  " + StringFormats.strFromRatio(canvas.getDisplayImageSize().pixelCount(), canvas.getLogicalImageSize().pixelCount()));
+        rows.put("Aspect Ratio", StringFormats.strFromDouble(canvas.getLogicalImageSize().widthToHeight()));
     }
 
-    public void updateSystemStats(){
+    private void updateSystemStats(){
+        if(Main.stats_table_force_gc)
+            System.gc(); // just a suggestion
         rows.put("CPU Count", "" + Main.systemInfo.getProcessorCount());
-        rows.put("Max Usable Mem", "" + strFromByteCount(Main.systemInfo.getMaxMemory()));
-        rows.put("Remaining Mem", "" + strFromByteCount(Main.systemInfo.getRemainingMemory()) + "  (" + Main.systemInfo.getPercentRemainingMemory() + "%)");
-    }
-
-    /**
-     * todo: control how many decimal places are displayed
-     *
-     * @param d
-     * @return
-     */
-    private static String strFromDouble(Double d){
-        return new BigDecimal(d).toPlainString();
-    }
-
-    private static String strFromByteCount(long size){
-        return (size/(1024 * 1024)) + " MB";
+        rows.put("Max Usable Mem", "" + StringFormats.strFromByteCount(Main.systemInfo.getMaxMemory()));
+        rows.put("Remaining Mem", (Main.stats_table_force_gc ? "" : "~ ") + StringFormats.strFromByteCount(Main.systemInfo.getRemainingMemory()) + "  " + Main.systemInfo.getPercentRemainingMemoryAsString());
     }
 
     /**
@@ -72,5 +67,30 @@ public class RenderStatsTable {
         for(String key : rows.keySet())
             out[ctr++] = new String[] { " " + key + ": ", " " + rows.get(key) };
         return out;
+    }
+
+    public void clearRenderTimer(){
+        renderStartTime = renderStopTime = 0L;
+    }
+
+    public void startRenderTimer(){
+        clearRenderTimer();
+        renderStartTime = System.currentTimeMillis();
+    }
+
+    public void stopRenderTimer(){
+        renderStopTime = System.currentTimeMillis();
+        assert renderStopTime >= renderStartTime;
+    }
+
+    public long getRenderTimerSecondsElapsed(){
+        assert renderStartTime >= 0L;
+        assert renderStopTime >= renderStartTime;
+
+        if(0L == renderStopTime){ // still timing || not started
+            return 0L != renderStartTime ? (System.currentTimeMillis() - renderStartTime)/1000L : 0L;
+        }else{
+            return (renderStopTime - renderStartTime)/1000L;
+        }
     }
 }

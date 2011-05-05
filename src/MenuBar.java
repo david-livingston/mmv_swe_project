@@ -122,7 +122,7 @@ public class MenuBar extends JMenuBar implements ActionListener {
     public void actionPerformed(ActionEvent e){
         // this is necessary so the currently selected MandelCanvas (which nav history may have changed)
         // can get a handle to the render window so it can set the busy cursor before rerendering a region
-        mJPanel.getNavigationHistory().getCurrent().setComponent(mJPanel);
+        mJPanel.getNavigationHistory().getCurrent().setmJPanel(mJPanel);
         mJPanel.grabFocus();
 
         // why doesn't java have case stmts on Strings yet?

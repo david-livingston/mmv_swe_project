@@ -24,8 +24,9 @@ public class MandelJPanel extends JPanel implements MouseListener, MouseMotionLi
     private Pixel mouseLocation = null;
 
     private JInternalFrame thumbNailFrame = null;
-    private JTable renderStats = null;
+    private JTable renderStatsJTable = null;
     private LocationThumbnail thumbnail = null;
+    private final RenderStatsTable renderStatsModel;
 
     private ImageSize displayedImageSize;
 
@@ -38,6 +39,7 @@ public class MandelJPanel extends JPanel implements MouseListener, MouseMotionLi
         super();
         this.displayedImageSize = displayedImageSize;
         navigation = new NavigationHistory(logicalImageSize, displayedImageSize, fileToOpen);
+        renderStatsModel = new RenderStatsTable(navigation.getCurrent());
         refreshBufferedImage();
         addMouseListener(this);
         addMouseMotionListener(this);
@@ -142,14 +144,14 @@ public class MandelJPanel extends JPanel implements MouseListener, MouseMotionLi
      */
     void doZoom(final ImageRegion selection){
         thumbnail.setFocus(
-            new ComplexRegion(
-                navigation.getCurrent().pointToCoordinates(selection.getUpperLeftCorner()),
-                navigation.getCurrent().pointToCoordinates(selection.getLowerRightCorner())
-            )
+                new ComplexRegion(
+                        navigation.getCurrent().pointToCoordinates(selection.getUpperLeftCorner()),
+                        navigation.getCurrent().pointToCoordinates(selection.getLowerRightCorner())
+                )
         );
         thumbNailFrame.repaint();
         navigation.zoom(selection);
-        navigation.getCurrent().setComponent(this);
+        navigation.getCurrent().setmJPanel(this);
         refreshBufferedImage();
 
         // thumbnail isn't displayed on startup because it would show the exact same
@@ -162,9 +164,7 @@ public class MandelJPanel extends JPanel implements MouseListener, MouseMotionLi
      *
      */
     public void updateRenderStats(){
-        // todo: why am I creating a new stats table here instead of just updating the old one?
-        final RenderStatsTable r = new RenderStatsTable(navigation.getCurrent());
-        renderStats.setModel(new DefaultTableModel(r.getAttributeValues(), new Object[]{ "Attribute", "Value" } ));
+        renderStatsJTable.setModel(new DefaultTableModel(renderStatsModel.getAttributeValues(), new Object[]{ "Attribute", "Value" } ));
     }
 
     /**
@@ -220,7 +220,7 @@ public class MandelJPanel extends JPanel implements MouseListener, MouseMotionLi
      * @param renderStats
      */
     public void associateRenderStats(JTable renderStats) {
-        this.renderStats = renderStats;
+        this.renderStatsJTable = renderStats;
     }
 
     /**
@@ -243,8 +243,7 @@ public class MandelJPanel extends JPanel implements MouseListener, MouseMotionLi
     }
 
     public Object[][] getAttributeValues(){
-        // todo: this needs to be elsewhere
-        return new RenderStatsTable(navigation.getCurrent()).getAttributeValues();
+        return renderStatsModel.getAttributeValues();
     }
 
     //-------------------------------------------
