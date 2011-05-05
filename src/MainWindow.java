@@ -1,5 +1,7 @@
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.io.File;
 
 /**
@@ -16,6 +18,7 @@ public class MainWindow extends JFrame {
     // Specifies the number of horizontal and vertical pixels used for calculating the picture
     // dimensions of picture rendered on screen will likely be different
     private final ImageSize logicalImageSize;
+    private boolean stateNeedsSaving = true;
 
     /**
      * Constructs the GUI which has the effect of launching the program.
@@ -107,7 +110,8 @@ public class MainWindow extends JFrame {
         // SETUP MAIN WINDOW WHICH CONTAINS DESKTOP PANE & MENUBAR
         // -------------------------------
         setTitle(VersionInfo.getTitle());
-        setJMenuBar(new MenuBar(mJPanel));
+        final MenuBar menuBar = new MenuBar(mJPanel);
+        setJMenuBar(menuBar);
         setVisible(true);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
@@ -120,5 +124,14 @@ public class MainWindow extends JFrame {
         // best voted answer on SO, not sure why the bitwise OR is necessary though
         setExtendedState(getExtendedState() | JFrame.MAXIMIZED_BOTH);
         setContentPane(desktop);
+
+        addWindowListener( new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent e) {
+                if(stateNeedsSaving){
+                    menuBar.saveState();
+                }
+            }
+        });
     }
 }

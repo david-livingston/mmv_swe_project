@@ -132,7 +132,7 @@ public class MenuBar extends JMenuBar implements ActionListener {
         }
         // File | Save State As
         else if(matches(e, MENU_ITEM_SAVE_STATE_AS)){
-            saveState("mandel", "mmv");
+            saveState();
         }
         // File | Open State File
         else if(matches(e, MENU_ITEM_OPEN_STATE_FILE)) {
@@ -266,7 +266,7 @@ public class MenuBar extends JMenuBar implements ActionListener {
         return true;
     }
 
-    private boolean saveState(final String defaultName, final String defaultExtension) {
+    public boolean saveState() {
 
         MMVSimpleFileFilter filter = new MMVSimpleFileFilter();
 
