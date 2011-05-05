@@ -46,15 +46,17 @@ public class MenuBar extends JMenuBar implements ActionListener {
     final private HashMap<String, JCheckBoxMenuItem> colorMenuItems = new HashMap<String, JCheckBoxMenuItem>();
 
     private File lastFolderAccessed = null;
+    private final MainWindow mainWindow;
 
     /**
      * @param panel the container which this menubar will be added to; needed
      * so the selected menuitem will have a way to invoke the requested action
      */
-    public MenuBar(MandelJPanel panel){
+    public MenuBar(MandelJPanel panel, MainWindow appWindow){
         super();
 
         mJPanel = panel;
+        mainWindow = appWindow;
 
         add(makeMenu("File",
                 MENU_ITEM_SAVE_IMAGE_AS,
@@ -316,6 +318,7 @@ public class MenuBar extends JMenuBar implements ActionListener {
 
         try {
             canvas = MandelCanvasFactory.unmarshallFromSaveableState(selectedFile);
+            canvas.setAsSaved();
         } catch (Exception e) {
             Main.log.nonFatalException("unmarshalling file", e);
             return false;
@@ -395,5 +398,4 @@ public class MenuBar extends JMenuBar implements ActionListener {
     private void refresh(){
         mJPanel.refreshBufferedImage();
     }
-
 }

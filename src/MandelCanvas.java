@@ -46,6 +46,8 @@ public class MandelCanvas  implements Serializable {
     private int prisonerCount = 0;
     private int escapeeCount = 0;
 
+    private boolean hasBeenSaved = false;
+
     /**
      * OBJECT IS CONSTRUCTED IN LIGHTWEIGHT STATE
      *
@@ -286,7 +288,10 @@ public class MandelCanvas  implements Serializable {
      * @param iterationMax
      */
     public void setIterationMax(int iterationMax) {
-        this.iterationMax = iterationMax;
+        if(iterationMax != this.iterationMax){
+            hasBeenSaved = false;
+            this.iterationMax = iterationMax;
+        }
         initLogicalBufferedImage();
         initDisplayBufferedImage();
     }
@@ -306,6 +311,7 @@ public class MandelCanvas  implements Serializable {
      * to automatically increase iteration max everytime the image is zoomed.
      */
     public void increaseIterationMax() {
+        hasBeenSaved = false;
         setIterationMax(iterationMax + (int)Math.pow((double)iterationMax, 1.2));
         initLogicalBufferedImage();
         initDisplayBufferedImage();
@@ -392,5 +398,13 @@ public class MandelCanvas  implements Serializable {
 
     public int getPrisonerCount(){
         return prisonerCount;
+    }
+
+    public boolean needsSaving() {
+        return !hasBeenSaved;
+    }
+
+    public void setAsSaved() {
+        hasBeenSaved = true;
     }
 }

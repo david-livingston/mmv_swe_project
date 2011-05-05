@@ -49,6 +49,7 @@ public class MandelCanvasFactory {
             defaultIterationMax,
             new PaletteSet().getDefault()
         );
+        home.setAsSaved();
     }
 
     public MandelCanvas getHome(){
