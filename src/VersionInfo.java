@@ -11,7 +11,7 @@ public class VersionInfo {
 
     // set to true for developer builds
     // in regular builds, user can enable assertions to activate debug mode
-    private final static boolean forceDebugMode = true;
+    private final static boolean forceDebugMode = false;
     public final static boolean DEBUG = forceDebugMode || SystemInfo.areAssertionsEnabled();
 
     // incremented each time a build is released to be tested
