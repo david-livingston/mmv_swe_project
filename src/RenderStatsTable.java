@@ -26,6 +26,7 @@ public class RenderStatsTable {
 
     private long renderStartTime = 0L;
     private long renderStopTime = 0L;
+    private MandelCanvas canvas;
 
     public RenderStatsTable(MandelCanvas canvas) {
         updateCanvas(canvas);
@@ -33,6 +34,12 @@ public class RenderStatsTable {
     }
 
     private void updateCanvas(MandelCanvas canvas) {
+        if(null != canvas)
+            this.canvas = canvas;
+        else {
+            Main.log.error("RenderStatsTable.java", "null passed to updateCanvas()");
+            return;
+        }
         rows.put("Iteration Max", "" + StringFormats.strFromInt(canvas.getIterationMax()));
         canvas.updatePrisonerOrEscapeeCounts();
         rows.put("Prisoners", StringFormats.strFromInt(canvas.getPrisonerCount()) + "  " + StringFormats.strFromRatio(canvas.getPrisonerCount(), canvas.getLogicalImageSize().pixelCount()));
@@ -57,12 +64,22 @@ public class RenderStatsTable {
         rows.put("Remaining Mem", (Main.stats_table_force_gc ? "" : "~ ") + StringFormats.strFromByteCount(Main.systemInfo.getRemainingMemory()) + "  " + Main.systemInfo.getPercentRemainingMemoryAsString());
     }
 
+    public void update(MandelCanvas canvas){
+        updateCanvas(canvas);
+        updateSystemStats();
+    }
+
+    public void update(){
+        update(canvas);
+    }
+
     /**
      * The GUI component expects data to be provided as a 2d array.
      *
      * @return
      */
     public String[][] getAttributeValues(){
+        update();
         final String[][] out = new String[rows.size()][2];
         int ctr = 0;
         for(String key : rows.keySet())

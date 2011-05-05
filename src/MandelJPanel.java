@@ -164,6 +164,7 @@ public class MandelJPanel extends JPanel implements MouseListener, MouseMotionLi
      *
      */
     public void updateRenderStats(){
+        renderStatsModel.update(navigation.getCurrent());
         renderStatsJTable.setModel(new DefaultTableModel(renderStatsModel.getAttributeValues(), new Object[]{ "Attribute", "Value" } ));
     }
 
@@ -181,6 +182,8 @@ public class MandelJPanel extends JPanel implements MouseListener, MouseMotionLi
             displayedImageSize = new ImageSize(height, getWidth());
         }
         image = navigation.getCurrent().getDisplayedBufferedImage(displayedImageSize);
+        if(null != thumbnail)
+            thumbnail.repaint();
         repaint();
     }
 

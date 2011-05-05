@@ -397,5 +397,6 @@ public class MenuBar extends JMenuBar implements ActionListener {
 
     private void refresh(){
         mJPanel.refreshBufferedImage();
+        mJPanel.updateRenderStats();
     }
 }
