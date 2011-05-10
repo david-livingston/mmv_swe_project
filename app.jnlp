@@ -2,18 +2,21 @@
 <!-- JNLP File for MMV Application -->
 <jnlp
   spec="6.0+"
-  codebase=...
+  codebase="http://.../files/6/"
   href="app.jnlp"
-  version="1">
+  version="6">
   <information>
     <title>MMV: Multithreaded Mandelbrot Viewer</title>
     <vendor>MMV Student Team</vendor>
-    <offline-allowed/>
-    <association mime-type="application-x/mmv-file"  extensions="mmv"/>
+    <offline-allowed/> 
+    <association mime-type="application-x/mmv-file"  extensions="mmv"/> 
   </information>
+  <security> 
+      <all-permissions/> 
+  </security> 
   <resources>
-    <j2se version="1.6+" java-vm-args="-ea" initial-heap-size="256m" max-heap-size="512m"/>
+    <j2se version="1.6+" max-heap-size="512m"/>
     <jar href="mmv.jar"/>
   </resources>
-  <application-desc main-class="GUI"/>
-</jnlp>
+  <application-desc main-class="Main"/>
+</jnlp> 
