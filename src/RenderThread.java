@@ -7,6 +7,8 @@
  *
  * Thread which forces evaluation of some columns (modulo determined) of the
  * MandelPoint 2d array.
+ *
+ * Requirement 1.2.3 Program will use multithreading for faster processing of images.
  */
 public class RenderThread implements Runnable {
 

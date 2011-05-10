@@ -12,6 +12,11 @@ import java.io.File;
  * To change this template use File | Settings | File Templates.
  *
  * Container window for every other GUI element.
+ *
+ * Requirement 1.1.0 GUI
+ * Requirement 1.1.1 MenuBar
+ * Requirement 1.1.2 Status Window
+ * Requirement 1.1.3 Thumbnail Window
  */
 public class MainWindow extends JFrame {
 

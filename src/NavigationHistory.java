@@ -10,10 +10,13 @@ import java.util.concurrent.LinkedBlockingDeque;
  * Time: 4:24 AM
  * To change this template use File | Settings | File Templates.
  *
- * todo: deactivate irrelevant options in menubar
- *
  * Attempts to implement an (internet) browser style navigation history for the
  * sequence of zooms that led to the current image.
+ *
+ * Requirement 1.1.10 Ability to "step back" using a navigation history
+ * Requirement 1.1.11 Ability to undo a step back
+ *
+ * todo: deactivate irrelevant options in menubar
  */
 public class NavigationHistory {
 

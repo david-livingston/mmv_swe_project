@@ -17,6 +17,13 @@ import java.io.*;
  * MandelPoints, and the BufferedImage entailed by mapping those pixels to
  * colors with Palette.java.
  *
+ * Requirement 1.0.0 Display fractal image
+ * While many classes help meet this requirement, this class is the program's
+ * model of a fractal image (it contains the complex region to be rendered,
+ * the logical size of the image to be generated (which gives the sampling
+ * rate for the complex region), the array of MandelPoints which will be
+ * iterated and colored, etc.).
+ *
  * Most of the associated GUI code for this picture is in MandelJPanel.java.
  *
  * TODO: class needs refactoring, two types of attributes, always calculated and

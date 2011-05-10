@@ -10,7 +10,11 @@ import java.io.File;
  * Time: 2:27 PM
  * To change this template use File | Settings | File Templates.
  *
- * Collection of static methods for dealing with File paths.
+ * Collection of static methods for dealing with File paths. Does not completely implement,
+ * but supports the features specified by:
+ *  - Requirement 1.1.7 Ability to save a PNG image
+ *  - Requirement 1.1.8 Ability to save current state in a custom file format
+ *  - Requirement 1.1.9 Ability to open a saved state file
  *
  */
 public class FileUtilities {
@@ -81,8 +85,6 @@ public class FileUtilities {
     }
 
     /**
-     * //todo: make sure this works on non-Windows platforms
-     *
      * @return
      */
     public static File getDesktop(){

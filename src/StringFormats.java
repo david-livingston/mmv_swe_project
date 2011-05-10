@@ -7,6 +7,12 @@ import java.text.DecimalFormatSymbols;
  * Date: 5/4/11
  * Time: 4:48 PM
  * To change this template use File | Settings | File Templates.
+ *
+ * Code establishes default formats for values to be displayed to users,
+ * primarily in the statistics window.
+ *
+ * Requirement 1.1.2 Statistics Window
+ * Requirement 1.2.0 GUI Enhancements
  */
 public class StringFormats {
 

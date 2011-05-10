@@ -14,6 +14,10 @@ import java.io.File;
  *
  * GUI code necessary to connect the JFrame object (MainWindow.java) and its menubar
  * (MenuBar.java) to the picture (MandelCanvas.java).
+ *
+ * Requirement 1.0.0 Display fractal image
+ * Class contains all the elements for the render window where the primary view of
+ * the fractal is contained.
  */
 public class MandelJPanel extends JPanel implements MouseListener, MouseMotionListener {
 

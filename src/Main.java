@@ -12,6 +12,20 @@ import java.io.File;
  * constructor. This functionality could be squeezed into MainWindow but
  * is factored out in case more pre- or post- main program run features
  * are needed.
+ *
+ * This class is the entry point for the program, so supports all features,
+ * but specifically:
+ * Requirement 1.1.9 Ability to open save state file
+ * supported by a command line option (-open filename)
+ *
+ * Requirement 1.2.2 HD Rendering and Decoupled Size
+ * supports additional logical image resolutions via command line (-size sizename)
+ *
+ * Requirement 1.2.3 Multithreading
+ * number of cores reserved is command line configurable (-reserved_cpus number)
+ *
+ * Requirement 1.1.2 Statistics Window & 1.2.0 GUI enhancements
+ * Some update behavior command line configurable (-gc_before_stats_update)
  */
 public class Main {
 

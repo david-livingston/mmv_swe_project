@@ -7,7 +7,9 @@ import java.io.*;
  * Time: 12:41 PM
  *
  * Because I'm tired of the Save/Open state feature breaking every time I change anything; forget the
- * default serialization strategy.
+ * default serialization strategy applied to MandelCanvas.
+ *
+ * Requirement 1.1.8 Ability to save the current state using a custom file format
  */
 public class SaveableState implements Serializable {
 
@@ -46,10 +48,10 @@ public class SaveableState implements Serializable {
         this.colorPaletteName = colorPaletteName;
         this.arbitraryPrecisionEnabled = arbitraryPrecisionEnabled;
         this.maxIterations = maxIterations;
-        xMin = new Double(renderRegion.getRealMin());
-        xMax = new Double(renderRegion.getRealMax());
-        yMin = new Double(renderRegion.getImagMin());
-        yMax = new Double(renderRegion.getImagMax());
+        xMin = renderRegion.getRealMin();
+        xMax = renderRegion.getRealMax();
+        yMin = renderRegion.getImagMin();
+        yMax = renderRegion.getImagMax();
         logicalXResolution = logicalImageSize.getWidth();
         logicalYResolution = logicalImageSize.getHeight();
         displayXResolution = displayImageSize.getWidth();
@@ -76,12 +78,12 @@ public class SaveableState implements Serializable {
         return new MandelCanvas(
             new ComplexRegion(
                new ComplexNumber(
-                    xMin.doubleValue(),
-                    yMax.doubleValue()
+                    xMin,
+                    yMax
                ),
                new ComplexNumber(
-                    xMax.doubleValue(),
-                    yMin.doubleValue()
+                    xMax,
+                    yMin
                )
             ),
             new ImageSize(

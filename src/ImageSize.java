@@ -14,6 +14,35 @@ import java.io.Serializable;
  * This is imply a constrained extension of ImageRegion (with upper left
  * corner fixed at (0,0)). Class is immutable like ImageRegion.
  *
+ * Requirement 1.0.0 The program should display a basic fractal image.
+ * This class specifies how many pixels will be used in calculating the set.
+ * Because the set is infinite in size, it is necessary to specify how frequently
+ * it is sampled (on both axises) to generate an image which approximates the set.
+ *
+ * Requirement 1.1.0 GUI
+ * Various aspects of the GUI use an ImageSize object to describe their size (this
+ * program uses ImageSize in many places as a replacement for the Dimension class).
+ *
+ * Requirement 1.1.3 Thumbnail window
+ * Requirement 1.1.7 PNG image saving
+ * Requirement 1.1.8 Save state file (ImageSize used in serialization format)
+ *
+ * Requirement 1.1.12 Zooming
+ * This class provides methods for ensuring the zoomed into region will have the
+ * same aspect ratio as the original image.
+ *
+ * Requirement 1.2.0 GUI enhancements
+ * Class supports this objective in a number of ways. For example, it is used to
+ * ensure the aspect ratio of the image displayed to the user remains correct as
+ * the render window is resized.
+ *
+ * Requirement 1.2.2 Decouple Displayed Image Size from Logical Image Size
+ * This class provides functionality for calculating ImageSize objects of different
+ * size but with the same aspect ratio. This supports decoupling while maintaining
+ * similarity between the images.
+ *
+ * Requirement 1.2.2 HD rendering
+ * This class has static instances describing various resolutions.
  */
 public class ImageSize extends ImageRegion implements Serializable {
 

@@ -9,6 +9,8 @@ import java.util.LinkedHashMap;
  *
  * Model for the statistics table shown in the GUI.
  *
+ * Requirement 1.1.2 A status window will be used for various feedbacks.
+ *
  * TODO: tool-tips for some rows (esp. memory)
  * TODO: update thread
  * TODO: pull some of the GUI code here from MainWindow.java (or preferably in a separate class)

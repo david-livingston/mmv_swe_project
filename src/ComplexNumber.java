@@ -13,6 +13,16 @@ import java.io.Serializable;
  * and the product of another real number and the square root of -1, i.e.
  * (a + bi).
  *
+ * Requirement 1.0.0 The program should display a basic fractal image
+ * This class is essential to that requirement because the math used to generate
+ * the fractal images utilizes complex numbers.
+ *
+ * Requirement 1.2.4 Arbitrary Precision Arithmetic
+ * Feature not currently implemented. When coded, feature will require this class
+ * to be updated to use BigDecimal objects -OR- an arbitrary precision analog of
+ * this class will need to be developed and the program will need a method for
+ * determining which class to use when.
+ *
  * This class only implements the methods necessary for generating the
  * Mandelbrot set.
  *

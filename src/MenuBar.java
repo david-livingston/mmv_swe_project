@@ -12,12 +12,12 @@ import java.util.HashMap;
  * Date: Feb 19, 2011
  * Time: 1:15:11 PM
  * To change this template use File | Settings | File Templates.
- */
-
-// http://download.oracle.com/javase/tutorial/uiswing/components/menu.html
-
-/**
+ *
  * The main menu bar which will be added to the main GUI.
+ *
+ * Requirement 1.1.1 A menu bar will be used to hold various features that will be used.
+ *
+ * See: http://download.oracle.com/javase/tutorial/uiswing/components/menu.html
  */
 public class MenuBar extends JMenuBar implements ActionListener {
 

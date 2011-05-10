@@ -11,6 +11,13 @@ import java.util.Set;
  *
  * Class serves as a group of color schemes (with a default indicated) that
  * a user may choose to have the raw Mandelbrot calculations colored by.
+ *
+ * Requirement 1.2.1 Additional color palettes to customize the fractal
+ *
+ * Technically also Requirement 1.0.0 since the base color palette is abstract,
+ * this class not only provides 'additional' palettes it provides the _only_
+ * palettes. Without it, there would be no way to translate the data stored
+ * in a MandelPoint into a colored pixel.
  */
 public class PaletteSet {
 

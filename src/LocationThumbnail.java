@@ -8,6 +8,12 @@ import java.awt.image.BufferedImage;
  * Date: 3/16/11
  * Time: 5:18 AM
  * To change this template use File | Settings | File Templates.
+ *
+ * Requirement 1.1.3 Thumbnail window to assist with navigation
+ * This class meets that objective by highlighting the zoomed
+ * region (in render window) of the Mandelbrot set. This requirement
+ * may be better met by showing the zoomed into region from the last
+ * rendered picture (usually not the home screen).
  */
 public class LocationThumbnail extends JPanel {
 

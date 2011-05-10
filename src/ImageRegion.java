@@ -15,6 +15,11 @@ import java.io.Serializable;
  * selected with a mouse which are then translated to ComplexRegion objects
  * for zooming into the next picture to be displayed.
  *
+ * Requirement 1.1.12 Zooming
+ * This class allows a subsection of the image coordinates of the full picture
+ * (as described in subclass ImageSize) to be selected. Necessary to select
+ * an area for zooming.
+ *
  * Subclassed by ImageSize.
  */
 public class ImageRegion implements Serializable {

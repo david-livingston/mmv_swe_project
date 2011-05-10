@@ -6,6 +6,9 @@
  * To change this template use File | Settings | File Templates.
  *
  * Methods relating to the JVM and computer running the application.
+ *
+ * Requirement 1.1.2 Statistics Window
+ * Requirement 1.2.3 Multithreading
  */
 public class SystemInfo {
 
@@ -79,6 +82,8 @@ public class SystemInfo {
     /**
      * Ideally this would be user configurable. Method attempts to balance
      * system responsiveness with application performance during renders.
+     *
+     * Requirement 1.2.3 Program will use multithreading for faster processing of images
      *
      * @return
      */

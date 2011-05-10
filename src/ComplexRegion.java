@@ -8,6 +8,12 @@ import java.io.Serializable;
  * To change this template use File | Settings | File Templates.
  *
  * Represents an immutable rectangular area of a complex plane.
+ *
+ * Requirement 1.0.0 The program should display a basic fractal image.
+ * This class bounds an area of the complex plane for which the fractal
+ * calculation will be applied, colored, and displayed to the user. Necessary
+ * because the plane has infinite extent, so a subsection must be chosen
+ * to calculate.
  */
 public class ComplexRegion implements Serializable {
 

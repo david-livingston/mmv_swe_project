@@ -12,6 +12,11 @@ import java.io.File;
  * files ending in the specified extension. Description provided to user re.
  * the filter is simply the extension name unless overridden to be more
  * helpful.
+ *
+ * Makes the following features more convenient for the user:
+ * Requirement 1.1.7 Ability to save a PNG Image
+ * Requirement 1.1.8 Ability to save the current state using a custom file format
+ * Requirement 1.1.9 Ability to open a state file
  */
 public abstract class SimpleFileFilter extends FileFilter {
 

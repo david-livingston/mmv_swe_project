@@ -15,6 +15,17 @@ import java.io.ObjectInputStream;
  * Current functionality:
  *      - creating the 'home' (zoomed out) starting MandelCanvas
  *      - reconstructing MandelCanvas objects from files of their serialized state
+ *
+ * Requirement 1.0.0 Display fractal image
+ * Start up is different than zooming because you don't have the zoom inputs to
+ * specify the fractal to be rendered. This class's method for calculating the
+ * 'home' image (zoomed out view of Mandelbrot set) supports displaying the
+ * initial image.
+ *
+ * Requirement 1.1.9 Open State File
+ * This class provides a method for getting a MandelCanvas object from a state
+ * file saved to disk (this file is a serialized SaveableState object, not a
+ * serialized MandelCanvas object). // todo: avoid confusion, make MandelCanvas not implement serializable interface
  */
 public class MandelCanvasFactory {
 

@@ -15,6 +15,9 @@ import java.io.Serializable;
  *
  * Methods are provided for converting to and from java.awt.Point objects
  * since many Swing methods require those objects as inputs.
+ *
+ * Requirement 1.0.0 Program should incorporate a GUI
+ * This class is used extensively by all of the program's GUI code.
  */
 public class Pixel implements Serializable {
 

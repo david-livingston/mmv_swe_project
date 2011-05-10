@@ -14,6 +14,10 @@ import java.awt.*;
  * be a Mandelbrot image is that the escaping points should be distinguishable
  * from the prisoner points.
  *
+ * Requirement 1.0.0 The program should display a basic fractal image
+ * This class is essential to that requirement because because it determines
+ * the color of a pixel; without it there would be no image to display.
+ *
  * Color palettes electing not to normalize their counter values can be made
  * much more efficient by using a color lookup table for some counter values.
  *

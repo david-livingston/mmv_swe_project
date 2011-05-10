@@ -10,6 +10,9 @@
  * debug mode, shield user from this & hope for the best :|
  *
  * TODO: file based logging
+ *
+ * Does not meet an original program requirement. Still useful (and would
+ * be useful if extended with more functionality).
  */
 public class SimpleLogger {
 

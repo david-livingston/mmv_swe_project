@@ -12,6 +12,10 @@ import java.io.Serializable;
  * This class represents a complex point that is being iterated through the Mandelbrot
  * process. Initially the constant (starting) location and current location are the same.
  * The current location changes once per each iteration.
+ *
+ * Requirement 1.0.0 The program should display a basic fractal image
+ * Each instance of this class represents one sampled point of the Mandelbrot set,
+ * i.e. one pixel in the logical image.
  */
 public class MandelPoint implements Serializable {
 

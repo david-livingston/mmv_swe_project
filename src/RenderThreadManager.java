@@ -8,6 +8,8 @@
  * This is a coordination thread which spawns off worker threads to construct
  * (or refine) the Mandelbrot set.
  *
+ * Requirement 1.2.3 Program will use multithreading for faster processing of images.
+ *
  * todo: thread group, make sure all threads exit cleanly if application terminated mid run()
  * todo: producer consumer queue, assigning each thread the same number of columns can lead
  *  some threads to finish before others

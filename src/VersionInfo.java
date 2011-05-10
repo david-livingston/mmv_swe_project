@@ -4,6 +4,10 @@
  * Date: 4/3/11
  * Time: 11:38 AM
  * To change this template use File | Settings | File Templates.
+ *
+ * Does not meet a specific requirement.
+ *
+ * Provides a way to source control the version number and debugging mode status.
  */
 public class VersionInfo {
 
