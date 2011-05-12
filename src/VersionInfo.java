@@ -24,7 +24,7 @@ public class VersionInfo {
     // significant changes or bug fix, new minor feature
     private static final char minorVersion = 'A';
     // a new commit (if i remember) but not significant enough to incr minorVersion
-    private static final int buildVersion = 2;
+    private static final int buildVersion = 3;
 
     public static String getVersion(){
         return serialID +

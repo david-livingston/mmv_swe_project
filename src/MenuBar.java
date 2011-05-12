@@ -370,7 +370,6 @@ public class MenuBar extends JMenuBar implements ActionListener {
         return true;
     }
 
-    // todo: decreasing maxIterations has no effect; not sure whether to warn user it was ignored or actually decrease resolution?
     private boolean inputMaxIterations(){
         final int iterMax = mJPanel.getNavigationHistory().getCurrent().getIterationMax();
         final String input = JOptionPane.showInputDialog(mJPanel,
@@ -390,6 +389,12 @@ public class MenuBar extends JMenuBar implements ActionListener {
             JOptionPane.showMessageDialog(mJPanel, "Could not convert input to whole number (input: " + input + ")", "Input Error", JOptionPane.ERROR_MESSAGE);
             Main.log.error("MenuBar.changeMaxIterations()", "could not parse input as integer: " + input);
             return inputMaxIterations();
+        }
+        {   // If user decreased iter max, tell them changes will take affect later.
+            final int lastIterMax = mJPanel.getNavigationHistory().getCurrent().getIterationMax();
+            if(newIterMax < lastIterMax)
+                JOptionPane.showMessageDialog(mJPanel, "Your input of " + newIterMax + " is less than the previous value (" + lastIterMax + "). "
+                + "This change will affect subsequent renders and zooms but not the current image.");
         }
         mJPanel.getNavigationHistory().getCurrent().setIterationMax(newIterMax);
         mJPanel.refreshBufferedImage();
