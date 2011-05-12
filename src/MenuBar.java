@@ -63,7 +63,6 @@ public class MenuBar extends JMenuBar implements ActionListener {
                 MENU_ITEM_SAVE_STATE_AS,
                 MENU_ITEM_OPEN_STATE_FILE
         ));
-        // todo: resolution
         add(makeMenu("Navigation",
                 MENU_ITEM_HOME,
                 MENU_ITEM_BACK,
@@ -383,12 +382,14 @@ public class MenuBar extends JMenuBar implements ActionListener {
         try {
             newIterMax = Integer.parseInt(input);
             if(newIterMax < 0){
+                JOptionPane.showMessageDialog(mJPanel, "Max iterations must be positive (input: " + input + ")", "Input Error", JOptionPane.ERROR_MESSAGE);
                 Main.log.userError("MenuBar.changeMaxIterations()", "iterMax can't be negative, input was: " + input);
-                return false;
+                return inputMaxIterations();
             }
-        } catch (Exception e) {
+        } catch (NumberFormatException e) {
+            JOptionPane.showMessageDialog(mJPanel, "Could not convert input to whole number (input: " + input + ")", "Input Error", JOptionPane.ERROR_MESSAGE);
             Main.log.error("MenuBar.changeMaxIterations()", "could not parse input as integer: " + input);
-            return false;
+            return inputMaxIterations();
         }
         mJPanel.getNavigationHistory().getCurrent().setIterationMax(newIterMax);
         mJPanel.refreshBufferedImage();
