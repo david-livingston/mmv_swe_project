@@ -6,7 +6,6 @@ This is a small class project; you probably don't want to fork or otherwise use 
 * arbitrary precision
 
 ## Possible other features:
-* installer or java webstart
 * intelligently increase max iterations when zooming
 
 ## IDE Suggestion:
