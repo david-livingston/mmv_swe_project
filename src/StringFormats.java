@@ -14,7 +14,7 @@ import java.text.DecimalFormatSymbols;
  * Requirement 1.1.2 Statistics Window
  * Requirement 1.2.0 GUI Enhancements
  */
-public class StringFormats {
+class StringFormats {
 
     /**
      * @param d

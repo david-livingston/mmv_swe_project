@@ -71,7 +71,7 @@ public abstract class Palette {
      * @param magnitude
      * @return
      */
-    public double normalize(final int counter, final double magnitude){
+    double normalize(final int counter, final double magnitude){
         return counter + 1 - Math.log(Math.log(magnitude))/Math.log(2.0);
     }
 
@@ -83,7 +83,7 @@ public abstract class Palette {
         );
     }
 
-    public double sanitize(double original){
+    double sanitize(double original){
         if(original < 0.0)
             original *= -1;
         if(original > 255.0)

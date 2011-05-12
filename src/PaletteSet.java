@@ -19,10 +19,10 @@ import java.util.Set;
  * palettes. Without it, there would be no way to translate the data stored
  * in a MandelPoint into a colored pixel.
  */
-public class PaletteSet {
+class PaletteSet {
 
-    final HashMap<String, Palette> palettes = new HashMap<String, Palette>();
-    final String DEFAULT_NAME = "Frost";
+    private final HashMap<String, Palette> palettes = new HashMap<String, Palette>();
+    private final String DEFAULT_NAME = "Frost";
 
     public PaletteSet(){
         palettes.put("Foilage",

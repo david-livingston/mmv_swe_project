@@ -15,12 +15,12 @@ import java.awt.image.BufferedImage;
  * may be better met by showing the zoomed into region from the last
  * rendered picture (usually not the home screen).
  */
-public class LocationThumbnail extends JPanel {
+class LocationThumbnail extends JPanel {
 
     private final BufferedImage image;
     private ImageRegion focus = null;
-    private MandelCanvas canvas;
-    private JInternalFrame thumbNailFrame;
+    private final MandelCanvas canvas;
+    private final JInternalFrame thumbNailFrame;
 
 
     public LocationThumbnail(final ImageSize imageSize, final JInternalFrame thumbNailFrame){

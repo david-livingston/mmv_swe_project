@@ -19,7 +19,7 @@ import java.util.HashMap;
  *
  * See: http://download.oracle.com/javase/tutorial/uiswing/components/menu.html
  */
-public class MenuBar extends JMenuBar implements ActionListener {
+class MenuBar extends JMenuBar implements ActionListener {
 
     final private static String URL_HELP_TOPICS = "http://www.davidlivingston.info/mmv/help-topics.html";
     final private static String URL_ABOUT = "http://www.davidlivingston.info/mmv/about.html";
@@ -46,17 +46,17 @@ public class MenuBar extends JMenuBar implements ActionListener {
     final private HashMap<String, JCheckBoxMenuItem> colorMenuItems = new HashMap<String, JCheckBoxMenuItem>();
 
     private File lastFolderAccessed = null;
-    private final MainWindow mainWindow;
 
     /**
      * @param panel the container which this menubar will be added to; needed
      * so the selected menuitem will have a way to invoke the requested action
+     * @param appWindow
      */
     public MenuBar(MandelJPanel panel, MainWindow appWindow){
         super();
 
         mJPanel = panel;
-        mainWindow = appWindow;
+        MainWindow mainWindow = appWindow;
 
         add(makeMenu("File",
                 MENU_ITEM_SAVE_IMAGE_AS,
@@ -213,14 +213,14 @@ public class MenuBar extends JMenuBar implements ActionListener {
         return false;
     }
 
-    private boolean changePalette(ActionEvent e, PaletteSet ps){
+    private void changePalette(ActionEvent e, PaletteSet ps){
         String name = null;
         for(String n : ps.getNames())
             if(matches(e, n))
                 name = n;
 
         if(null == name)
-            return false;
+            return;
 
         for(String itemName : colorMenuItems.keySet())
             colorMenuItems.get(itemName).setSelected(itemName.equals(name));
@@ -228,7 +228,6 @@ public class MenuBar extends JMenuBar implements ActionListener {
         mJPanel.getNavigationHistory().getCurrent().setPalette(name);
         mJPanel.refreshBufferedImage();
 
-        return true;
     }
 
     /**
@@ -237,7 +236,7 @@ public class MenuBar extends JMenuBar implements ActionListener {
      *
      * @return whether the file was successfully saved
      */
-    private boolean saveImage(){
+    private void saveImage(){
 
         PNGSimpleFileFilter filter = new PNGSimpleFileFilter();
 
@@ -250,7 +249,7 @@ public class MenuBar extends JMenuBar implements ActionListener {
         );
 
         if(null == saveFile)
-            return false;
+            return;
 
         lastFolderAccessed = saveFile.getParentFile();
 
@@ -261,13 +260,12 @@ public class MenuBar extends JMenuBar implements ActionListener {
             ImageIO.write(bi, filter.getExtension(), saveFile);
         } catch (Exception ioe) {
             Main.log.nonFatalException("", ioe);
-            return false;
+            return;
         }
 
-        return true;
     }
 
-    public boolean saveState() {
+    public void saveState() {
 
         MMVSimpleFileFilter filter = new MMVSimpleFileFilter();
 
@@ -280,7 +278,7 @@ public class MenuBar extends JMenuBar implements ActionListener {
         );
 
         if(null == saveFile)
-            return false;
+            return;
 
         lastFolderAccessed = saveFile.getParentFile();
 
@@ -295,14 +293,13 @@ public class MenuBar extends JMenuBar implements ActionListener {
             mJPanel.getNavigationHistory().getCurrent().setAsSaved();
         } catch (Exception ioe) {
             Main.log.nonFatalException("saving state file", ioe);
-            return false;
+            return;
         }
 
-        return true;
     }
 
 
-    private boolean openState() {
+    private void openState() {
         final File selectedFile = FileUtilities.getFileFromOpenDialog(
             mJPanel,
             null == lastFolderAccessed ? FileUtilities.getDesktop() : lastFolderAccessed,
@@ -310,7 +307,7 @@ public class MenuBar extends JMenuBar implements ActionListener {
         );
 
         if(null == selectedFile)
-            return false;
+            return;
 
         lastFolderAccessed = selectedFile.getParentFile();
 
@@ -321,12 +318,11 @@ public class MenuBar extends JMenuBar implements ActionListener {
             canvas.setAsSaved();
         } catch (Exception e) {
             Main.log.nonFatalException("unmarshalling file", e);
-            return false;
+            return;
         }
 
         mJPanel.getNavigationHistory().setCurrent(canvas);
         mJPanel.refreshBufferedImage();
-        return true;
     }
 
     /**
@@ -335,17 +331,17 @@ public class MenuBar extends JMenuBar implements ActionListener {
      * Note: this requires Java 6, more complicated in Java 5. See:
      * http://www.centerkey.com/java/browser/
      *
+     *
      * @param url location of the webpage to open
      * @return whether the page was opened
      */
-    public boolean openWebPage(final String url){
+    void openWebPage(final String url){
         try {
             java.awt.Desktop.getDesktop().browse(java.net.URI.create(url));
         } catch (Exception e){
             Main.log.nonFatalException("Error opening webpage: " + url, e);
-            return false;
+            return;
         }
-        return true;
     }
 
     private void navHome() {
@@ -363,11 +359,10 @@ public class MenuBar extends JMenuBar implements ActionListener {
         mJPanel.refreshBufferedImage();
     }
 
-    private boolean increaseMaxIterations(){
+    private void increaseMaxIterations(){
         mJPanel.getNavigationHistory().getCurrent().increaseIterationMax();
         mJPanel.refreshBufferedImage();
         mJPanel.updateRenderStats();
-        return true;
     }
 
     private boolean inputMaxIterations(){

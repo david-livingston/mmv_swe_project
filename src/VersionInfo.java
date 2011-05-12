@@ -9,7 +9,7 @@
  *
  * Provides a way to source control the version number and debugging mode status.
  */
-public class VersionInfo {
+class VersionInfo {
 
     // set to true for developer builds
     // in regular builds, user can enable assertions to activate debug mode
@@ -22,9 +22,9 @@ public class VersionInfo {
     // incremented after adding a major feature
     private static final int majorVersion = 5;
     // significant changes or bug fix, new minor feature
-    private static final char minorVersion = 'A';
+    private static final char minorVersion = 'B';
     // a new commit (if i remember) but not significant enough to incr minorVersion
-    private static final int buildVersion = 3;
+    private static final int buildVersion = 0;
 
     public static String getVersion(){
         return serialID +

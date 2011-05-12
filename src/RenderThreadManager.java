@@ -14,13 +14,12 @@
  * todo: producer consumer queue, assigning each thread the same number of columns can lead
  *  some threads to finish before others
  */
-public class RenderThreadManager implements Runnable {
+class RenderThreadManager implements Runnable {
 
     private final Thread[] workers;
-    private final MandelCanvas canvas;
 
     public RenderThreadManager(final MandelCanvas canvas) {
-        this.canvas = canvas;
+        MandelCanvas canvas1 = canvas;
         final int threadCount = Main.systemInfo.getBestThreadCount();
         workers = new Thread[threadCount];
         for(int i = 0; i < workers.length; ++i)
@@ -43,7 +42,7 @@ public class RenderThreadManager implements Runnable {
         }
     }
 
-    public boolean isFinished(){
+    boolean isFinished(){
         for(Thread t : workers)
             if(t.isAlive())
                 return false;

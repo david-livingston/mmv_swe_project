@@ -11,7 +11,7 @@ import java.io.*;
  *
  * Requirement 1.1.8 Ability to save the current state using a custom file format
  */
-public class SaveableState implements Serializable {
+class SaveableState implements Serializable {
 
     final private String colorPaletteName;
     final private boolean arbitraryPrecisionEnabled;

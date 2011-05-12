@@ -21,8 +21,8 @@ import java.io.Serializable;
  */
 public class Pixel implements Serializable {
 
-    final int x;
-    final int y;
+    private final int x;
+    private final int y;
 
     public Pixel(int x, int y) {
         assert x >= 0 && y >= 0;

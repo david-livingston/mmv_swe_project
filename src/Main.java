@@ -30,7 +30,7 @@ import java.io.File;
 public class Main {
 
     // options which can be changed at command line
-    final public static ImageSize defaultLogicalImageSize = ImageSize.REAL_HD;
+    private final static ImageSize defaultLogicalImageSize = ImageSize.REAL_HD;
     public static boolean stats_table_force_gc = false;
 
     final public static SystemInfo systemInfo = new SystemInfo();
@@ -94,9 +94,8 @@ public class Main {
                     cores_reserved = Integer.parseInt(arg);
                 } catch (Exception e) {
                     log.nonFatalException("Invalid command line arg for reserved cores: " + arg, e);
-                } finally {
-                    break;
                 }
+                break;
             } else {
                 sawCoreArg = arg.equalsIgnoreCase("-reserved_cpus");
             }

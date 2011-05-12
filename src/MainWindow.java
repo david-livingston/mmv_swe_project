@@ -18,22 +18,19 @@ import java.io.File;
  * Requirement 1.1.2 Status Window
  * Requirement 1.1.3 Thumbnail Window
  */
-public class MainWindow extends JFrame {
-
-    // Specifies the number of horizontal and vertical pixels used for calculating the picture
-    // dimensions of picture rendered on screen will likely be different
-    private final ImageSize logicalImageSize;
+class MainWindow extends JFrame {
 
     /**
      * Constructs the GUI which has the effect of launching the program.
      *
+     * @param initialLogicalImageSize
      * @param fileToOpen saved state file which the program is being launched to examine; if null, program
      *  is being launched normally and should begin at the home screen (zoomed out view of the Mandelbrot
      *  set).
      */
     public MainWindow(final ImageSize initialLogicalImageSize, final File fileToOpen) {
 
-        logicalImageSize = initialLogicalImageSize;
+        ImageSize logicalImageSize = initialLogicalImageSize;
 
         final int frameHeightAddition = 25;
         final int frameWidthAddition = 10;
@@ -52,7 +49,7 @@ public class MainWindow extends JFrame {
         final ImageSize renderStatsTableSize = new ImageSize(350, statsTableAttributeColumnWidth + statsTableValueColumnWidth);
 
         final int widthAvailable = mainWindow.getWidth() - (10 + renderStatsTableSize.getWidth());
-        final int matchingHeight = (int)(widthAvailable * ((double)logicalImageSize.getHeight())/logicalImageSize.getWidth());
+        final int matchingHeight = (int)(widthAvailable * ((double) logicalImageSize.getHeight())/ logicalImageSize.getWidth());
         ImageSize displayedImageSize = new ImageSize(matchingHeight, widthAvailable);
         if(displayedImageSize.largerThan(logicalImageSize))
             displayedImageSize = logicalImageSize;

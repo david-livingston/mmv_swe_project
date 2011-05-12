@@ -19,7 +19,7 @@ import java.io.File;
  * Class contains all the elements for the render window where the primary view of
  * the fractal is contained.
  */
-public class MandelJPanel extends JPanel implements MouseListener, MouseMotionListener {
+class MandelJPanel extends JPanel implements MouseListener, MouseMotionListener {
 
     private BufferedImage image;
     private final NavigationHistory navigation;
@@ -38,6 +38,7 @@ public class MandelJPanel extends JPanel implements MouseListener, MouseMotionLi
      *
      * @param logicalImageSize
      * @param displayedImageSize
+     * @param fileToOpen
      */
     public MandelJPanel(final ImageSize logicalImageSize, final ImageSize displayedImageSize, final File fileToOpen){
         super();

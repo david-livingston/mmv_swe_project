@@ -17,12 +17,11 @@ import java.io.Serializable;
  * Each instance of this class represents one sampled point of the Mandelbrot set,
  * i.e. one pixel in the logical image.
  */
-public class MandelPoint implements Serializable {
+class MandelPoint implements Serializable {
 
     private final ComplexNumber startingLocation;
     private ComplexNumber currentLocation;
     private int iterationCount = 0;
-    private final double squaredMaxDistance = 4.0;
     private boolean escaped = false;
 
     /**
@@ -61,6 +60,7 @@ public class MandelPoint implements Serializable {
             r_sq = r * r;
             i_sq = i * i;
 
+            double squaredMaxDistance = 4.0;
             if(r_sq + i_sq > squaredMaxDistance){
                 escaped = true;
                 break;

@@ -10,7 +10,7 @@
  *
  * Requirement 1.2.3 Program will use multithreading for faster processing of images.
  */
-public class RenderThread implements Runnable {
+class RenderThread implements Runnable {
 
     private final MandelCanvas canvas;
     private final int columnIndicator;

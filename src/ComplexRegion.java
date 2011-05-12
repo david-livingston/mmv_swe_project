@@ -70,7 +70,7 @@ public class ComplexRegion implements Serializable {
      * @param res
      * @return
      */
-    public double getRealDelta(final int res){
+    double getRealDelta(final int res){
         return getDelta(res, true);
     }
 
@@ -81,7 +81,7 @@ public class ComplexRegion implements Serializable {
      * @param res
      * @return
      */
-    public double getImagDelta(final int res){
+    double getImagDelta(final int res){
         return getDelta(res, false);
     }
 

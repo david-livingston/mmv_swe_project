@@ -15,13 +15,13 @@ import java.util.LinkedHashMap;
  * TODO: update thread
  * TODO: pull some of the GUI code here from MainWindow.java (or preferably in a separate class)
  */
-public class RenderStatsTable {
+class RenderStatsTable {
 
     /** Holds the attribute value pair data displayed in the table. This implementation
      * of Map is chosen because its iteration order is the same as insertion order,
      * presumably related data will be entered consecutively so it makes sense to display
      * it the same way */
-    private LinkedHashMap<String, String> rows = new LinkedHashMap<String, String>();
+    private final LinkedHashMap<String, String> rows = new LinkedHashMap<String, String>();
 
     private long renderStartTime = 0L;
     private long renderStopTime = 0L;
@@ -68,7 +68,7 @@ public class RenderStatsTable {
         updateSystemStats();
     }
 
-    public void update(){
+    void update(){
         update(canvas);
     }
 
@@ -86,7 +86,7 @@ public class RenderStatsTable {
         return out;
     }
 
-    public void clearRenderTimer(){
+    void clearRenderTimer(){
         renderStartTime = renderStopTime = 0L;
     }
 

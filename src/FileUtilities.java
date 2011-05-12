@@ -17,7 +17,7 @@ import java.io.File;
  *  - Requirement 1.1.9 Ability to open a saved state file
  *
  */
-public class FileUtilities {
+class FileUtilities {
 
     /**
      * Considers the path of an input File and guarantees that it ends with the correct extension.
@@ -37,7 +37,7 @@ public class FileUtilities {
      *  character
      * @return the input File but with the path modified as necessary
      */
-    public static File ensureExtension(final File file, final String ext){
+    private static File ensureExtension(final File file, final String ext){
         assert '.' != ext.charAt(0);
         if(file.getName().endsWith("." + ext))
             return file;
@@ -62,7 +62,7 @@ public class FileUtilities {
      * @param includeBuildString
      * @return
      */
-    public static File makeFileWithSequentialIDSuffix(final File file, final String ext, boolean includeBuildString){
+    private static File makeFileWithSequentialIDSuffix(final File file, final String ext, boolean includeBuildString){
         assert !file.isDirectory() && (!file.exists() || file.isFile());
         final String name = file.getName();
         final String longerRawName = name + (includeBuildString? "_v" + VersionInfo.getVersion() : "");

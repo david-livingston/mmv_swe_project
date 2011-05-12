@@ -41,7 +41,7 @@ public class MandelCanvas  implements Serializable {
     private transient MandelPoint[][] mandelPoints;
     private transient BufferedImage logicalBufferedImage;
     private transient BufferedImage displayedBufferedImage;
-    private ImageSize logicalImageSize;
+    private final ImageSize logicalImageSize;
     private ImageSize displayImageSize;
 
     private transient boolean isLightWeight = true;
@@ -61,6 +61,8 @@ public class MandelCanvas  implements Serializable {
      * @param renderRegion
      * @param requestedLogicalImageSize
      * @param requestedDisplayImageSize
+     * @param initialCounterMax
+     * @param initialColorPalette
      */
     public MandelCanvas(final ComplexRegion renderRegion, final ImageSize requestedLogicalImageSize, final ImageSize requestedDisplayImageSize, final int initialCounterMax, final Palette initialColorPalette) {
         this.renderRegion = renderRegion;
