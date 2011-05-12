@@ -17,7 +17,7 @@ class VersionInfo {
     public final static boolean DEBUG = forceDebugMode || SystemInfo.areAssertionsEnabled();
 
     // incremented each time a build is released to be tested
-    private static final int serialID = 7;
+    private static final int serialID = 8;
 
     // incremented after adding a major feature
     private static final int majorVersion = 5;
