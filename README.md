@@ -1,13 +1,24 @@
-This is a small class project; you probably don't want to fork or otherwise use it.
+# UIS Java Swing Mandelbrot 
 
-# MUST USE JAVA 6 (Java 5 will not work on this project).
+This is a small class project to visualize the [Mandelbrot set](https://en.wikipedia.org/wiki/Mandelbrot_set); 
+you probably don't want to fork or otherwise use it.
+
+## Screenshots
+
+![Home](/docs/img/home.png)
+
+![Zoomed In](/docs/img/zoomed-in.png)
+
+## Running
+
+Run [Main.java](/src/Main.java).
 
 ## Essential missing features:
+
 * arbitrary precision
 
 ## Possible other features:
+
 * intelligently increase max iterations when zooming
 
-## IDE Suggestion:
-* IDEA's IntelliJ now (v10+, free) has github integration making it easy to grab this project
-* The source code for this project makes extensive use of IntelliJ's 'TODO' note tagging: ~20 items of varying importance and difficulty
+
